@@ -37,6 +37,7 @@ io.on('connection', function(socket)
     connections.push(socket);
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
+    updateUsernames();
 
     //disconnect
     socket.on('disconnect', function()
