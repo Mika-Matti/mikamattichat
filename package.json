@@ -1,0 +1,10 @@
+{
+    "name": "socket-chat-mm",
+    "version": "0.0.1",
+    "description": "Ensimäinen socket.io ohjelmani",
+    "dependencies": {
+        "express": "^4.16.4",
+        "git": "^0.1.5",
+        "socket.io": "^2.2.0"
+    }
+}

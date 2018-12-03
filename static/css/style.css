@@ -1,0 +1,259 @@
+* {
+    font-family: 'Open Sans';
+    box-sizing: border-box;
+    color: #333;
+    
+}
+
+.wrapper
+{
+    width: 1450px;
+    margin: 0 auto;
+}
+/*piirtotyökalun kokoikkuna*/
+.wrapper > .drawCanvas
+{
+    width: 800px;
+    height: 644px; 
+    border: 2px solid rgb(182, 152, 152);
+    border-right: 0px;
+    float:left;
+
+}
+
+/* chatin kokoikkuna */
+.wrapper > .chatContainer
+{
+    width: 550px;
+    height: 644px; 
+    border: 2px solid rgb(182, 152, 152);
+    /*padding-left: 600px;*/
+    float:left;
+    display:block;
+    overflow: hidden;
+    
+}
+
+/* Chatin ylätunniste */
+.wrapper > .chatContainer > .chatHeader 
+{
+    height: 40px;
+    background: white;
+    
+    border-bottom: 1px solid rgb(182, 152, 152);
+    list-style: none;       
+}
+
+/* Ylätunnisteen otsikko */
+.wrapper > .chatContainer > .chatHeader h3 
+{
+    margin: 0;
+    padding: 5px;
+    padding-top: 3px;
+    font-weight: 300;
+    font-size: 25px;
+    color: #333;
+}
+
+.wrapper > .chatContainer > .chatNames
+{
+    width: 150px;
+    height: 600px;
+    float:right;
+    
+    background: white;
+    
+    border-left: 1px solid rgb(182, 152, 152);
+
+}
+
+.wrapper > .chatContainer > .chatNames > .chatNamesheader
+{   
+    font-size: 14px;
+    width: 150px;
+    height: 40px;
+    background: white;
+    
+    text-align: center;    
+    border-bottom: 1px solid rgb(182, 152, 152);    
+    border-right: 1px solid rgb(182, 152, 152);
+}
+
+.wrapper > .chatContainer > .chatNames > .chatNamesusers
+{     
+    width: 150px;
+    height: 560px;
+    background: white;
+    padding: 5px;
+    border-left: 1px solid rgb(182, 152, 152);    
+    overflow-y: auto;
+}
+
+
+/*käyttäjien nimet chatnames ikkunassa*/
+#usernames 
+{ 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+    border-bottom: 1px solid rgb(247, 243, 243);
+}
+
+#usernames li 
+{ 
+    padding: 5px 10px; 
+}
+                
+#usernames li:nth-child(odd) 
+{ 
+    background: #eee; 
+}
+
+
+
+.wrapper > .chatContainer > .chatHeadertwo 
+{
+    
+    height: 40px;
+    background: white;
+    padding: 5px;
+    padding-left: 7px;
+    border-bottom: 1px solid rgb(182, 152, 152);
+    list-style: none;       
+}
+
+/* ylätunnisteen tai tekstisyöteikkunan teksti */
+.wrapper > .chatContainer > .chatHeadertwo form input[type='text']
+{
+    
+    padding: 3px;
+    padding-left: 5px;
+    border: 1px solid rgb(182, 152, 152);
+    /*border-radius: 5px; */
+    height: 30px;
+    width: 310px;
+}
+
+/* Lähetä viesti nappula */
+.wrapper > .chatContainer > .chatHeadertwo input[type='submit']
+{
+    width: 70px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;
+
+}
+
+
+.wrapper > .chatContainer > .chatHeaderthree 
+{
+    display:none; /*piilotus*/
+    height: 40px;
+    background: white;
+    padding: 5px;
+    padding-left: 7px;
+    border-bottom: 1px solid rgb(182, 152, 152);
+    list-style: none;       
+}
+
+/* ylätunnisteen tai tekstisyöteikkunan teksti */
+.wrapper > .chatContainer > .chatHeaderthree form input[type='text']
+{
+    
+    padding: 3px;
+    padding-left: 5px;
+    border: 1px solid rgb(182, 152, 152);
+    /*border-radius: 5px; */
+    height: 30px;
+    width: 310px;
+}
+
+/* Lähetä viesti nappula */
+.wrapper > .chatContainer > .chatHeaderthree input[type='submit']
+{
+    width: 70px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;
+
+}
+
+
+
+
+/* Viesti-ikkuna */
+.wrapper > .chatContainer > .chatMessages
+{ 
+    height: 520px;
+    border-bottom: 1px solid rgb(182, 152, 152);
+    overflow-y: scroll;
+   /* padding-left: 5px; */
+}
+
+/*alatunniste */
+.wrapper > .chatContainer > .chatBottompre
+{
+    height: 40px;
+    padding: 5px;
+    padding-top: 8px;
+}
+
+.wrapper > .chatContainer > .chatBottom
+{
+    display:none; /*piilotus*/
+    height: 40px; /* alatunnisteen korkeus */
+    list-style: none;
+    /*border-bottom: 1px solid #ddd; */
+    padding: 5px;
+    padding-left: 7px;
+}
+
+/* Alatunnisteen tai tekstisyöteikkunan teksti */
+.wrapper > .chatContainer > .chatBottom form input[type='text']
+{
+    
+    padding: 3px;
+    padding-left: 5px;
+    border: 1px solid rgb(182, 152, 152);
+    /*border-radius: 5px; */
+    height: 30px;
+    width: 310px;
+}
+
+/* Lähetä viesti nappula */
+.wrapper > .chatContainer > .chatBottom form input[type='submit']
+{
+    width: 70px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;
+
+}
+/* tämä on toistaiseksi turha
+.cm   viestilistan muotoilut esim. viestien alaviiva
+{
+    list-style: none;
+    border-bottom: 1px solid rgb(247, 243, 243);
+    padding: 5px;
+} */
+/* viestimuotoilut */
+#messages 
+{ 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+    border-bottom: 1px solid rgb(247, 243, 243);
+}
+
+#messages li 
+{ 
+    padding: 5px 10px; 
+}
+                
+#messages li:nth-child(odd) 
+{ 
+    background: #eee; 
+}

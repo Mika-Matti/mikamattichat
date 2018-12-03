@@ -1,0 +1,277 @@
+
+<html>
+    <head>
+        <title>SocketChat M-M</title>
+
+        <meta charset="UTF-8">
+        <link rel='stylesheet' type='text/css' href='static/css/style.css' />
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+    </head>
+
+    <body>
+    <div class='wrapper'>
+        <h3>SocketDrawChat by Mika-Matti</h3>
+    
+        <div class='drawCanvas'>
+        <!-- tähän tulee online piirtotyökalu jossa kaikki chatissa olevat voivat piirtää yhdessä-->
+
+        </div>
+
+        <div class='chatContainer'>
+
+            
+
+            <!-- ylätunniste -->
+            <div class='chatHeader'>
+               <!-- <h3>Tervetuloa, <?php //echo ucwords($user); ?></h3> -->
+               <h3 id='nickname'></h3>
+               
+              
+            </div>
+
+            
+            <div class='chatNames'>
+
+                <div class='chatNamesheader'>
+                <!-- idea täällä on saada numero näyttämään paikallaolijoiden määrä huoneessa-->
+                Who is online
+                <li id='connections'></li>
+                </div>
+
+                <!--nimimerkki-ikkuna oikealla -->
+                <div class='chatNames'>
+                <!-- voisiko tämänkin tehdä jotenkin li classilla ja echolla ja poistaa tieto kun käyttäjän yhteys katkeaa? -->
+                        
+                <ul id='usernames'></ul> 
+
+                </div>
+            </div>
+
+            <!-- Tässä asetetaan ensimäistä kertaa nimimerkki-->
+            <div class='chatHeadertwo'>
+                <form action='' id='change'>
+ 	            <input id='n' type='text' placeholder='Aseta nimi' />
+ 	            <input type='submit' value='Aseta' />
+                </form>	
+              
+            </div>
+
+            <div class='chatHeaderthree'>
+                <form action='' id='changeagain'>
+ 	            <input id='p' type='text' placeholder='Vaihda nimi' />
+ 	            <input type='submit' value='Vaihda' />
+                </form>	
+              
+            </div>
+
+            
+
+            <!-- viesti-ikkuna -->
+            <div class="chatMessages">
+
+                <ul id='messages'></ul> 
+                
+            </div>
+
+            <!-- testi divi joka näytetään ennen chattiformia-->
+            <div class='chatBottompre'>
+                Sinun on asetettava nimimerkki ensin.
+            </div>
+            <!-- alaosa jossa kirjotetaan viestit tämä ei näy enneku annetaan username koska css tiedostossa chatBottom display none-->
+            <div class='chatBottom'>
+                <form action='' id='send'>                  
+                <input id='m' type='text' autocomplete='off' placeholder='Kirjoita viesti' />
+                <input type='submit' value='Lähetä' />
+                </form>
+            </div>
+            <!-- viestikirjotusosio loppuu -->
+        
+        </div>
+    </div>
+        <script>
+                //Täällä tehdään kaikki tärkee kommunikointi serverin kanssa
+                $(function ()
+                {
+                    let socket = io();    
+                 
+                    //NIMIMERKIN ASETTAMINEN
+                    $('#change').submit(function(e)
+                    {
+                        e.preventDefault();
+                        
+                        if($('#n').val().length > 0 && $('#n').val().length < 20)
+                        {
+                            socket.emit('new user', $('#n').val(), function(data)
+                            {
+                                if(data)
+                                {
+                                    $('.chatBottompre').hide(); //sulkee vanhan
+                                    $('.chatBottom').show(); //avaa chattiformin alhaalla  
+                                    $('.chatHeadertwo').hide(); //sulkee aseta nimimerkki-formin
+                                    $('.chatHeaderthree').show(); //ja avaa vaihda nimimerkki-formin
+                                    
+                                    
+                                }
+                                else
+                                {
+                                    alert("Nimimerkki on jo otettu!");
+                                }
+                                
+                            });
+                        }
+                        else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitkä
+                        {
+                            alert("Kirjoita nimimerkkisi (max. 20 kirjainta)");
+                        }
+                        $('#n').val(''); //tyhjentää kentän    
+                        
+                        
+                    });
+                    
+                    //Kirjoita tähän kuinka käyttäjänimi ilmestyy huonelistalle
+                    socket.on('get users', function(data)
+                    {
+                        var html = '';
+                        for(i = 0; i < data.length; i++)
+                        {
+                            html += '<li class="usernames"><b>' + data[i] + '</b></li>';
+                        }
+                        $("#usernames").html(html);
+                        
+                    });    
+                    //HUONELISTALOPPUU
+                    //kokeillaan lisätä vain oma nimi ylhäälle
+                    socket.on('get user', function(data)
+                    {
+                        //tää toimii, mut tähä pitäs saada sisälle se että print user
+                        var html = '';
+                        html += '<li>Esiinnyt nimellä <b>' + data.user + '</b></li>';
+                        $("#nickname").html(html);
+                        
+                        
+                    });
+                    //NIMENVAIHTO LOPPUU
+
+                    
+
+                    //TÄHÄN TULEE CONNECTIONS MÄÄRÄ JOKA MENEE 
+                    socket.on('get connections', function(data)
+                    {
+                        var html = '';
+                        html += "(" + data + ")";
+                        $("#connections").html(html);
+                    });
+                    //CONNECTIONS LOPPUU
+
+                    //has joined announcement
+                    socket.on('joined server', function(data)
+                    {
+                        $("#messages").append("<li><i><b>" + data.user + "</b>" + " liittyi kanavalle. </i></li>");
+                    });
+                    //joined loppuu
+
+                    //has left announcement
+                    socket.on('left server', function(data)
+                    {
+                        $("#messages").append("<li><i><b>" + data.user + "</b>" + " poistui kanavalta. </i></li>");
+                    });
+                    //left server loppuu
+                    //changed name alkaa
+                    socket.on('changed namestart', function(data)
+                    {
+                        $("#messages").append("<li><b><i>*" + data.user + "</b>" + " hylkäsi vanhan nimensä ja</i></li>");
+                    });
+                    socket.on('changed nameend', function(data)
+                    {
+                        $("#messages").append("<li><i>vaihtoi uudeksi nimeksi <b>" + data.user + "" + "*</i></b></li>");
+                    });
+                    //changed name loppuu
+                           
+                     //NIMENVAIHTO 
+                    $('#changeagain').submit(function(e)
+                    {
+                        e.preventDefault();
+
+                        
+                            if($('#p').val().length > 0 && $('#p').val().length < 20)
+                            {
+                                
+                                socket.emit('change user', $('#p').val(), function(newdata)
+                                {
+                                    if(newdata) //tarkistetaan onko nimi jo arrayssa
+                                    {
+                                        //alert("Nimi vaihdettu.");
+                                    }
+                                    else
+                                    {
+                                        alert("Nimi on jo otettu.");
+                                    }
+
+                                });                              
+                                
+                            }
+                            else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitk
+                            {
+                                alert("Kirjoita nimimerkkisi (max. 20 kirjainta)");
+                            }
+
+                            $('#p').val(''); //tyhjentää kentän            
+                        
+
+                    });
+
+                    //CHATVIESTINLÄHETTÄMINEN
+                    $('#send').submit(function(e)
+                    {
+                        e.preventDefault();
+
+                        if($('#m').val().length > 0)//katsotaan onko viesti tyhjä ehdolla
+                        {
+                            //server.js puolella sitten otetaan koppi tästä
+                            socket.emit('chat message', $('#m').val());
+                            $('#m').val(''); //tyhjentää kentän
+                           // return false;
+                        }
+                        else
+                        {
+                            alert("Kirjoita viesti.");
+                           // return false;
+                        }
+                    });
+
+                    
+
+                    //viesti tulee clientside ikkunaan
+                    socket.on('chat message', function(data)
+                    {
+                        //viestin lähetys
+                        $("#messages").append("<li><b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+                 
+                        
+
+                        //ja alla laitetaan scrollbar alas, jotta uusin viesti olisi aina näkyvissä alhaalla aina viestin tullessa
+                        //Toistaiseksi tarvii ekan kerran scrollin ilmestyessä scrollata alas, mutta sen jälkeen toimii automaattisesti.
+                        //toisinsanoen pitäisi kai heti scrollin ilmestyessä kutsua scrolldownia
+                        var s = $(".chatMessages").scrollTop(),
+                            d = $(document.documentElement).height(),
+                            c = $(".chatMessages").height();
+                        var scrollPercent = (s / (d - c)) * 100;
+                        if ( (s / (d - c)) * 100 >= 99 )
+                        {       
+                                            
+                            $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
+                        
+                        }           
+                        //scrollaustestailu loppuu
+
+                    });
+            
+                });
+            
+                </script>
+
+    </body>
+</html>
