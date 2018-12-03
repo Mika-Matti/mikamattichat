@@ -6,11 +6,12 @@
         "express": "^4.16.4",
         "git": "^0.1.5",
         "socket.io": "^2.2.0"
-    }
-    
-    "scripts":
-    {
+	},
+
+    "main": "server.js",
+
+    "scripts": {
     "start": "node server.js"
-	
-    }
+  	}
+
 }
