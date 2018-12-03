@@ -3,10 +3,12 @@
 let express = require('express');
 let path = require('path');
 let app = express();
-let http = require('http').Server(app);
+let http = require('http').createServer(app); //lisäsin tähän .Server tilalle .createServer herokua varten ota pois jos ei toimi 
 let io = require('socket.io')(http);
+
 let users = []; //käyttäjälista
 let connections = [];
+let PORT = process.env.PORT || 3000;
 //let inout;
 
 //tässä lähetetään localhostiin haluttu sivu kuten index.html
@@ -20,10 +22,10 @@ app.use('/static', express.static('static'));
 
 app.use(express.static('public'));
 
-//localhost portinkuuntelu
-http.listen(3000, function()
+//localhost portinkuuntelu vaihdettu 3000 = PORT variable ja definoidaan se tuol ylempänä sitten
+http.listen(PORT, function()
 {
-    console.log('listening on *:3000');
+    console.log('listening on *:' + PORT);
 
 });
 
