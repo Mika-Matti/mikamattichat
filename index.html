@@ -196,7 +196,7 @@
                         e.preventDefault();
 
                         
-                            if($('#p').val().length > 0 && $('#p').val().length < 20)
+                            if($('#p').val().length > 0 && $('#p').val().length < 14)
                             {
                                 
                                 socket.emit('change user', $('#p').val(), function(newdata)
@@ -215,7 +215,7 @@
                             }
                             else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitk
                             {
-                                alert("Kirjoita nimimerkkisi (max. 20 kirjainta)");
+                                alert("Kirjoita nimimerkkisi (max. 14 kirjainta)");
                             }
 
                             $('#p').val(''); //tyhjentää kentän            
@@ -259,7 +259,7 @@
                             d = $(document.documentElement).height(),
                             c = $(".chatMessages").height();
                         var scrollPercent = (s / (d - c)) * 100;
-                        if ( (s / (d - c)) * 100 >= 99 )
+                        if ( (s / (d - c)) * 100 >= 90 )
                         {       
                                             
                             $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
