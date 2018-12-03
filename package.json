@@ -7,8 +7,9 @@
         "git": "^0.1.5",
         "socket.io": "^2.2.0"
     }
-    {
+    
     "scripts":
+    {
     "start": "node server.js"
 	
     }
