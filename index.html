@@ -170,6 +170,8 @@
                     socket.on('joined server', function(data)
                     {
                         $("#messages").append("<li><i><b>" + data.user + "</b>" + " liittyi kanavalle. </i></li>");
+                        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+                        scrollDown();
                     });
                     //joined loppuu
 
@@ -177,16 +179,22 @@
                     socket.on('left server', function(data)
                     {
                         $("#messages").append("<li><i><b>" + data.user + "</b>" + " poistui kanavalta. </i></li>");
+                        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+                        scrollDown();
                     });
                     //left server loppuu
                     //changed name alkaa
                     socket.on('changed namestart', function(data)
                     {
                         $("#messages").append("<li><b><i>*" + data.user + "</b>" + " hylkäsi vanhan nimensä ja</i></li>");
+                        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+                        scrollDown();
                     });
                     socket.on('changed nameend', function(data)
                     {
                         $("#messages").append("<li><i>vaihtoi uudeksi nimeksi <b>" + data.user + "" + "*</i></b></li>");
+                        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+                        scrollDown();
                     });
                     //changed name loppuu
                            
@@ -250,9 +258,16 @@
                         //viestin lähetys
                         $("#messages").append("<li><b>" + data.user + "</b>" + ": " + data.msg + "</li>");
                  
-                        
+                        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+                        scrollDown();
 
-                        //ja alla laitetaan scrollbar alas, jotta uusin viesti olisi aina näkyvissä alhaalla aina viestin tullessa
+                    });
+            
+                });
+
+                function scrollDown()
+                {
+                    //ja alla laitetaan scrollbar alas, jotta uusin viesti olisi aina näkyvissä alhaalla aina viestin tullessa
                         //Toistaiseksi tarvii ekan kerran scrollin ilmestyessä scrollata alas, mutta sen jälkeen toimii automaattisesti.
                         //toisinsanoen pitäisi kai heti scrollin ilmestyessä kutsua scrolldownia
                         var s = $(".chatMessages").scrollTop(),
@@ -266,10 +281,8 @@
                         
                         }           
                         //scrollaustestailu loppuu
+                }
 
-                    });
-            
-                });
             
                 </script>
 
