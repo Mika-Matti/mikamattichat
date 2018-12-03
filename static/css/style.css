@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 * {
-    font-family: 'Open Sans';
+    font-family: 'Open Sans'; 
     box-sizing: border-box;
     color: #333;
     
 }
+
 
 .wrapper
 {
