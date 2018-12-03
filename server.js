@@ -38,6 +38,12 @@ io.on('connection', function(socket)
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
 
+    socket.username = "Odottaa nimeä";
+    users.push(socket.username);
+    updateUsernames();
+    
+
+
     //disconnect
     socket.on('disconnect', function()
     {
@@ -75,6 +81,7 @@ io.on('connection', function(socket)
             
         
         callback(true);
+        users.splice(users.indexOf(socket.username), 1);
         socket.username = data;
         users.push(socket.username);
         hasJoined();

@@ -37,7 +37,7 @@
 }
 
 /* Chatin ylätunniste */
-.wrapper > .chatContainer > .chatHeader 
+.wrapper > .chatContainer > .chatHeaderpre 
 {
     height: 40px;
     background: white;
@@ -45,6 +45,29 @@
     border-bottom: 1px solid rgb(182, 152, 152);
     list-style: none;       
 }
+
+/* Ylätunnisteen otsikko */
+.wrapper > .chatContainer > .chatHeaderpre h3 
+{
+    margin: 0;
+    padding: 5px;
+    padding-top: 3px;
+    font-weight: 300;
+    font-size: 25px;
+    color: #333;
+}
+
+/* Chatin ylätunniste */
+.wrapper > .chatContainer > .chatHeader 
+{
+    height: 40px;
+    background: white;
+    display:none; /*piilotus*/
+    border-bottom: 1px solid rgb(182, 152, 152);
+    list-style: none;       
+}
+
+
 
 /* Ylätunnisteen otsikko */
 .wrapper > .chatContainer > .chatHeader h3 

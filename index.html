@@ -22,7 +22,10 @@
 
         <div class='chatContainer'>
 
-            
+            <div class='chatHeaderpre'>
+
+                <h3>Tervetuloa, aseta nimimerkki</h3>
+            </div>
 
             <!-- ylätunniste -->
             <div class='chatHeader'>
@@ -32,7 +35,7 @@
               
             </div>
 
-            
+                
             <div class='chatNames'>
 
                 <div class='chatNamesheader'>
@@ -112,6 +115,8 @@
                                     $('.chatBottom').show(); //avaa chattiformin alhaalla  
                                     $('.chatHeadertwo').hide(); //sulkee aseta nimimerkki-formin
                                     $('.chatHeaderthree').show(); //ja avaa vaihda nimimerkki-formin
+                                    $('.chatHeaderpre').hide();
+                                    $('.chatHeader').show();
                                     
                                     
                                 }
@@ -148,7 +153,7 @@
                     {
                         //tää toimii, mut tähä pitäs saada sisälle se että print user
                         var html = '';
-                        html += '<li>Esiinnyt nimellä <b>' + data.user + '</b></li>';
+                        html += 'Nimesi on: ' + data.user + '';
                         $("#nickname").html(html);
                         
                         
