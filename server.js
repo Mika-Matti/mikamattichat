@@ -38,7 +38,7 @@ io.on('connection', function(socket)
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
 
-    socket.username = "Odottaa nimeä";
+    socket.username = "Nimetön";
     users.push(socket.username);
     updateUsernames();
     
