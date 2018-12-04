@@ -41,6 +41,7 @@ io.on('connection', function(socket)
     socket.username = "Nimetön";
     users.push(socket.username);
     updateUsernames();
+    updateConnections();
     
 
 
