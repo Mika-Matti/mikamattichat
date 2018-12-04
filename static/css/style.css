@@ -215,7 +215,7 @@
     border-bottom: 1px solid rgb(182, 152, 152);
     overflow-y: scroll;
    /* padding-left: 5px; */
-    word-wrap: break-word; /* Tämän pitäisi leikata liian pitkä sana toiselle riville /*
+    /* word-wrap: break-word; Tämän pitäisi leikata liian pitkä sana toiselle riville /*
 }
 
 /*alatunniste */
