@@ -13,7 +13,7 @@
 
     <body>
     <div class='wrapper'>
-        <h3>Socket.IO mikamattiChat by Mika-Matti</h3>
+        <h3>mikamattiChat by Mika-Matti</h3>
     
         <div class='drawCanvas'>
         <!-- tähän tulee online piirtotyökalu jossa kaikki chatissa olevat voivat piirtää yhdessä-->
@@ -24,48 +24,51 @@
 
             <div class='chatHeaderpre'>
 
-                <h3>Tervetuloa, aseta nimimerkki</h3>
+                <h3>Welcome to mikamattiChat - Set a nickname to get started</h3>
             </div>
 
             <!-- ylätunniste -->
             <div class='chatHeader'>
                <!-- <h3>Tervetuloa, <?php //echo ucwords($user); ?></h3> -->
-               <h3 id='nickname'></h3>
-               
-              
+               <h3 id='nickname'></h3>              
             </div>
-
                 
             <div class='chatNames'>
 
                 <div class='chatNamesheader'>
                 <!-- idea täällä on saada numero näyttämään paikallaolijoiden määrä huoneessa-->
-                Ketä on paikalla
+                Who is online
                 <li id='connections'></li>
                 </div>
 
                 <!--nimimerkki-ikkuna oikealla -->
-                <div class='chatNames'>
+                <div class='chatNamesusers'>
                 <!-- voisiko tämänkin tehdä jotenkin li classilla ja echolla ja poistaa tieto kun käyttäjän yhteys katkeaa? -->
                         
                 <ul id='usernames'></ul> 
 
                 </div>
-            </div>
+
+                 <!-- tänne tulee erikoisominaisuusnappuloita -->
+                 <div class='chatNamesbottom'>
+                        [add upload btn]
+                    </div>
+               
+            </div>            
 
             <!-- Tässä asetetaan ensimäistä kertaa nimimerkki-->
             <div class='chatHeadertwo'>
                 <form action='' id='change'>
- 	            <input id='n' type='text' placeholder='Aseta nimi' />
- 	            <input type='submit' value='Aseta' />
+ 	            <input id='n' type='text' placeholder='Type your desired nickname here.' />
+ 	            <input type='submit' value='Set nick' />
                 </form>	
               
             </div>
 
             <div class='chatHeaderthree'>
                 <form action='' id='changeagain'>
- 	            <input id='p' type='text' placeholder='Vaihda nimi' />
- 	            <input type='submit' value='Vaihda' />
+ 	            <input id='p' type='text' placeholder='Tired of your nickname? Change it here.' />
+ 	            <input type='submit' value='Change' />
                 </form>	
               
             </div>
@@ -79,15 +82,15 @@
                 
             </div>
 
-            <!-- testi divi joka näytetään ennen chattiformia-->
+            <!--divi joka näytetään nimettömälle henkilölle ennen chattiformia-->
             <div class='chatBottompre'>
-                Sinun on asetettava nimimerkki ensin.
+                Before you can chat, you must set a nickname first.
             </div>
             <!-- alaosa jossa kirjotetaan viestit tämä ei näy enneku annetaan username koska css tiedostossa chatBottom display none-->
             <div class='chatBottom'>
                 <form action='' id='send'>                  
-                <input id='m' type='text' autocomplete='off' placeholder='Kirjoita viesti' />
-                <input type='submit' value='Lähetä' />
+                <input id='m' type='text' autocomplete='off' placeholder='Type your message here.' />
+                <input type='submit' value='Send' />
                 </form>
             </div>
             <!-- viestikirjotusosio loppuu -->
@@ -105,31 +108,32 @@
                     {
                         e.preventDefault();
                         
-                        if($('#n').val().length > 0 && $('#n').val().length < 20)
+                        if($('#n').val().length > 0 && $('#n').val().length < 14)
                         {
                             socket.emit('new user', $('#n').val(), function(data)
                             {
                                 if(data)
                                 {
-                                    $('.chatBottompre').hide(); //sulkee vanhan
-                                    $('.chatBottom').show(); //avaa chattiformin alhaalla  
-                                    $('.chatHeadertwo').hide(); //sulkee aseta nimimerkki-formin
-                                    $('.chatHeaderthree').show(); //ja avaa vaihda nimimerkki-formin
-                                    $('.chatHeaderpre').hide();
-                                    $('.chatHeader').show();
+                                    $('.chatBottompre').hide();     //sulkee varoitusviestin nimimerkin puutteesta
+                                    $('.chatBottom').show();        //avaa chattiformin tilalle
+                                    $('.chatHeadertwo').hide();     //sulkee set nick-formin
+                                    $('.chatHeaderthree').show();   //ja avaa change nick-formin
+                                    $('.chatHeaderpre').hide();     //Tervetuloa otsikko sulkeutuu
+                                    $('.chatHeader').show();        //Ja uusi otsikko tulee tilalle
+                                    $(".chatNamesbottom").show();   //Aukeaa myös erikoisnapit send-nappulan vieres(tähän tulee upload kuva feature)
                                     
                                     
                                 }
                                 else
                                 {
-                                    alert("Nimimerkki on jo otettu!");
+                                    alert("That nickname is already taken!");
                                 }
                                 
                             });
                         }
                         else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitkä
                         {
-                            alert("Kirjoita nimimerkkisi (max. 20 kirjainta)");
+                            alert("Type your nickname (max. 13 letters)");
                         }
                         $('#n').val(''); //tyhjentää kentän    
                         
@@ -148,19 +152,16 @@
                         
                     });    
                     //HUONELISTALOPPUU
+
                     //kokeillaan lisätä vain oma nimi ylhäälle
                     socket.on('get user', function(data)
                     {
-                        //tää toimii, mut tähä pitäs saada sisälle se että print user
                         var html = '';
-                        html += 'Nimesi on: ' + data.user + '';
-                        $("#nickname").html(html);
-                        
+                        html += 'Your current nickname is "' + data.user + '"';
+                        $("#nickname").html(html);                        
                         
                     });
-                    //NIMENVAIHTO LOPPUU
-
-                    
+                    //NIMENVAIHTO LOPPUU                    
 
                     //TÄHÄN TULEE CONNECTIONS MÄÄRÄ JOKA MENEE 
                     socket.on('get connections', function(data)
@@ -174,7 +175,7 @@
                     //has joined announcement
                     socket.on('joined server', function(data)
                     {
-                        $("#messages").append("<li><i><b>" + data.user + "</b>" + " liittyi kanavalle. </i></li>");
+                        $("#messages").append("<li><i><b>" + data.user + "</b>" + " has joined the channel. </i></li>");
                         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
                         scrollDown();
                     });
@@ -183,7 +184,7 @@
                     //has left announcement
                     socket.on('left server', function(data)
                     {
-                        $("#messages").append("<li><i><b>" + data.user + "</b>" + " poistui kanavalta. </i></li>");
+                        $("#messages").append("<li><i><b>" + data.user + "</b>" + " has left the channel. </i></li>");
                         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
                         scrollDown();
                     });
@@ -191,13 +192,13 @@
                     //changed name alkaa
                     socket.on('changed namestart', function(data)
                     {
-                        $("#messages").append("<li><b><i>*" + data.user + "</b>" + " hylkäsi vanhan nimensä ja</i></li>");
+                        $("#messages").append("<li><b><i>*" + data.user + "</b>" + " has forsaken their old name and</i></li>");
                         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
                         scrollDown();
                     });
                     socket.on('changed nameend', function(data)
                     {
-                        $("#messages").append("<li><i>vaihtoi uudeksi nimeksi <b>" + data.user + "" + "*</i></b></li>");
+                        $("#messages").append("<li><i>is now known as <b>" + data.user + "" + "*</i></b></li>");
                         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
                         scrollDown();
                     });
@@ -220,7 +221,7 @@
                                     }
                                     else
                                     {
-                                        alert("Nimi on jo otettu.");
+                                        alert("That nickname is already taken!");
                                     }
 
                                 });                              
@@ -228,7 +229,7 @@
                             }
                             else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitk
                             {
-                                alert("Kirjoita nimimerkkisi (max. 14 kirjainta)");
+                                alert("Type your nickname (max. 13 letters)");
                             }
 
                             $('#p').val(''); //tyhjentää kentän            

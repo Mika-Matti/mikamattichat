@@ -4,23 +4,35 @@
     box-sizing: border-box;
     color: #333;
     
+    
 }
+
+/*.drawCanvas {display: block;}
+#content-mobile {display: none;}*/
+
+@media screen and (max-width: 768px) {
+
+.drawCanvas {display: none;}
+/*#content-mobile {display: block;}*/
+
+}
+
 
 
 .wrapper
 {
     width: 1450px;
-    margin: 0 auto;
+    margin: 0 auto;    
 }
+
 /*piirtotyökalun kokoikkuna*/
 .wrapper > .drawCanvas
 {
     width: 800px;
     height: 644px; 
-    border: 2px solid rgb(182, 152, 152);
+    border: 2px solid #333;
     border-right: 0px;
     float:left;
-
 }
 
 /* chatin kokoikkuna */
@@ -28,132 +40,118 @@
 {
     width: 550px;
     height: 644px; 
-    border: 2px solid rgb(182, 152, 152);
+    border: 2px solid #333;
     /*padding-left: 600px;*/
     float:left;
     display:block;
-    overflow: hidden;
-    
+    overflow: hidden;   
 }
 
-/* Chatin ylätunniste */
+/* Chatin ylätunniste ennen nimimerkin asetusta*/
 .wrapper > .chatContainer > .chatHeaderpre 
 {
-    height: 40px;
-    background: white;
-    
+    height: 40px;    
     border-bottom: 1px solid rgb(182, 152, 152);
     list-style: none;       
 }
 
-/* Ylätunnisteen otsikko */
+/* Ylätunnisteen otsikko ennen nimimerkin asetusta*/
 .wrapper > .chatContainer > .chatHeaderpre h3 
 {
+    height: 40px;
     margin: 0;
     padding: 5px;
-    padding-top: 3px;
-    font-weight: 300;
-    font-size: 25px;
-    color: #333;
+    padding-top: 7px;
+    /*font-size: 25px;*/
+    color: rgb(255, 255, 255);
+    background: #333;
 }
 
 /* Chatin ylätunniste */
 .wrapper > .chatContainer > .chatHeader 
 {
     height: 40px;
-    background: white;
     display:none; /*piilotus*/
-    border-bottom: 1px solid rgb(182, 152, 152);
-    list-style: none;       
+    border-bottom: 1px solid rgb(182, 152, 152);      
 }
-
-
 
 /* Ylätunnisteen otsikko */
 .wrapper > .chatContainer > .chatHeader h3 
 {
+    height: 40px;
     margin: 0;
     padding: 5px;
-    padding-top: 3px;
-    font-weight: 300;
-    font-size: 25px;
-    color: #333;
+    padding-top: 7px;
+    /*font-size: 25px;*/
+    color: rgb(255, 255, 255);
+    background: #333;
 }
 
+/*oikealla floattaavat divit alkaa*/
 .wrapper > .chatContainer > .chatNames
 {
     width: 150px;
     height: 600px;
     float:right;
-    
-    background: white;
-    
-    border-left: 1px solid rgb(182, 152, 152);
-
+    word-wrap: break-word;
+    background: white;    
+    border-left: 1px solid rgb(182, 152, 152);    
 }
 
+/*keitä on paikalla-div*/
 .wrapper > .chatContainer > .chatNames > .chatNamesheader
 {   
     font-size: 14px;
     width: 150px;
-    height: 40px;
-    background: white;
-    
-    text-align: center;    
-    border-bottom: 1px solid rgb(182, 152, 152);    
-    border-right: 1px solid rgb(182, 152, 152);
+    height: 40px; 
+    background: rgb(255, 255, 255);    
+    text-align: center;       
+    border-right: 1px solid rgb(182, 152, 152);    
 }
+
+#connections
+{ 
+    background: rgb(255, 255, 255);
+}
+/*divi jossa näkyy lista online käyttäjistä */
 
 .wrapper > .chatContainer > .chatNames > .chatNamesusers
 {     
     width: 150px;
-    height: 560px;
-    background: white;
+    height: 520px;
+    background: white;       
+    overflow-y: auto;    
+}
+/*erikoisnappulat div*/
+
+.wrapper > .chatContainer > .chatNames > .chatNamesbottom
+{
+    width: 150px;
+    height: 40px;
     padding: 5px;
-    border-left: 1px solid rgb(182, 152, 152);    
-    overflow-y: auto;
+    padding-top: 8px;    
+    background: white;      
+    display:none; /*piilotus*/
 }
-
-
-/*käyttäjien nimet chatnames ikkunassa*/
-#usernames 
-{ 
-    list-style-type: none; 
-    margin: 0; 
-    padding: 0; 
-    border-bottom: 1px solid rgb(247, 243, 243);
-}
-
-#usernames li 
-{ 
-    padding: 5px 10px; 
-}
-                
-#usernames li:nth-child(odd) 
-{ 
-    background: #eee; 
-}
-
-
+/*oikealla floattaavat divit loppuu*/
 
 .wrapper > .chatContainer > .chatHeadertwo 
 {
-    
+   
     height: 40px;
     background: white;
     padding: 5px;
     padding-left: 7px;
-    border-bottom: 1px solid rgb(182, 152, 152);
-    list-style: none;       
+    border-bottom: 1px solid rgb(182, 152, 152);    
 }
 
-/* ylätunnisteen tai tekstisyöteikkunan teksti */
+/* ylätunnisteen tai tekstisyöteikkunan teksti EKAN kerran nimimerkin asettaessa */
 .wrapper > .chatContainer > .chatHeadertwo form input[type='text']
 {
     
     padding: 3px;
     padding-left: 5px;
-    border: 1px solid rgb(182, 152, 152);
+    border: 1px hidden rgb(182, 152, 152);
     /*border-radius: 5px; */
     height: 30px;
     width: 310px;
@@ -167,9 +165,7 @@
     background: white;
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;
-
 }
-
 
 .wrapper > .chatContainer > .chatHeaderthree 
 {
@@ -179,16 +175,16 @@
     padding: 5px;
     padding-left: 7px;
     border-bottom: 1px solid rgb(182, 152, 152);
-    list-style: none;       
+    /*list-style: none; */      
 }
 
-/* ylätunnisteen tai tekstisyöteikkunan teksti */
+/* ylätunnisteen tai tekstisyöteikkunan teksti vaihtaessa nimimerkkiä */
 .wrapper > .chatContainer > .chatHeaderthree form input[type='text']
 {
     
     padding: 3px;
     padding-left: 5px;
-    border: 1px solid rgb(182, 152, 152);
+    border: 1px hidden rgb(182, 152, 152);
     /*border-radius: 5px; */
     height: 30px;
     width: 310px;
@@ -242,7 +238,7 @@
     
     padding: 3px;
     padding-left: 5px;
-    border: 1px solid rgb(182, 152, 152);
+    border: 1px hidden rgb(182, 152, 152);
     /*border-radius: 5px; */
     height: 30px;
     width: 310px;
@@ -255,17 +251,10 @@
     padding: 5px;
     background: white;
     border: 1px solid rgb(182, 152, 152);
-    cursor: pointer;
+    cursor: pointer;   
 
 }
-/* tämä on toistaiseksi turha
-.cm   viestilistan muotoilut esim. viestien alaviiva
-{
-    list-style: none;
-    border-bottom: 1px solid rgb(247, 243, 243);
-    padding: 5px;
-} */
-/* viestimuotoilut */
+
 #messages 
 { 
     list-style-type: none; 
@@ -280,6 +269,24 @@
 }
                 
 #messages li:nth-child(odd) 
+{ 
+    background: #eee; 
+}
+
+/*käyttäjien nimet chatnames ikkunassa*/
+#usernames 
+{ 
+    margin: 0; 
+    padding: 0; 
+    border-bottom: 1px solid rgb(247, 243, 243);
+}
+
+#usernames li 
+{ 
+    padding: 5px 10px; 
+}
+                
+#usernames li:nth-child(odd) 
 { 
     background: #eee; 
 }
