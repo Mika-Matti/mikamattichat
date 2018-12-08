@@ -252,7 +252,7 @@
                             //server.js puolella sitten otetaan koppi tästä
                             socket.emit('chat message', $('#m').val(), function(data)
                             {
-                                alert("Bad whisper.");
+                                alert("Bad whisper: " + data); // ottaa serveriltä callback viestit jos whisper on tyhjä tai käyttäjää ei ole
                             });
                             $('#m').val(''); //tyhjentää kentän
                            // return false;

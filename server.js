@@ -11,7 +11,6 @@ let io = require('socket.io')(http);
 let users = {}; //käyttäjälista
 let connections = [];
 let PORT = process.env.PORT || 3000;
-//let inout;
 
 //tässä lähetetään localhostiin haluttu sivu kuten index.html
 app.get('/', function(req, res)
@@ -36,10 +35,7 @@ http.listen(PORT, function()
 io.on('connection', function(socket)
 {
     //on connection
-    //koitetaan kellonaikaa tehdä timestamppeihin socket.emit('datetime', { datetime: new Date().getTime() });
-    
-
-    connections.push(socket);
+     connections.push(socket);
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
 
@@ -47,8 +43,6 @@ io.on('connection', function(socket)
     users[socket.username] = socket;
     updateUsernames();
     updateConnections();
-    
-
 
     //disconnect
     socket.on('disconnect', function()
@@ -79,13 +73,13 @@ io.on('connection', function(socket)
                 var msg = msg.substring(ind + 1);
                 if(name in users)
                 {
-                    users[name].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti mutta users[name ei löydä oikeaa usernamee] muuten toimii
+                    users[name].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti
                     socket.emit('whisper', {msg: msg, user: socket.username});      // lähettää viestin myös itselle ikkunaan eli current socket
-                    console.log('whisper', {user: socket.username, msg: msg, name:name});          //siis index puolellakin toimii mutta users[name] ei toimi
+                    console.log('whisper', {user: socket.username, msg: msg, name:name});        
                 }
                 else
                 {
-                    callback('That user is not in the room.');
+                    callback('Incorrect username.');
                 }
                 
             }
