@@ -19,25 +19,47 @@
 
 .wrapper
 {
-    width: 1450px;
-    margin: 0 auto;    
+    
+   margin: 0 auto; 
 }
 
 /*piirtotyökalun kokoikkuna*/
 .wrapper > .drawCanvas
 {
-    width: 800px;
-    height: 644px; 
+    width: calc(100% - 550px);
+    height: 100%; 
     border: 2px solid #333;
     border-right: 0px;
     float:left;
 }
 
+/* Piirtoikkunan ylätunniste */
+.wrapper > .drawCanvas > .canvasHeader 
+{
+    height: 40px;
+      
+}
+
+/* Ylätunnisteen otsikko */
+.wrapper > .drawCanvas > .canvasHeader h3 
+{
+    height: 40px;
+    margin: 0;
+    padding: 5px;
+    padding-top: 7px;
+    /*font-size: 25px;*/
+    background: rgb(255, 255, 255);
+    color: #333;
+    border-bottom: 2px solid rgb(182, 152, 152); 
+}
+
+
+
 /* chatin kokoikkuna */
 .wrapper > .chatContainer
 {
     width: 550px;
-    height: 644px; 
+    height: 100%; 
     border: 2px solid #333;
     /*padding-left: 600px;*/
     float:left;
@@ -89,7 +111,7 @@
 .wrapper > .chatContainer > .chatNames
 {
     width: 150px;
-    height: 600px;
+    height: 100%;
     float:right;
     word-wrap: break-word;
     background: white;    
@@ -116,7 +138,7 @@
 .wrapper > .chatContainer > .chatNames > .chatNamesusers
 {     
     width: 150px;
-    height: 520px;
+    height: calc(100% - 120px);
     background: white;       
     overflow-y: auto;    
 }
@@ -205,8 +227,8 @@
 /* Viesti-ikkuna */
 .wrapper > .chatContainer > .chatMessages
 { 
-    height: 520px;
-    border-bottom: 1px solid rgb(182, 152, 152);
+    height: calc(100% - 120px);
+    border-bottom: 1px solid  rgb(182, 152, 152);
     overflow-y: scroll;
    /* padding-left: 5px; */
      word-wrap: break-word; /*Tämän pitäisi leikata liian pitkä sana toiselle riville */
@@ -270,6 +292,8 @@
 { 
     background: #eee; 
 }
+
+
 
 /*käyttäjien nimet chatnames ikkunassa*/
 #usernames 
