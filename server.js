@@ -8,9 +8,13 @@ let io = require('socket.io')(http);
 
 //let sanitize = require('validator').sanitize; //putsataan input mahdollisista koodi injectioneista.
 
+var line_history = []; //array johon tulee piirretyt jutut
+
 let users = {}; //käyttäjälista
 let connections = [];
 let PORT = process.env.PORT || 3000;
+
+
 
 //tässä lähetetään localhostiin haluttu sivu kuten index.html
 app.get('/', function(req, res)
@@ -23,7 +27,7 @@ app.use('/static', express.static('static'));
 
 app.use(express.static('public'));
 
-//localhost portinkuuntelu vaihdettu 3000 = PORT variable ja definoidaan se tuol ylempänä sitten
+//localhost portinkuuntelu vaihdettu 3000 = PORT variable ja määritellään se tuol ylempänä sitten
 http.listen(PORT, function()
 {
     console.log('listening on *:' + PORT);
@@ -35,7 +39,7 @@ http.listen(PORT, function()
 io.on('connection', function(socket)
 {
     //on connection
-     connections.push(socket);
+    connections.push(socket);
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
 
@@ -43,6 +47,9 @@ io.on('connection', function(socket)
     users[socket.username] = socket;
     updateUsernames();
     updateConnections();
+
+    //piirroksen refreshaus uusillekkin käyttäjille
+    updateCanvas();
 
     //disconnect
     socket.on('disconnect', function()
@@ -59,6 +66,31 @@ io.on('connection', function(socket)
     
     });
 
+
+    
+    //piirtämisten lisääminen ja lähettäminen kaikille.
+    socket.on('draw_line', function (data) 
+    {
+        line_history.push(data.line);
+        io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        //console.log("piirto lisätty");
+    });
+    //tyhjennä canvas
+    socket.on('clearit', function()
+    {
+        line_history = [];
+        io.emit('clearit', true);
+    });
+
+    //jos ikkunan kokoa muutetaan clientside
+    socket.on('resize', function(data)
+    {        
+        for (var i in line_history) 
+        {
+            socket.emit('draw_line', { line: line_history[i] } );
+        }
+    });
+    
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
     {
@@ -183,6 +215,14 @@ io.on('connection', function(socket)
         io.sockets.emit('changed nameend', {user: socket.username});
     }
 
+    function updateCanvas()
+    {
+        for (var i in line_history) 
+        {
+            socket.emit('draw_line', { line: line_history[i] } );
+        }
+
+    }
 });
 
 

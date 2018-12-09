@@ -53,6 +53,45 @@
     border-bottom: 2px solid rgb(182, 152, 152); 
 }
 
+.wrapper > .drawCanvas > .canvasBody
+{
+    margin: 0;
+    height: calc(100% - 80px);
+    border-bottom: 1px solid rgb(182, 152, 152); 
+}
+
+#canvas 
+ {
+    display: block;
+ }
+
+ .wrapper > .drawCanvas > .canvasFooter
+ {
+     margin: 0;
+     height: 40px;
+     padding: 5px;
+ }
+
+ /* CLEAR CANVAS nappula */
+.wrapper > .drawCanvas > .canvasFooter form input[type='button']
+{
+    width: 120px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+
+.wrapper > .drawCanvas > .canvasFooter form input[type='button']:hover
+{
+    width: 120px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+
+}
+
 
 
 /* chatin kokoikkuna */
@@ -61,6 +100,7 @@
     width: 550px;
     height: 100%; 
     border: 2px solid #333;
+    border-left: 2px solid rgb(182, 152, 152);
     /*padding-left: 600px;*/
     float:left;
     display:block;
@@ -149,9 +189,29 @@
     width: 150px;
     height: 40px;
     padding: 5px;
-    padding-top: 8px;    
+    /*padding-top: 8px; */    
     background: white;      
     display:none; /*piilotus*/
+}
+
+/* Lähetä viesti nappula */
+.wrapper > .chatContainer > .chatNames > .chatnamesBottom form input[type='button']
+{
+    width: 67px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+
+}
+.wrapper > .chatContainer > .chatNames > .chatnamesBottom form input[type='button']:hover
+{
+    width: 67px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+
 }
 /*oikealla floattaavat divit loppuu*/
 
@@ -187,6 +247,15 @@
     cursor: pointer;
 }
 
+.wrapper > .chatContainer > .chatHeadertwo input[type='submit']:hover
+{
+    width: 70px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+
+}
 .wrapper > .chatContainer > .chatHeaderthree 
 {
     display:none; /*piilotus*/
@@ -210,7 +279,7 @@
     width: 310px;
 }
 
-/* Lähetä viesti nappula */
+/* Vaihda nimi */
 .wrapper > .chatContainer > .chatHeaderthree input[type='submit']
 {
     width: 70px;
@@ -218,6 +287,15 @@
     background: white;
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;
+
+}
+.wrapper > .chatContainer > .chatHeaderthree input[type='submit']:hover
+{
+    width: 70px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
 
 }
 
@@ -270,6 +348,15 @@
     width: 70px;
     padding: 5px;
     background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+
+}
+.wrapper > .chatContainer > .chatBottom form input[type='submit']:hover
+{
+    width: 70px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
 
