@@ -148,6 +148,7 @@ $(function ()
          if($('#m').val().length > 0)//katsotaan onko viesti tyhjä ehdolla
          {
              //server.js puolella sitten otetaan koppi tästä
+             //socket.emit('chat message', $($('#m').val()).text(), function(data) tällä periaatteessa voisi sanitize tämän mutta /w ei toimisi
              socket.emit('chat message', $('#m').val(), function(data)
              {
                  alert("Bad whisper: " + data); // ottaa serveriltä callback viestit jos whisper on tyhjä tai käyttäjää ei ole
@@ -179,7 +180,7 @@ $(function ()
      socket.on('whisper', function(data)
      {
           //viestin lähetys
-          $("#messages").append("<li>" + getCurrentDate() + "<i style=\"color:purple;\">" + "<b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
+          $("#messages").append("<li>" + getCurrentDate() + " <i style=\"color:purple;\">" + "<b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
   
          //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
          scrollDown();
