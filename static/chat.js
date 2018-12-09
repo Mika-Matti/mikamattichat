@@ -179,7 +179,7 @@ $(function ()
      socket.on('whisper', function(data)
      {
           //viestin lähetys
-          $("#messages").append("<li><i style=\"color:purple;\">" + getCurrentDate() +  " <b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
+          $("#messages").append("<li>" + getCurrentDate() + "<i style=\"color:purple;\">" + "<b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
   
          //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
          scrollDown();
