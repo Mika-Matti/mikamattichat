@@ -50,14 +50,18 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.click = false;
     };
 
-    // //pyyhin
-    // socket.on('eraser', function(data)
-    // {
-    //     var line = data.line;
-    //     if(mouse.click && mouse.over && eraser)
+    //piirrettyjen viivojen määrän koko kilobiteissä
+     socket.on('get lines', function(data)
+     {
+         var html = '';
+         html += "(" + data.toFixed(3) + " Kilobytes) ";
+         $("#lines").html(html);
+     });
+    //pyyhin työkalu
+   
 
-    // });
-    //tyhjentää canvasin
+
+
     socket.on('clearit', function()
     {
         context.clearRect(0, 0, width, height);

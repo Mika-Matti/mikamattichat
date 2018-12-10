@@ -73,6 +73,7 @@ io.on('connection', function(socket)
     {
         line_history.push(data.line);
         io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        updateLines();
         //console.log("piirto lisätty");
     });
     //tyhjennä canvas
@@ -80,6 +81,7 @@ io.on('connection', function(socket)
     {
         line_history = [];
         io.emit('clearit', true);
+        updateLines();
     });
 
     //jos ikkunan kokoa muutetaan clientside
@@ -88,6 +90,7 @@ io.on('connection', function(socket)
         for (var i in line_history) 
         {
             socket.emit('draw_line', { line: line_history[i] } );
+            updateLines();
         }
     });
     
@@ -215,11 +218,17 @@ io.on('connection', function(socket)
         io.sockets.emit('changed nameend', {user: socket.username});
     }
 
+    function updateLines()
+    {
+        io.sockets.emit('get lines', (( line_history.length * 2 * 4) /1024)); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi
+    }
+
     function updateCanvas()
     {
         for (var i in line_history) 
         {
             socket.emit('draw_line', { line: line_history[i] } );
+            updateLines();
         }
 
     }
