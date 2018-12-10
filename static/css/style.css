@@ -198,7 +198,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding: 5px;
     /*padding-top: 8px; */    
     background: white;      
-    display:none; /*piilotus*/
+    /*display:none; piilotus*/
 }
 
 /* Lähetä viesti nappula */
