@@ -37,11 +37,17 @@ document.addEventListener("DOMContentLoaded", function()
     canvas.onmouseup = function(e){ mouse.click = false; };
     //hiiren liikkumisen rekisteröinti
     canvas.onmousemove = function(e)
-    {   //normalisoi mouse position 0.0 - 1.0
+    {   
+        //normalisoi mouse position 0.0 - 1.0
         mouse.pos.x = ( e.clientX -10 ) / width;
         mouse.pos.y = ( e.clientY -50 ) / height; // -40 miinustaa ylläolevan headerin canvasista
         mouse.move = true;
         //alert("toimii");
+    };
+    //jos hiiri menee canvasin ulkopuolelle, laitetaan hiiri pois pohjasta ettei tule ylimääräisiä viivoja
+    canvas.onmouseout = function(e)
+    {
+        mouse.click = false;
     };
 
     
@@ -71,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function()
             mouse.move = false;
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
-        setTimeout(mainLoop, 25); //tarkistetaan 25ms välein
+        setTimeout(mainLoop, 25); //katkaistaan viiva 25ms välein arrayhyn
       
     }
     mainLoop();
@@ -83,7 +89,7 @@ function clearit()
 {
     socket.emit('clearit', true);
 }
-
+//kuvan tuominen uudelleen canvasiin jos selaimen ikkunan kokoa muutetaan
 function resize()
 {
     socket.emit('resize');

@@ -34,7 +34,7 @@ $(function ()
                  
              });
          }
-         else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitkä
+         else //jos nimimerkki on alle 1 kirjainta tai yli 13 kirjainta pitkä
          {
              alert("Type your nickname (max. 13 letters)");
          }
@@ -224,6 +224,10 @@ $(function ()
  function help() 
  {
      alert("mikamattiChat -- The more I add features the more I add helpful tips here.\n"
+     + "\nSetting your nickname:"
+     + "\nYour nickname has to be max. 13 characters long."
+     + "\nYour nickname has to be min. 1 character long."
+     + "\nAny spaces in your nickname will be removed. This rule mainly exists to help me, the programmer.\n"
      + "\nList of current /commands:"
      + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message.\n"
      + "\nHave fun.");

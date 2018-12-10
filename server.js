@@ -139,9 +139,8 @@ io.on('connection', function(socket)
         }
         else
         {
-            
-        
         callback(true);
+        data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä        
         delete users[socket.username];
         socket.username = data;
         users[socket.username] = socket;
@@ -168,6 +167,7 @@ io.on('connection', function(socket)
             {
                 callback(true);                
                 nameChangestart();
+                data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
                 delete users[socket.username]; // tän pitäisi poistaa vanha
                 socket.username = data;
                 users[socket.username] = socket;
