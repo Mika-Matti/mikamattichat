@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function()
     canvas.height = height;
 
     //jos ikkunan kokoa muutetaan
-    window.onresize = function(event) 
+    window.onresize = function(e) 
     {
         width = canvas.offsetWidth;
         height = canvas.offsetHeight;
@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function()
     canvas.onmousemove = function(e)
     {   
         //normalisoi mouse position 0.0 - 1.0
-        mouse.pos.x = ( e.clientX -10 ) / width;
-        mouse.pos.y = ( e.clientY -50 ) / height; // -40 miinustaa ylläolevan headerin canvasista
+        mouse.pos.x = ( e.clientX -2 ) / width;  // -10
+        mouse.pos.y = ( e.clientY -42 ) / height; // -50 miinustaa ylläolevan headerin canvasista
         mouse.move = true;
         //alert("toimii");
     };
@@ -50,7 +50,13 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.click = false;
     };
 
-    
+    // //pyyhin
+    // socket.on('eraser', function(data)
+    // {
+    //     var line = data.line;
+    //     if(mouse.click && mouse.over && eraser)
+
+    // });
     //tyhjentää canvasin
     socket.on('clearit', function()
     {
