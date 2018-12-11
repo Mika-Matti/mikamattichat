@@ -17,13 +17,12 @@ $(function ()
              {
                  if(data)
                  {
-                     $('.chatBottompre').hide();     //sulkee varoitusviestin nimimerkin puutteesta
-                     $('.chatBottom').show();        //avaa chattiformin tilalle
+                   //  $('.chatBottompre').hide();     //sulkee varoitusviestin nimimerkin puutteesta
+                   //  $('.chatBottom').show();        //avaa chattiformin tilalle
                      $('.chatHeadertwo').hide();     //sulkee set nick-formin
                      $('.chatHeaderthree').show();   //ja avaa change nick-formin
                      $('.chatHeaderpre').hide();     //Tervetuloa otsikko sulkeutuu
-                     $('.chatHeader').show();        //Ja uusi otsikko tulee tilalle
-                  
+                     $('.chatHeader').show();        //Ja uusi otsikko tulee tilalle                 
                      
                      
                  }

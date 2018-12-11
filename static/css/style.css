@@ -77,6 +77,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
      margin: 0;
      height: 40px;
      padding: 5px;
+     
  }
 
  /* CLEAR CANVAS nappula */
@@ -322,6 +323,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 /*alatunniste */
 .wrapper > .chatContainer > .chatBottompre
 {
+    display:none; /*piilotus*/
     height: 40px;
     padding: 5px;
     padding-top: 8px;
@@ -329,7 +331,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 
 .wrapper > .chatContainer > .chatBottom
 {
-    display:none; /*piilotus*/
+
     height: 40px; /* alatunnisteen korkeus */
     list-style: none;
     /*border-bottom: 1px solid #ddd; */
