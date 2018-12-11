@@ -202,6 +202,7 @@ io.on('connection', function(socket)
         }
 
     });
+    
     //nimenvaihto
     socket.on('change user', function(data, callback)
         {
@@ -228,21 +229,6 @@ io.on('connection', function(socket)
         });
 
 
-    function getHours() 
-     {
-        var currentDate = new Date();
-    // var day = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate();
-     // var month = ((currentDate.getMonth() + 1) < 10 ? '0' : '') + (currentDate.getMonth() + 1);
-     //var year = currentDate.getFullYear();
-        var hour = (currentDate.getHours() < 10 ? '0' : '') + currentDate.getHours();
-        var minute = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
-        //var second = (currentDate.getSeconds() < 10 ? '0' : '') + currentDate.getSeconds();
-       
-        //return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-        return hour + ":" + minute;     
-       
-            
-    }
 
     function updateUsernames()
     {
@@ -251,7 +237,6 @@ io.on('connection', function(socket)
 
     function updateUsername()
     {
-        //io.sockets.emit('get user', socket.username);
         socket.emit('get user', {user: socket.username}); //on tärkeää muistaa, että tämä broadcastaa vain itselle EI KAIKILLE
     }
 
@@ -274,6 +259,7 @@ io.on('connection', function(socket)
     {
         io.sockets.emit('changed namestart', {user: socket.username});
     }
+
     function nameChangeend()
     {
         io.sockets.emit('changed nameend', {user: socket.username});
@@ -281,7 +267,7 @@ io.on('connection', function(socket)
 
     function updateLines()
     {
-        io.sockets.emit('get lines', (( line_history.length * 2 * 4) /1024)); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi
+        io.sockets.emit('get lines', (( line_history.length * 2 * 4) / 1024)); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi
     }
 
     function updateCanvas()
