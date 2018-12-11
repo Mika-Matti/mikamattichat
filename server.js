@@ -63,7 +63,7 @@ io.on('connection', function(socket)
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
 
-    socket.username = "newUser" + Math.random().toString(36).substr(2, 5);
+    socket.username = "newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
     users[socket.username] = socket;
     updateUsernames();
     updateConnections();
@@ -99,8 +99,6 @@ io.on('connection', function(socket)
     console.log('Disconnected: %s sockets connected', connections.length);
     
     });
-
-
     
     //piirtämisten lisääminen ja lähettäminen kaikille.
     socket.on('draw_line', function (data) 
@@ -202,7 +200,7 @@ io.on('connection', function(socket)
         }
 
     });
-    
+
     //nimenvaihto
     socket.on('change user', function(data, callback)
         {
