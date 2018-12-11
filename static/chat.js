@@ -163,16 +163,34 @@ $(function ()
          }
      });
 
-     
+     //vanhojen viestin lataaminen
+     socket.on('load old msgs', function(docs) 
+     {
+        for(i = docs.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
+        {
+            displayOldMessages(docs[i]);
+        }        
+        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+        scrollDown();
+     });
+
+     function displayMessages(data)
+     {
+     $("#messages").append("<li>" + getCurrentDate() + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+     }
+     function displayOldMessages(data)
+     {
+     $("#messages").append("<li>" + "[OLD]" + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+     }
 
      //viesti tulee clientside ikkunaan
      socket.on('new message', function(data)
      {
-         //viestin lähetys
-         $("#messages").append("<li>" + getCurrentDate() + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+        //viestin lähetys
+        displayMessages(data);
   
-         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
-         scrollDown();
+        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
+        scrollDown();
 
      });
 
@@ -205,6 +223,7 @@ $(function ()
          }           
          //scrollaustestailu loppuu
  }
+
  // TIMESTAMP
  function getCurrentDate() 
  {
@@ -217,7 +236,9 @@ $(function ()
      //var second = (currentDate.getSeconds() < 10 ? '0' : '') + currentDate.getSeconds();
 
      //return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-     return hour + ":" + minute;
+     return hour + ":" + minute;     
+
+     
  }
 
  //lista tämän hetken komennoista
@@ -236,5 +257,7 @@ $(function ()
  {
      alert("Feature unavailable.");
  }
+
+
 
  

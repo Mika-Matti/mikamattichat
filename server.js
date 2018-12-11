@@ -5,8 +5,7 @@ let path = require('path');
 let app = express();
 let http = require('http').createServer(app); //lisäsin tähän .Server tilalle .createServer herokua varten ota pois jos ei toimi 
 let io = require('socket.io')(http);
-
-//let sanitize = require('validator').sanitize; //putsataan input mahdollisista koodi injectioneista.
+let mongoose = require('mongoose');
 
 var line_history = []; //array johon tulee piirretyt jutut
 
@@ -14,6 +13,27 @@ let users = {}; //käyttäjälista
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
+
+mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
+{
+    if(err)
+    {
+        console.log(err);
+    }
+    else
+    {
+        console.log('connected to mongoDB');
+    }
+});
+//määritellään storage
+let chatSchema = mongoose.Schema(
+    {
+        user: String,
+        msg: String,
+        timestamp: {type: Date, default: Date.now}
+    });
+
+let Chat = mongoose.model('Message', chatSchema);
 
 
 //tässä lähetetään localhostiin haluttu sivu kuten index.html
@@ -48,6 +68,20 @@ io.on('connection', function(socket)
     updateUsernames();
     updateConnections();
 
+    //tuo vanhat viestit mongodb databasesta
+    let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
+        query.sort('-timestamp').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+    {
+        if(err) 
+        {
+            throw err;
+        }
+        else
+        {
+            socket.emit('load old msgs', docs);
+            console.log('Lähetetään vanhat viestit ikkunaan');
+        }
+    });
     //piirroksen refreshaus uusillekkin käyttäjille
     updateCanvas();
 
@@ -125,9 +159,20 @@ io.on('connection', function(socket)
             
         }
         else //ilman komentoa lähetetään tavallinen viesti kaikille
-        {            
-            io.emit('new message', {msg: msg, user: socket.username});
-            console.log('message:', {user: socket.username, msg: data});
+        {   
+            let newMsg = new Chat({msg: msg, user: socket.username}); // luodaan databaseen viesti
+            newMsg.save(function(err)
+            {         
+                if(err) 
+                {
+                    throw err;
+                }
+                else
+                {
+                    io.emit('new message', {msg: msg, user: socket.username});
+                    console.log('message:', {user: socket.username, msg: data});
+                }
+            });
         }
     });
 
@@ -182,6 +227,22 @@ io.on('connection', function(socket)
             }
         });
 
+
+    function getHours() 
+     {
+        var currentDate = new Date();
+    // var day = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate();
+     // var month = ((currentDate.getMonth() + 1) < 10 ? '0' : '') + (currentDate.getMonth() + 1);
+     //var year = currentDate.getFullYear();
+        var hour = (currentDate.getHours() < 10 ? '0' : '') + currentDate.getHours();
+        var minute = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
+        //var second = (currentDate.getSeconds() < 10 ? '0' : '') + currentDate.getSeconds();
+       
+        //return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+        return hour + ":" + minute;     
+       
+            
+    }
 
     function updateUsernames()
     {

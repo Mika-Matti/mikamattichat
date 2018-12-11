@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function()
      socket.on('get lines', function(data)
      {
          var html = '';
-         html += "(" + data.toFixed(3) + " Kilobytes) ";
+         html += "(" + data.toFixed(3) + " kilobytes) ";
          $("#lines").html(html);
      });
     //pyyhin työkalu
