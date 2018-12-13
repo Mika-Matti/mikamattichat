@@ -35,7 +35,7 @@ let chatSchema = mongoose.Schema(
 let Chat = mongoose.model('Message', chatSchema);
 
 
-//tässä lähetetään localhostiin haluttu sivu kuten index.html
+//tässä lähetetään localhostiin haluttu sivu kuten index.html 
 app.get('/', function(req, res)
 {    
     res.sendFile(__dirname + '/index.html');
