@@ -1,5 +1,5 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
-
+var eraser = false; //pyyhin
 document.addEventListener("DOMContentLoaded", function()
 {
     var mouse = {
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function()
         pos_prev: false
     };
     
-    var eraser = false; //pyyhin
+    
 
     //määritellään canvas elementtiä
     var canvas  = document.getElementById('drawing');
@@ -61,15 +61,15 @@ document.addEventListener("DOMContentLoaded", function()
      });
     //pyyhin työkalu
    
-     socket.on('erasertool', function(data)
-     {
-         console.log("test");
-        if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[0].y * height)
-        {
-            alert("Hiiri osui viivaan");
-        }
+    //  socket.on('erasertool', function(data)
+    //  {
+    //      console.log("test");
+    //     if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[0].y * height)
+    //     {
+    //         alert("Hiiri osui viivaan");
+    //     }
 
-     });
+    //  });
 
 
     socket.on('clearit', function()
@@ -78,14 +78,25 @@ document.addEventListener("DOMContentLoaded", function()
         console.log("client clearit");
     });
     //otetaan vastaan server.js lähettämä data piirroksesta
-    socket.on('draw_line', function(data) 
+    socket.on('draw_line', function(data) //testaa täällä detect line ja mouse coords
     {
         var line = data.line;
+      //  if(!eraser)
+        {
         context.beginPath();
        // context.lineWidth = 2;
         context.moveTo(line[0].x * width, line[0].y * height);
         context.lineTo(line[1].x * width, line[1].y * height);
         context.stroke();
+        }
+        // else
+        // {
+        //     console.log("test");
+        //     if( mouse.pos.x === line[0].x * width && mouse.pos.y === line[0].y * height)
+        //     {
+        //         alert("Hiiri osui viivaan");
+        //     }
+        // }
     });
 
     //itse funktio joka katsoo piirretäänkö 25ms väelin
@@ -130,12 +141,13 @@ function moreStroke()
 function brushColor()
 {
     eraser = false;
-    alert("Eraser on false");
+   
 }
 
 function useEraser()
 {
+  
     eraser = true;
-    alert("Eraser on true");
+
 }
 
