@@ -13,8 +13,6 @@ let users = {}; //käyttäjälista
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
-let chatLoaded = false;
-
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
 {
     if(err)
@@ -55,8 +53,6 @@ http.listen(PORT, function()
 
 });
 
-
-
 //kuunnellaan incoming sockets ja ilmoitetaan asiasta consolissa.
 //ilmoitetaan myös kun käyttäjä disconnectaa
 io.on('connection', function(socket)
@@ -79,7 +75,6 @@ io.on('connection', function(socket)
        {
            socket.emit('load old msgs', docs);
            console.log('Lähetetään vanhat viestit ikkunaan');
-           chatLoaded = true;
        }
    });
 
@@ -87,14 +82,10 @@ io.on('connection', function(socket)
     users[socket.username] = socket;
     updateUsernames();
     updateConnections();
-    
-
  
     //ilmoitetaan että on liittynyt serverille
-    if(chatLoaded)
-    {
     hasJoined();
-    }
+
     //piirroksen refreshaus uusillekkin käyttäjille
     updateCanvas();
 
