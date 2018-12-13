@@ -94,17 +94,10 @@ $(function ()
      //changed name alkaa
      socket.on('changed namestart', function(data)
      {
-         $("#messages").append("<li><b><i>*" + data.user + "</b>" + " has forsaken their old name and</i></li>");
+         $("#messages").append("<li><b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + "*</b>.</i></li>");
          //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
          scrollDown();
      });
-     socket.on('changed nameend', function(data)
-     {
-         $("#messages").append("<li><i>is now known as <b>" + data.user + "" + "*</i></b></li>");
-         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
-         scrollDown();
-     });
-     //changed name loppuu
             
       //NIMENVAIHTO 
      $('#changeagain').submit(function(e)

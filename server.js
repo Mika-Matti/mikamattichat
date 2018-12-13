@@ -13,6 +13,7 @@ let users = {}; //käyttäjälista
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
+let chatLoaded = false;
 
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
 {
@@ -54,6 +55,8 @@ http.listen(PORT, function()
 
 });
 
+
+
 //kuunnellaan incoming sockets ja ilmoitetaan asiasta consolissa.
 //ilmoitetaan myös kun käyttäjä disconnectaa
 io.on('connection', function(socket)
@@ -62,26 +65,36 @@ io.on('connection', function(socket)
     connections.push(socket);
     console.log('user connected');
     console.log('Connected: %s sockets connected', connections.length);
+    
+
+       //tuo vanhat viestit mongodb databasesta
+       let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
+       query.sort('-timestamp').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+   {
+       if(err) 
+       {
+           throw err;
+       }
+       else
+       {
+           socket.emit('load old msgs', docs);
+           console.log('Lähetetään vanhat viestit ikkunaan');
+           chatLoaded = true;
+       }
+   });
 
     socket.username = "newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
     users[socket.username] = socket;
     updateUsernames();
     updateConnections();
+    
 
-    //tuo vanhat viestit mongodb databasesta
-    let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
-        query.sort('-timestamp').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+ 
+    //ilmoitetaan että on liittynyt serverille
+    if(chatLoaded)
     {
-        if(err) 
-        {
-            throw err;
-        }
-        else
-        {
-            socket.emit('load old msgs', docs);
-            console.log('Lähetetään vanhat viestit ikkunaan');
-        }
-    });
+    hasJoined();
+    }
     //piirroksen refreshaus uusillekkin käyttäjille
     updateCanvas();
 
@@ -193,15 +206,16 @@ io.on('connection', function(socket)
         else
         {
         callback(true);
+        let currentname = socket.username;     
         data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä        
         delete users[socket.username];
         socket.username = data;
         users[socket.username] = socket;
-        hasJoined();
+        
         updateUsernames();
         updateUsername();
-        updateConnections();
-
+        nameChangestart(currentname);
+        
         console.log ("username set to " + data);
         console.log("Lista nimistä: " + Object.keys(users));
         }
@@ -219,15 +233,15 @@ io.on('connection', function(socket)
             }
             else
             {
-                callback(true);                
-                nameChangestart();
+                callback(true);
+                let currentname = socket.username;             
                 data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
                 delete users[socket.username]; // tän pitäisi poistaa vanha
                 socket.username = data;
                 users[socket.username] = socket;
                 updateUsernames();
                 updateUsername();                
-                nameChangeend();
+                nameChangestart(currentname);
                 console.log("username changed to " + data);
                 console.log("Lista nimistä: " + Object.keys(users));
             }
@@ -252,7 +266,7 @@ io.on('connection', function(socket)
 
     function hasJoined()
     {
-        io.sockets.emit('joined server', {user: socket.username});  
+        socket.broadcast.emit('joined server', {user: socket.username});  
     }
 
     function hasLeft()
@@ -260,14 +274,10 @@ io.on('connection', function(socket)
         io.sockets.emit('left server', {user: socket.username});  
     }
 
-    function nameChangestart()
+    function nameChangestart(currentname)
     {
-        io.sockets.emit('changed namestart', {user: socket.username});
-    }
-
-    function nameChangeend()
-    {
-        io.sockets.emit('changed nameend', {user: socket.username});
+        
+        io.sockets.emit('changed namestart', {currentname: currentname, user: socket.username});
     }
 
     function updateLines()
