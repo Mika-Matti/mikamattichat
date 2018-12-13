@@ -29,7 +29,7 @@ let chatSchema = mongoose.Schema(
     {
         user: String,
         msg: String,
-        timestamp: {type: Date, default: Date.now}
+        timestamp: {type: String, default: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()}
     });
 
 let Chat = mongoose.model('Message', chatSchema);
@@ -169,7 +169,7 @@ io.on('connection', function(socket)
         }
         else //ilman komentoa lähetetään tavallinen viesti kaikille
         {   
-            let newMsg = new Chat({msg: msg, user: socket.username}); // luodaan databaseen viesti
+            let newMsg = new Chat({msg: msg, user: socket.username, timestamp: (new Date().getHours()<10?'0':'')+ new Date().getHours() + ":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()}); // luodaan databaseen viesti
             newMsg.save(function(err)
             {         
                 if(err) 
@@ -178,7 +178,7 @@ io.on('connection', function(socket)
                 }
                 else
                 {
-                    io.emit('new message', {msg: msg, user: socket.username});
+                    io.emit('new message', {msg: msg, user: socket.username, timestamp: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()});
                     console.log('message:', {user: socket.username, msg: data});
                 }
             });

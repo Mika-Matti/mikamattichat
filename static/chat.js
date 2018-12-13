@@ -168,11 +168,11 @@ $(function ()
 
      function displayMessages(data)
      {
-     $("#messages").append("<li>" + getCurrentDate() + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+     $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
      }
      function displayOldMessages(data)
      {
-     $("#messages").append("<li>" + "[OLD]" + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+     $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
      }
 
      //viesti tulee clientside ikkunaan
