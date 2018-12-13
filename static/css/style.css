@@ -408,3 +408,11 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 { 
     background: #eee; 
 }
+
+img {
+    height: auto; 
+    width: auto; 
+    max-width: 25px; 
+    max-height: 25x;
+    float:left;
+}
