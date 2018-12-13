@@ -108,6 +108,13 @@ io.on('connection', function(socket)
         updateLines();
         //console.log("piirto lisätty");
     });
+
+    //pyyhin
+    // socket.on('erasertool', function (data)
+    // {
+    //     io.emit('erasertool');
+    //     //line_history.splice(line_history.indexOf(data.line), 1);
+    // });
     //tyhjennä canvas
     socket.on('clearit', function()
     {

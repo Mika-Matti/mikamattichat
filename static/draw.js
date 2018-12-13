@@ -61,7 +61,15 @@ document.addEventListener("DOMContentLoaded", function()
      });
     //pyyhin työkalu
    
+     socket.on('erasertool', function(data)
+     {
+         console.log("test");
+        if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[0].y * height)
+        {
+            alert("Hiiri osui viivaan");
+        }
 
+     });
 
 
     socket.on('clearit', function()
