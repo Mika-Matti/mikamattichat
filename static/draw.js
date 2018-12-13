@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function()
         pos: {x:0, y:0},
         pos_prev: false
     };
+    
+    var eraser = false; //pyyhin
 
     //määritellään canvas elementtiä
     var canvas  = document.getElementById('drawing');
@@ -105,4 +107,27 @@ function resize()
     socket.emit('resize');
 }
 
+//piirtotyökaluja
+
+function lessStroke()
+{
+    //linewidth int ++
+}
+
+function moreStroke()
+{
+    //linewidth int --
+}
+
+function brushColor()
+{
+    eraser = false;
+    alert("Eraser on false");
+}
+
+function useEraser()
+{
+    eraser = true;
+    alert("Eraser on true");
+}
 
