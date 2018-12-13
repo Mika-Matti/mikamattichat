@@ -28,7 +28,7 @@ mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat',
 let chatSchema = mongoose.Schema(
     {
         user: String,
-        msg: String,
+        msg: String,    //alla oleva timestamp ottaa tunnit ja minuutit. Timestampissa myös korjataan, jos mikään luku on < 10 niin lisätään 0 eteen.
         timestamp: {type: String, default: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()}
     });
 
