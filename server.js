@@ -13,6 +13,15 @@ let users = {}; //käyttäjälista
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
+//timestamp variableja
+let date = new Date();
+let year = date.getFullYear();
+let month = date.getMonth();
+let day = date.getDate();
+let hours = date.getHours();
+let minutes = date.getMinutes();
+
+
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
 {
     if(err)
@@ -29,8 +38,8 @@ let chatSchema = mongoose.Schema(
     {
         user: String,
         msg: String,    //alla oleva timestamp ottaa tunnit ja minuutit. Timestampissa myös korjataan, jos mikään luku on < 10 niin lisätään 0 eteen.
-        timestamp: {type: String, default: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()},
-        oldmessagetime: {type: String, default: (new Date().getDate()<10?'0':'')+ new Date().getDate()+"/"+((new Date().getMonth()+1)<10?'0':'') + (new Date().getMonth()+1)+"/"+ new Date().getFullYear()},
+        timestamp: {type: String, default: (hours<10?'0':'') + hours + ":" +(minutes<10?'0':'') + minutes},
+        oldmessagetime: {type: String, default: (day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (month+1) + "/" + year},
         fulltime: {type: Date, default: Date.now} //määritellään tän perusteella uusin viesti kun haetaan viestejä databasesta
     });
 
@@ -171,7 +180,9 @@ io.on('connection', function(socket)
         }
         else //ilman komentoa lähetetään tavallinen viesti kaikille
         {   
-            let newMsg = new Chat({msg: msg, user: socket.username, timestamp: (new Date().getHours()<10?'0':'')+ new Date().getHours() + ":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()}); // luodaan databaseen viesti
+            
+            
+            let newMsg = new Chat({msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours + ":" + (minutes<10?'0':'') + minutes}); // luodaan databaseen viesti
             newMsg.save(function(err)
             {         
                 if(err) 
@@ -180,7 +191,7 @@ io.on('connection', function(socket)
                 }
                 else
                 {
-                    io.emit('new message', {msg: msg, user: socket.username, timestamp: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()});
+                    io.emit('new message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
                     console.log('message:', {user: socket.username, msg: data});
                 }
             });
