@@ -81,7 +81,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
  }
 
  /* CLEAR CANVAS nappula */
-.wrapper > .drawCanvas > .canvasFooter form input[type='button']
+.wrapper > .drawCanvas > .canvasFooter form input[id='clear']
 {
     width: 120px;
     padding: 5px;
@@ -90,7 +90,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
 }
 
-.wrapper > .drawCanvas > .canvasFooter form input[type='button']:hover
+.wrapper > .drawCanvas > .canvasFooter form input[id='clear']:hover
 {
     width: 120px;
     padding: 5px;
@@ -99,6 +99,48 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
 
 }
+
+ /* plus miinus */
+ .wrapper > .drawCanvas > .canvasFooter form input[id='plusminus']
+ {
+     width: 20px;
+     padding: 5px;
+     background: white;
+     border: 1px solid rgb(182, 152, 152);
+     cursor: pointer;   
+     border-radius: 5px;
+ }
+ 
+ .wrapper > .drawCanvas > .canvasFooter form input[id='plusminus']:hover
+ {
+     width: 20px;
+     height: 20px;
+     padding: 5px;
+     background: rgb(245, 245, 245);
+     border: 1px solid rgb(182, 152, 152);
+     cursor: pointer;   
+     border-radius: 5px;
+ }
+
+ /* muut nappulat */
+ .wrapper > .drawCanvas > .canvasFooter form input[id='buttons']
+ {
+     width: 40px;
+     padding: 5px;
+     background: white;
+     border: 1px solid rgb(182, 152, 152);
+     cursor: pointer;   
+ }
+ 
+ .wrapper > .drawCanvas > .canvasFooter form input[id='buttons']:hover
+ {
+     width: 40px;
+     padding: 5px;
+     background: rgb(245, 245, 245);
+     border: 1px solid rgb(182, 152, 152);
+     cursor: pointer;   
+ 
+ }
 
 
 

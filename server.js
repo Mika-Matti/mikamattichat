@@ -29,7 +29,9 @@ let chatSchema = mongoose.Schema(
     {
         user: String,
         msg: String,    //alla oleva timestamp ottaa tunnit ja minuutit. Timestampissa myös korjataan, jos mikään luku on < 10 niin lisätään 0 eteen.
-        timestamp: {type: String, default: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()}
+        timestamp: {type: String, default: (new Date().getHours()<10?'0':'')+ new Date().getHours()+":" +(new Date().getMinutes()<10?'0':'') + new Date().getMinutes()},
+        oldmessagetime: {type: String, default: (new Date().getDate()<10?'0':'')+ new Date().getDate()+"/"+((new Date().getMonth()+1)<10?'0':'') + (new Date().getMonth()+1)+"/"+ new Date().getFullYear()},
+        fulltime: {type: Date, default: Date.now} //määritellään tän perusteella uusin viesti kun haetaan viestejä databasesta
     });
 
 let Chat = mongoose.model('Message', chatSchema);
@@ -65,7 +67,7 @@ io.on('connection', function(socket)
 
        //tuo vanhat viestit mongodb databasesta
        let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
-       query.sort('-timestamp').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+       query.sort('-fulltime').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
    {
        if(err) 
        {

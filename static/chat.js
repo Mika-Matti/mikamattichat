@@ -172,7 +172,7 @@ $(function ()
      }
      function displayOldMessages(data)
      {
-     $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
+     $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "<i style=\"color:red;\"> [" + data.oldmessagetime +"]</i></li>");
      }
 
      //viesti tulee clientside ikkunaan
