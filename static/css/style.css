@@ -101,31 +101,59 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 }
 
  /* plus miinus */
- .wrapper > .drawCanvas > .canvasFooter form input[id='plusminus']
+ .wrapper > .drawCanvas > .canvasFooter form input[id='minus']
  {
      width: 20px;
      padding: 5px;
      background: white;
      border: 1px solid rgb(182, 152, 152);
      cursor: pointer;   
-     border-radius: 5px;
+     border-top-left-radius: 5px;
+     border-bottom-left-radius: 5px;
+     border-right: 0px;
  }
  
- .wrapper > .drawCanvas > .canvasFooter form input[id='plusminus']:hover
+ .wrapper > .drawCanvas > .canvasFooter form input[id='minus']:hover
  {
      width: 20px;
-     height: 20px;
+     padding: 5px;
+     background: rgb(245, 245, 245);
+     border: 1px solid rgb(182, 152, 152);
+     cursor: pointer;   
+     border-top-left-radius: 5px;
+     border-bottom-left-radius: 5px;
+     border-right: 0px;
+ }
+
+ .wrapper > .drawCanvas > .canvasFooter form input[id='plus']
+ {
+     width: 20px;
+     padding: 5px;
+     background: white;
+     border: 1px solid rgb(182, 152, 152);
+     cursor: pointer;   
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+     border-left: 0px;
+ }
+ 
+ .wrapper > .drawCanvas > .canvasFooter form input[id='plus']:hover
+ {
+     width: 20px;
      padding: 5px;
      background: rgb(245, 245, 245);
      border: 1px solid rgb(182, 152, 152);
      cursor: pointer;   
      border-radius: 5px;
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+     border-left: 0px;
  }
 
  /* muut nappulat */
  .wrapper > .drawCanvas > .canvasFooter form input[id='buttons']
  {
-     width: 40px;
+     width: 50px;
      padding: 5px;
      background: white;
      border: 1px solid rgb(182, 152, 152);
@@ -134,7 +162,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
  
  .wrapper > .drawCanvas > .canvasFooter form input[id='buttons']:hover
  {
-     width: 40px;
+     width: 50px;
      padding: 5px;
      background: rgb(245, 245, 245);
      border: 1px solid rgb(182, 152, 152);

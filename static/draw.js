@@ -1,5 +1,6 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
 var eraser = false; //pyyhin
+var brushSize = 1;
 document.addEventListener("DOMContentLoaded", function()
 {
     var mouse = {
@@ -81,22 +82,16 @@ document.addEventListener("DOMContentLoaded", function()
     socket.on('draw_line', function(data) //testaa täällä detect line ja mouse coords
     {
         var line = data.line;
+       // var size = data.size;
       //  if(!eraser)
         {
         context.beginPath();
-       // context.lineWidth = 2;
+        context.lineWidth = brushSize;
         context.moveTo(line[0].x * width, line[0].y * height);
         context.lineTo(line[1].x * width, line[1].y * height);
         context.stroke();
         }
-        // else
-        // {
-        //     console.log("test");
-        //     if( mouse.pos.x === line[0].x * width && mouse.pos.y === line[0].y * height)
-        //     {
-        //         alert("Hiiri osui viivaan");
-        //     }
-        // }
+
     });
 
     //itse funktio joka katsoo piirretäänkö 25ms väelin
@@ -104,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function()
     {
         if(mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
-            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev ] });
+            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev ]});
             mouse.move = false;
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
@@ -130,12 +125,15 @@ function resize()
 
 function lessStroke()
 {
-    //linewidth int ++
+    if(brushSize > 1)
+    {
+        brushSize--;        
+    }
 }
 
 function moreStroke()
 {
-    //linewidth int --
+    brushSize++;
 }
 
 function brushColor()
