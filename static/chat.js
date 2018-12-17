@@ -163,7 +163,7 @@ $(function ()
             displayOldMessages(docs[i]);
         }        
         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
-        scrollDown();
+        $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
      });
 
      function displayMessages(data)
@@ -172,8 +172,8 @@ $(function ()
      }
      function displayOldMessages(data)
      {
-     $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "<i style=\"color:red;\"> [" + data.oldmessagetime +"]</i></li>");
-     }
+     $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "<b style=\"color:red; font-size: 10px;\"> [" + data.oldmessagetime +"]</b></li>");
+    }
 
      //viesti tulee clientside ikkunaan
      socket.on('new message', function(data)
@@ -219,18 +219,11 @@ $(function ()
  // TIMESTAMP
  function getCurrentDate() 
  {
+     //whisperviestit soveltavat clientinpuolella tehtyä timestamppia, sillä ne eivät tällä hetkellä tallennu databaseen ollenkaan.
      var currentDate = new Date();
-     // var day = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate();
-     // var month = ((currentDate.getMonth() + 1) < 10 ? '0' : '') + (currentDate.getMonth() + 1);
-     //var year = currentDate.getFullYear();
      var hour = (currentDate.getHours() < 10 ? '0' : '') + currentDate.getHours();
      var minute = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
-     //var second = (currentDate.getSeconds() < 10 ? '0' : '') + currentDate.getSeconds();
-
-     //return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-     return hour + ":" + minute;     
-
-     
+     return hour + ":" + minute;          
  }
 
  //lista tämän hetken komennoista

@@ -1,6 +1,7 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
 var eraser = false; //pyyhin
 var brushSize = 1;
+var brushColor = 'black';
 document.addEventListener("DOMContentLoaded", function()
 {
     var mouse = {
@@ -9,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function()
         pos: {x:0, y:0},
         pos_prev: false
     };
-    
     
 
     //määritellään canvas elementtiä
@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.pos.x = ( e.clientX -2 ) / width;  // -10
         mouse.pos.y = ( e.clientY -42 ) / height; // -50 miinustaa ylläolevan headerin canvasista
         mouse.move = true;
-        //alert("toimii");
     };
     //jos hiiri menee canvasin ulkopuolelle, laitetaan hiiri pois pohjasta ettei tule ylimääräisiä viivoja
     canvas.onmouseout = function(e)
@@ -60,6 +59,8 @@ document.addEventListener("DOMContentLoaded", function()
          html += "(" + data.toFixed(3) + " kilobytes) ";
          $("#lines").html(html);
      });
+
+    
     //pyyhin työkalu
    
     //  socket.on('erasertool', function(data)
@@ -71,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function()
     //     }
 
     //  });
+   
 
 
     socket.on('clearit', function()
@@ -82,11 +84,10 @@ document.addEventListener("DOMContentLoaded", function()
     socket.on('draw_line', function(data) //testaa täällä detect line ja mouse coords
     {
         var line = data.line;
-       // var size = data.size;
-      //  if(!eraser)
         {
         context.beginPath();
-        context.lineWidth = brushSize;
+        context.lineWidth = line[2]; //brushin paksuus
+        context.strokeStyle = line[3]; // brushin väri
         context.moveTo(line[0].x * width, line[0].y * height);
         context.lineTo(line[1].x * width, line[1].y * height);
         context.stroke();
@@ -99,10 +100,12 @@ document.addEventListener("DOMContentLoaded", function()
     {
         if(mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
-            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev ]});
+            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev, size, color]});
             mouse.move = false;
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
+        size = brushSize;
+        color = brushColor;
         setTimeout(mainLoop, 25); //katkaistaan viiva 25ms välein arrayhyn
       
     }
@@ -120,9 +123,7 @@ function resize()
 {
     socket.emit('resize');
 }
-
 //piirtotyökaluja
-
 function lessStroke()
 {
     if(brushSize > 1)
@@ -133,19 +134,27 @@ function lessStroke()
 
 function moreStroke()
 {
-    brushSize++;
+    if(brushSize < 5)
+    {
+    brushSize++;      
+    }
 }
 
-function brushColor()
+function useBrush()
 {
-    eraser = false;
-   
+    eraser = false;   
 }
 
 function useEraser()
-{
-  
+{  
     eraser = true;
-
 }
-
+//värit
+function colorBlack() { brushColor='black';}
+function colorPurple() { brushColor='purple';}
+function colorRed() { brushColor='red';}
+function colorGreen() { brushColor='green';}
+function colorYellow() { brushColor='yellow';}
+function colorBlue() { brushColor='blue';}
+function colorGray() { brushColor='gray';}
+function colorWhite() { brushColor='white';}

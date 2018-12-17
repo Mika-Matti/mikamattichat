@@ -120,8 +120,9 @@ io.on('connection', function(socket)
     {
         line_history.push(data.line);
         io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        //console.log("data sisällä: " + Object.keys(data.line[0]));        
+        console.log("brush size: " + data.line[2]);
         updateLines();
-        //console.log("piirto lisätty");
     });
 
     //pyyhin
