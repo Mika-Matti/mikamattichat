@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function()
     //itse funktio joka katsoo piirretäänkö 25ms väelin
     function mainLoop() 
     {
-        if(mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
+        if(!eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
             socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev, size, color]});
             mouse.move = false;
