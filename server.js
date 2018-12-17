@@ -71,13 +71,12 @@ io.on('connection', function(socket)
     //on connection
     connections.push(socket);
     console.log('user connected');
-    console.log('Connected: %s sockets connected', connections.length);
-    
+    console.log('Connected: %s sockets connected', connections.length);    
 
-       //tuo vanhat viestit mongodb databasesta
-       let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
-       query.sort('-fulltime').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
-   {
+    //tuo vanhat viestit mongodb databasesta
+    let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
+    query.sort('-fulltime').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+    {
        if(err) 
        {
            throw err;
@@ -87,7 +86,7 @@ io.on('connection', function(socket)
            socket.emit('load old msgs', docs);
            console.log('Lähetetään vanhat viestit ikkunaan');
        }
-   });
+    });
 
     socket.username = "newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
     users[socket.username] = socket;
@@ -111,8 +110,7 @@ io.on('connection', function(socket)
     updateConnections();
 
     console.log('user disconnected');
-    console.log('Disconnected: %s sockets connected', connections.length);
-    
+    console.log('Disconnected: %s sockets connected', connections.length);    
     });
     
     //piirtämisten lisääminen ja lähettäminen kaikille.
@@ -121,16 +119,17 @@ io.on('connection', function(socket)
         line_history.push(data.line);
         io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
         //console.log("data sisällä: " + Object.keys(data.line[0]));        
-        console.log("brush size: " + data.line[2]);
         updateLines();
     });
 
     //pyyhin
-    // socket.on('erasertool', function (data)
-    // {
+    socket.on('erasertool', function (data)
+    {
     //     io.emit('erasertool');
-    //     //line_history.splice(line_history.indexOf(data.line), 1);
-    // });
+           
+        //line_history.splice(line_history.indexOf(data.line), 1);
+        updateLines();
+    });
     //tyhjennä canvas
     socket.on('clearit', function()
     {

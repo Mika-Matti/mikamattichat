@@ -3,10 +3,7 @@
     font-family: 'Open Sans'; 
     box-sizing: border-box;
     color: #333;
-    
-    
 }
-
 /*.drawCanvas {display: block;}
 #content-mobile {display: none;}
 
@@ -14,7 +11,6 @@
 
 .drawCanvas {display: none;}
 #content-mobile {display: block;}
-
 }*/
 html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullscreen */
 {
@@ -28,7 +24,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
    /*height: 99.95%;  pikkutarkkaa on */
    margin: 0 auto; 
 }
-
 /*piirtotyökalun kokoikkuna*/
 .wrapper > .drawCanvas
 {
@@ -39,14 +34,12 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border-right: 0px;
     float:left;
 }
-
 /* Piirtoikkunan ylätunniste */
 .wrapper > .drawCanvas > .canvasHeader 
 {
     height: 40px;
       
 }
-
 /* Ylätunnisteen otsikko */
 .wrapper > .drawCanvas > .canvasHeader h3 
 {
@@ -54,7 +47,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     margin: 0;
     padding: 5px;
     padding-top: 7px;
-    /*font-size: 25px;*/
     background: rgb(255, 255, 255);
     color: #333;
     border-bottom: 2px solid rgb(182, 152, 152); 
@@ -68,19 +60,17 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 }
 
 #canvas 
- {
+{
     display: block;
- }
+}
 
- .wrapper > .drawCanvas > .canvasFooter
- {
-     margin: 0;
-     height: 40px;
-     padding: 5px;
-     
- }
-
- /* CLEAR CANVAS nappula */
+.wrapper > .drawCanvas > .canvasFooter
+{
+    margin: 0;
+    height: 40px;
+    padding: 5px;     
+}
+/* CLEAR CANVAS nappula */
 .wrapper > .drawCanvas > .canvasFooter form input[id='clear']
 {
     width: 120px;
@@ -97,150 +87,143 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
-
+}
+/* plus miinus */
+.wrapper > .drawCanvas > .canvasFooter form input[id='minus']
+{
+    width: 20px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-right: 0px;
+}
+ 
+.wrapper > .drawCanvas > .canvasFooter form input[id='minus']:hover
+{
+    width: 20px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-right: 0px;
 }
 
- /* plus miinus */
- .wrapper > .drawCanvas > .canvasFooter form input[id='minus']
- {
-     width: 20px;
-     padding: 5px;
-     background: white;
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
-     border-top-left-radius: 5px;
-     border-bottom-left-radius: 5px;
-     border-right: 0px;
- }
+.wrapper > .drawCanvas > .canvasFooter form input[id='plus']
+{
+    width: 20px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left: 0px;
+}
  
- .wrapper > .drawCanvas > .canvasFooter form input[id='minus']:hover
- {
-     width: 20px;
-     padding: 5px;
-     background: rgb(245, 245, 245);
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
-     border-top-left-radius: 5px;
-     border-bottom-left-radius: 5px;
-     border-right: 0px;
- }
-
- .wrapper > .drawCanvas > .canvasFooter form input[id='plus']
- {
-     width: 20px;
-     padding: 5px;
-     background: white;
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
-     border-top-right-radius: 5px;
-     border-bottom-right-radius: 5px;
-     border-left: 0px;
- }
+.wrapper > .drawCanvas > .canvasFooter form input[id='plus']:hover
+{
+    width: 20px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left: 0px;
+}
+/* muut nappulat */
+.wrapper > .drawCanvas > .canvasFooter form input[id='buttons']
+{
+    width: 50px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
  
- .wrapper > .drawCanvas > .canvasFooter form input[id='plus']:hover
- {
-     width: 20px;
-     padding: 5px;
-     background: rgb(245, 245, 245);
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
-     border-radius: 5px;
-     border-top-right-radius: 5px;
-     border-bottom-right-radius: 5px;
-     border-left: 0px;
- }
-
- /* muut nappulat */
- .wrapper > .drawCanvas > .canvasFooter form input[id='buttons']
- {
-     width: 50px;
-     padding: 5px;
-     background: white;
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
- 
- .wrapper > .drawCanvas > .canvasFooter form input[id='buttons']:hover
- {
-     width: 50px;
-     padding: 5px;
-     background: rgb(245, 245, 245);
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
- 
- }
-
-  /* muut nappulat */
- .wrapper > .drawCanvas > .canvasFooter form input[id='black']
- {
-     width: 20px;
-     height: 20px;  
-     background: black;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
-     border-top-left-radius: 5px;
-     border-bottom-left-radius: 5px;
- }
-
- .wrapper > .drawCanvas > .canvasFooter form input[id='purple']
- {
-     width: 20px;
-     height: 20px;   
-     background: purple;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
-
- .wrapper > .drawCanvas > .canvasFooter form input[id='red']
- {
-     width: 20px;
-     height: 20px;   
-     background: red;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
- .wrapper > .drawCanvas > .canvasFooter form input[id='green']
- {
-     width: 20px;
-     height: 20px;  
-     background: green;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
- .wrapper > .drawCanvas > .canvasFooter form input[id='yellow']
- {
-     width: 20px;
-     height: 20px;  
-     background: yellow;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
- .wrapper > .drawCanvas > .canvasFooter form input[id='blue']
- {
-     width: 20px;
-     height: 20px;  
-     background: blue;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
- .wrapper > .drawCanvas > .canvasFooter form input[id='gray']
- {
-     width: 20px;
-     height: 20px;  
-     background: gray;
-     border: 0px solid rgb(182, 152, 152);
-     cursor: pointer;   
- }
- .wrapper > .drawCanvas > .canvasFooter form input[id='white']
- {
-     width: 20px;
-     height: 20px;   
-     background: white;
-     border: 1px solid rgb(182, 152, 152);
-     cursor: pointer;   
-     border-top-right-radius: 5px;
-     border-bottom-right-radius: 5px;
- }
+.wrapper > .drawCanvas > .canvasFooter form input[id='buttons']:hover
+{
+    width: 50px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+/* värinappulat */
+.wrapper > .drawCanvas > .canvasFooter form input[id='black']
+{
+    width: 20px;
+    height: 20px;  
+    background: black;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='purple']
+{
+    width: 20px;
+    height: 20px;   
+    background: purple;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='red']
+{
+    width: 20px;
+    height: 20px;   
+    background: red;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='green']
+{
+    width: 20px;
+    height: 20px;  
+    background: green;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='yellow']
+{
+    width: 20px;
+    height: 20px;  
+    background: yellow;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='blue']
+{
+    width: 20px;
+    height: 20px;  
+    background: blue;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='gray']
+{
+    width: 20px;
+    height: 20px;  
+    background: gray;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+.wrapper > .drawCanvas > .canvasFooter form input[id='white']
+{
+    width: 20px;
+    height: 20px;   
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
 
 /* chatin kokoikkuna */
 .wrapper > .chatContainer
@@ -262,7 +245,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border-bottom: 1px solid rgb(182, 152, 152);
     list-style: none;       
 }
-
 /* Ylätunnisteen otsikko ennen nimimerkin asetusta*/
 .wrapper > .chatContainer > .chatHeaderpre h3 
 {
@@ -322,7 +304,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: rgb(255, 255, 255);
 }
 /*divi jossa näkyy lista online käyttäjistä */
-
 .wrapper > .chatContainer > .chatNames > .chatNamesusers
 {     
     width: 150px;
@@ -331,17 +312,13 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     overflow-y: auto;    
 }
 /*erikoisnappulat div*/
-
 .wrapper > .chatContainer > .chatNames > .chatNamesbottom
 {
     width: 150px;
     height: 40px;
     padding: 5px;
-    /*padding-top: 8px; */    
     background: white;      
-    /*display:none; piilotus*/
 }
-
 /* Lähetä viesti nappula */
 .wrapper > .chatContainer > .chatNames > .chatnamesBottom form input[type='button']
 {
@@ -349,8 +326,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding: 5px;
     background: white;
     border: 1px solid rgb(182, 152, 152);
-    cursor: pointer;   
-
+    cursor: pointer;  
 }
 .wrapper > .chatContainer > .chatNames > .chatnamesBottom form input[type='button']:hover
 {
@@ -358,33 +334,27 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding: 5px;
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
-    cursor: pointer;   
-
+    cursor: pointer; 
 }
 /*oikealla floattaavat divit loppuu*/
 
 .wrapper > .chatContainer > .chatHeadertwo 
-{
-   
+{   
     height: 40px;
     background: white;
     padding: 5px;
     padding-left: 7px;
     border-bottom: 1px solid rgb(182, 152, 152);    
 }
-
 /* ylätunnisteen tai tekstisyöteikkunan teksti EKAN kerran nimimerkin asettaessa */
 .wrapper > .chatContainer > .chatHeadertwo form input[type='text']
-{
-    
+{    
     padding: 3px;
     padding-left: 5px;
     border: 1px hidden rgb(182, 152, 152);
-    /*border-radius: 5px; */
     height: 30px;
     width: 310px;
 }
-
 /* Lähetä viesti nappula */
 .wrapper > .chatContainer > .chatHeadertwo input[type='submit']
 {
@@ -401,8 +371,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding: 5px;
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
-    cursor: pointer;   
-
+    cursor: pointer; 
 }
 .wrapper > .chatContainer > .chatHeaderthree 
 {
@@ -411,22 +380,17 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: white;
     padding: 5px;
     padding-left: 7px;
-    border-bottom: 1px solid rgb(182, 152, 152);
-    /*list-style: none; */      
-}
+    border-bottom: 1px solid rgb(182, 152, 152);   }
 
 /* ylätunnisteen tai tekstisyöteikkunan teksti vaihtaessa nimimerkkiä */
 .wrapper > .chatContainer > .chatHeaderthree form input[type='text']
-{
-    
+{    
     padding: 3px;
     padding-left: 5px;
     border: 1px hidden rgb(182, 152, 152);
-    /*border-radius: 5px; */
     height: 30px;
     width: 310px;
 }
-
 /* Vaihda nimi */
 .wrapper > .chatContainer > .chatHeaderthree input[type='submit']
 {
@@ -435,7 +399,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: white;
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;
-
 }
 .wrapper > .chatContainer > .chatHeaderthree input[type='submit']:hover
 {
@@ -444,11 +407,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
-
 }
-
-
-
 
 /* Viesti-ikkuna */
 .wrapper > .chatContainer > .chatMessages
@@ -456,41 +415,26 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     height: calc(100% - 120px);
     border-bottom: 1px solid  rgb(182, 152, 152);
     overflow-y: scroll;
-   /* padding-left: 5px; */
-     word-wrap: break-word; /*Tämän pitäisi leikata liian pitkä sana toiselle riville */
-}
-
-/*alatunniste */
-.wrapper > .chatContainer > .chatBottompre
-{
-    display:none; /*piilotus*/
-    height: 40px;
-    padding: 5px;
-    padding-top: 8px;
+    word-wrap: break-word; /*Tämän pitäisi leikata liian pitkä sana toiselle riville */
 }
 
 .wrapper > .chatContainer > .chatBottom
 {
-
     height: 40px; /* alatunnisteen korkeus */
     list-style: none;
     /*border-bottom: 1px solid #ddd; */
     padding: 5px;
     padding-left: 7px;
 }
-
 /* Alatunnisteen tai tekstisyöteikkunan teksti */
 .wrapper > .chatContainer > .chatBottom form input[type='text']
-{
-    
+{    
     padding: 3px;
     padding-left: 5px;
     border: 1px hidden rgb(182, 152, 152);
-    /*border-radius: 5px; */
     height: 30px;
     width: 310px;
 }
-
 /* Lähetä viesti nappula */
 .wrapper > .chatContainer > .chatBottom form input[type='submit']
 {
@@ -499,16 +443,15 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: white;
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
-
 }
+
 .wrapper > .chatContainer > .chatBottom form input[type='submit']:hover
 {
     width: 70px;
     padding: 5px;
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
-    cursor: pointer;   
-
+    cursor: pointer;  
 }
 
 #messages 
@@ -528,9 +471,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 { 
     background: #eee; 
 }
-
-
-
 /*käyttäjien nimet chatnames ikkunassa*/
 #usernames 
 { 

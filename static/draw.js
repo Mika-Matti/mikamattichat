@@ -9,8 +9,7 @@ document.addEventListener("DOMContentLoaded", function()
         move: false,
         pos: {x:0, y:0},
         pos_prev: false
-    };
-    
+    };    
 
     //määritellään canvas elementtiä
     var canvas  = document.getElementById('drawing');
@@ -53,27 +52,23 @@ document.addEventListener("DOMContentLoaded", function()
     };
 
     //piirrettyjen viivojen määrän koko kilobiteissä
-     socket.on('get lines', function(data)
-     {
-         var html = '';
-         html += "(" + data.toFixed(3) + " kilobytes) ";
-         $("#lines").html(html);
-     });
-
+    socket.on('get lines', function(data)
+    {
+        var html = '';
+        html += "(" + data.toFixed(3) + " kilobytes) ";
+        $("#lines").html(html);
+    });
     
-    //pyyhin työkalu
-   
-    //  socket.on('erasertool', function(data)
-    //  {
-    //      console.log("test");
-    //     if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[0].y * height)
-    //     {
-    //         alert("Hiiri osui viivaan");
-    //     }
+    //pyyhin työkalu   
+    socket.on('erasertool', function(data)
+    {
+        console.log("test");
+        if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[1].y * height)
+        {
+             alert("Hiiri osui viivaan");
+        }
 
-    //  });
-   
-
+    });
 
     socket.on('clearit', function()
     {
@@ -85,12 +80,12 @@ document.addEventListener("DOMContentLoaded", function()
     {
         var line = data.line;
         {
-        context.beginPath();
-        context.lineWidth = line[2]; //brushin paksuus
-        context.strokeStyle = line[3]; // brushin väri
-        context.moveTo(line[0].x * width, line[0].y * height);
-        context.lineTo(line[1].x * width, line[1].y * height);
-        context.stroke();
+            context.beginPath();
+            context.lineWidth = line[2]; //brushin paksuus
+            context.strokeStyle = line[3]; // brushin väri
+            context.moveTo(line[0].x * width, line[0].y * height);
+            context.lineTo(line[1].x * width, line[1].y * height);
+            context.stroke();
         }
 
     });
@@ -106,8 +101,7 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
         size = brushSize;
         color = brushColor;
-        setTimeout(mainLoop, 25); //katkaistaan viiva 25ms välein arrayhyn
-      
+        setTimeout(mainLoop, 25); //katkaistaan viiva 25ms välein arrayhyn      
     }
     mainLoop();
 
@@ -150,11 +144,11 @@ function useEraser()
     eraser = true;
 }
 //värit
-function colorBlack() { brushColor='black';}
-function colorPurple() { brushColor='purple';}
-function colorRed() { brushColor='red';}
-function colorGreen() { brushColor='green';}
-function colorYellow() { brushColor='yellow';}
-function colorBlue() { brushColor='blue';}
-function colorGray() { brushColor='gray';}
-function colorWhite() { brushColor='white';}
+function colorBlack() {brushColor='black';}
+function colorPurple() {brushColor='purple';}
+function colorRed() {brushColor='red';}
+function colorGreen() {brushColor='green';}
+function colorYellow() {brushColor='yellow';}
+function colorBlue() {brushColor='blue';}
+function colorGray() {brushColor='gray';}
+function colorWhite() {brushColor='white';}
