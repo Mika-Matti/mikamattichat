@@ -1,7 +1,7 @@
 {
-    "name": "socket-chat-mm",
+    "name": "mikamattichat",
     "version": "0.0.1",
-    "description": "Ensimäinen socket.io ohjelmani",
+    "description": "Ensimmäinen socket.io ohjelmani",
     "dependencies": {
         "ejs": "~1.0.0",
         "express": "^4.16.4",

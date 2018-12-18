@@ -1,7 +1,7 @@
 {
-"name": SocketDrawChatMM,
-"description": My Demo Program,
-"repository": "",
+"name": "mikamattiChat",
+"description": "My Demo Program",
+"repository": "https://github.com/Mika-Matti/mikamattichat",
 "logo": "",
 "keywords": ["node", "express"],
 "image": "heroku/nodejs"
