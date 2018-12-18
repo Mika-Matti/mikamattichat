@@ -139,7 +139,7 @@ io.on('connection', function(socket)
     });
 
     //jos ikkunan kokoa muutetaan clientside
-    socket.on('resize', function(data)
+    socket.on('resize', function()
     {        
         for (var i in line_history) 
         {

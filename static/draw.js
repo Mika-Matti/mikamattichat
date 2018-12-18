@@ -65,9 +65,8 @@ document.addEventListener("DOMContentLoaded", function()
         console.log("test");
         if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[1].y * height)
         {
-             alert("Hiiri osui viivaan");
+            alert("Hiiri osui viivaan");
         }
-
     });
 
     socket.on('clearit', function()
@@ -75,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function()
         context.clearRect(0, 0, width, height);
         console.log("client clearit");
     });
+
     //otetaan vastaan server.js lähettämä data piirroksesta
     socket.on('draw_line', function(data) //testaa täällä detect line ja mouse coords
     {
@@ -87,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function()
             context.lineTo(line[1].x * width, line[1].y * height);
             context.stroke();
         }
-
     });
 
     //itse funktio joka katsoo piirretäänkö 25ms väelin
@@ -104,7 +103,6 @@ document.addEventListener("DOMContentLoaded", function()
         setTimeout(mainLoop, 25); //katkaistaan viiva 25ms välein arrayhyn      
     }
     mainLoop();
-
 
 });
 //canvasin tyhjennysfunktio
@@ -130,7 +128,7 @@ function moreStroke()
 {
     if(brushSize < 5)
     {
-    brushSize++;      
+        brushSize++;      
     }
 }
 
