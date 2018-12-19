@@ -125,8 +125,14 @@ io.on('connection', function(socket)
     //pyyhin
     socket.on('erasertool', function (data)
     {
-    //     io.emit('erasertool');
-           
+        //io.emit('erasertool');
+        //console.log(data);
+        console.log(line_history);
+        for (let index = 0; index < line_history.length; index++) {
+            if (data.mouseX == line_history[index].x && data.mouseY == line.history[index].y) {
+                console.log("voitto");
+            }
+        }
         //line_history.splice(line_history.indexOf(data.line), 1);
         updateLines();
     });
