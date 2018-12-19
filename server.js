@@ -122,19 +122,22 @@ io.on('connection', function(socket)
         updateLines();
     });
 
+
     //pyyhin
     socket.on('erasertool', function (data)
-    {
-        //io.emit('erasertool');
-        //console.log(data);
-        console.log(line_history);
-        for (let index = 0; index < line_history.length; index++) {
-            if (data.mouseX == line_history[index].x && data.mouseY == line.history[index].y) {
-                console.log("voitto");
-            }
-        }
-        //line_history.splice(line_history.indexOf(data.line), 1);
-        updateLines();
+    {        
+        for (let i = 0; i < line_history.length; i++) //tämä on toimiva. pyyhin tekeee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
+         {
+		  	if ( LineToLineIntersection ( data.mouse.x, data.mouse.y, data.mouse2.x, data.mouse2.y, line_history [i][0].x, line_history [i][0].y, line_history [i][1].x, line_history [i][1].y ) )
+		  	{
+                  //console.log("onnistu");
+                  line_history.splice ( i, 1 );
+                  updateLines();
+                  updateCanvas();
+		  		break;
+		 	}           
+        }    
+        
     });
     //tyhjennä canvas
     socket.on('clearit', function()
@@ -150,8 +153,8 @@ io.on('connection', function(socket)
         for (var i in line_history) 
         {
             socket.emit('draw_line', { line: line_history[i] } );
-            updateLines();
         }
+        updateLines();
     });
     
     //viestin lähettäminen ikkunaan
@@ -297,13 +300,58 @@ io.on('connection', function(socket)
 
     function updateCanvas()
     {
+        io.emit('clearit', true);
         for (var i in line_history) 
         {
             socket.emit('draw_line', { line: line_history[i] } );
-            updateLines();
+            
         }
-
+        updateLines();
     }
+    //Pyyhkimeen funktioita jotta hiiri osaisi huomata viivan
+    function Vec2Cross2 ( x1, y1, x2, y2 )
+	{
+		return ( x1 * y2 ) - ( y1 * x2 );
+	}
+
+	function LineToLineIntersection ( x11, y11, x12, y12, x21, y21, x22, y22 )
+	{
+        //line directional vector
+		var d2x = x22 - x21;
+		var d2y = y22 - y21;
+		// mouse directional vector
+		var d1x = x12 - x11;
+		var d1y = y12 - y11;
+		//mouse directional vector
+		var d21x = x21 - x11;
+		var d21y = y21 - y11;
+		//mouse starting point directional vector to line starting point
+		var cV = Vec2Cross2 ( d1x, d1y, d2x, d2y );
+		var cV2 = Vec2Cross2 ( d21x, d21y, d2x, d2y );
+		var s = ( cV2 * cV ) / ( cV * cV );
+		
+		if ( s > 0.0 && s <= 1.0 )
+        {
+            var intersectionX = x11 + d1x * s;
+            var intersectionY = y11 + d1y * s;
+            var sqr = Math.sqrt ( d2x * d2x + d2y * d2y );
+            var intersectionDirectionX = intersectionX - x21;
+            var intersectionDirectionY = intersectionY - y21;
+            var d = ( d2x / sqr ) * intersectionDirectionX + ( d2y / sqr ) * intersectionDirectionY;
+            var length1 = Math.sqrt ( d2x * d2x + d2y * d2y );
+            var length2 = Math.sqrt ( ( intersectionX - x21 ) * ( intersectionX - x21 ) + ( intersectionY - y21 ) * ( intersectionY - y21 ) );
+
+            if ( length1 < length2 || d < 0.0 )
+                return false;
+            else
+                return true;
+        }
+		
+		return false;
+	}
+
+
+
 });
 
 

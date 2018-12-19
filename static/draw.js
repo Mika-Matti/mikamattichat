@@ -59,15 +59,6 @@ document.addEventListener("DOMContentLoaded", function()
         $("#lines").html(html);
     });
     
-    //pyyhin työkalu   
-    // socket.on('erasertool', function(data)
-    // {
-    //     console.log("test");
-    //     if( mouse.pos.x === data.line[0].x * width && mouse.pos.y === data.line[1].y * height)
-    //     {
-    //         alert("Hiiri osui viivaan");
-    //     }
-    // });
 
     socket.on('clearit', function()
     {
@@ -99,16 +90,9 @@ document.addEventListener("DOMContentLoaded", function()
         }
         else if(eraser && mouse.click)
         {
-            
-            socket.emit("erasertool", { mouseX: mouse.pos.x, mouseY: mouse.pos.y });
-            // for (; index < line.length; index++) 
-            // {
-            //     if (mouse.pos.x == line[i].x && mouse.pos.y == line[i].y) 
-            //     {
-            //         console.log(mouse.pos.x) + ":" + mouse.pos.y;
-            //         //line[i] = null;
-            //     }
-            // }
+            socket.emit("erasertool", { mouse: mouse.pos, mouse2: mouse.pos_prev }); //toimiva
+            //socket.emit("erasertool", { mouseX: mouse.pos.x, mouseY: mouse.pos.y, size: size, width: width, height: height });
+			
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
         size = brushSize;
