@@ -303,7 +303,7 @@ io.on('connection', function(socket)
         io.emit('clearit', true);
         for (var i in line_history) 
         {
-            socket.emit('draw_line', { line: line_history[i] } );
+            io.emit('draw_line', { line: line_history[i] } );
             
         }
         updateLines();
