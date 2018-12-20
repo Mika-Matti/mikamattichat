@@ -155,6 +155,26 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
 }
+
+.wrapper > .drawCanvas > .canvasFooter form input[id='button2']
+{
+    width: 50px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-radius: 5px;
+}
+ 
+.wrapper > .drawCanvas > .canvasFooter form input[id='button2']:hover
+{
+    width: 50px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    cursor: pointer;   
+    border-radius: 5px;
+}
 /* värinappulat */
 .wrapper > .drawCanvas > .canvasFooter form input[id='black']
 {
