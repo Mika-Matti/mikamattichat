@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function()
     canvas.onmousemove = function(e)
     {   
         //normalisoi mouse position 0.0 - 1.0
+        mouse.pos = {x:0, y:0};
         mouse.pos.x = ( e.clientX -2 ) / width;  // -10
         mouse.pos.y = ( e.clientY -42 ) / height; // -50 miinustaa ylläolevan headerin canvasista
         mouse.move = true;
@@ -80,15 +81,27 @@ document.addEventListener("DOMContentLoaded", function()
         }
     });
 
+    var tempArray = [];
+    //var recordLine = false;
     //itse funktio joka katsoo piirretäänkö 25ms väelin
     function mainLoop() 
     {
         if(!eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
-            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev, size, color]});
+            socket.emit('draw_fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
             mouse.move = false;
+            tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
         }
-        else if(eraser && mouse.click)
+        else if (!eraser && !mouse.click)
+        {
+            if (tempArray.length > 0)
+            {
+                socket.emit('draw_line', {line: tempArray});
+                console.log("lähetetään");
+            }
+            tempArray = [];
+        }
+        else if (eraser && mouse.click)
         {
             socket.emit("erasertool", { mouse: mouse.pos, mouse2: mouse.pos_prev }); //toimiva
             //socket.emit("erasertool", { mouseX: mouse.pos.x, mouseY: mouse.pos.y, size: size, width: width, height: height });

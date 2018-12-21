@@ -113,11 +113,21 @@ io.on('connection', function(socket)
     console.log('Disconnected: %s sockets connected', connections.length);    
     });
     
+    socket.on('draw_fake', function(data)
+    {
+        io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+    });
     //piirtämisten lisääminen ja lähettäminen kaikille.
     socket.on('draw_line', function (data) 
     {
+        for (let i = 0; i < data.line.length; i++)
+        {
+            io.emit('draw_line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin
+            
+        }
         line_history.push(data.line);
-        io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        //line_history.push(data.line);
+        //io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
         //console.log("data sisällä: " + Object.keys(data.line[0]));        
         updateLines();
     });
@@ -127,15 +137,26 @@ io.on('connection', function(socket)
     socket.on('erasertool', function (data)
     {        
         for (let i = 0; i < line_history.length; i++) //tämä on toimiva. pyyhin tekeee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
-         {
-		  	if ( LineToLineIntersection ( data.mouse.x, data.mouse.y, data.mouse2.x, data.mouse2.y, line_history [i][0].x, line_history [i][0].y, line_history [i][1].x, line_history [i][1].y ) )
-		  	{
-                  //console.log("onnistu");
-                  line_history.splice ( i, 1 );
-                  updateLines();
-                  updateCanvas();
-		  		break;
-		 	}           
+        {
+            var foundLine = false;
+            for (let a = 0; a < line_history[i].length; a++)
+            {
+                var line = line_history[i][a].line;
+		  	    if ( LineToLineIntersection ( data.mouse.x, data.mouse.y, data.mouse2.x, data.mouse2.y, line[0].x, line[0].y, line[1].x, line[1].y ) )
+                {
+                    console.log("Onnistui" + line_history.length);
+                    line_history.splice ( i, 1 );
+                    foundLine = true;
+                    updateLines();
+                    updateCanvas();
+                    break;
+                }   
+            }   
+            if (foundLine) 
+            {
+                console.log("foundline break");
+                break;
+            }    
         }    
         
     });
@@ -152,7 +173,10 @@ io.on('connection', function(socket)
     {        
         for (var i in line_history) 
         {
-            socket.emit('draw_line', { line: line_history[i] } );
+            for (var a in line_history[i]) 
+            {
+                socket.emit('draw_line', { line: line_history[i][a].line } );
+            }
         }
         updateLines();
     });
@@ -295,7 +319,13 @@ io.on('connection', function(socket)
 
     function updateLines()
     {
-        io.sockets.emit('get lines', (( line_history.length * 2 * 4) / 1024)); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi
+        var linelength = 0;
+        for (var i in line_history) 
+        {
+            linelength += (line_history[i].length * 2 * 4) / 1024;
+        }
+        io.sockets.emit('get lines', linelength); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi
+        
     }
 
     function updateCanvas()
@@ -303,8 +333,10 @@ io.on('connection', function(socket)
         io.emit('clearit', true);
         for (var i in line_history) 
         {
-            io.emit('draw_line', { line: line_history[i] } );
-            
+            for (var a in line_history[i]) 
+            {
+                io.emit('draw_line', { line: line_history[i][a].line } );
+            }
         }
         updateLines();
     }
