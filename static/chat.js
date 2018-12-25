@@ -10,23 +10,28 @@ $(function ()
     $('#change').submit(function(e)
     {
         e.preventDefault();
+        var hasSpace = $('#n').val().indexOf(' ')>-1;
          
-        if($('#n').val().length > 0 && $('#n').val().length < 14)
+        if($('#n').val().length > 0 && $('#n').val().length < 14 && !hasSpace)
         {
-            socket.emit('new user', $('#n').val(), function(data)
+            socket.emit('change user', $('#n').val(), function(data)
             {
                 if(data)
                 {
-                    $('.chatHeadertwo').hide();     //sulkee set nick-formin
-                    $('.chatHeaderthree').show();   //ja avaa change nick-formin
+                    //$('.chatHeadertwo').hide();     //sulkee set nick-formin
+                   // $('.chatHeaderthree').show();   //ja avaa change nick-formin
                     $('.chatHeaderpre').hide();     //Tervetuloa otsikko sulkeutuu
                     $('.chatHeader').show();        //Ja uusi otsikko tulee tilalle                     
                 }
                 else
                 {
-                    alert("That nickname is already taken!");
+                    alert("That nickname is invalid or already taken!");
                 }                 
             });
+        }
+        else if(hasSpace)
+        {
+            alert("Don't use spaces in your nickname.");
         }
         else //jos nimimerkki on alle 1 kirjainta tai yli 13 kirjainta pitkä
         {
@@ -80,38 +85,11 @@ $(function ()
     //changed name alkaa
     socket.on('changed namestart', function(data)
     {
-        $("#messages").append("<li><b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + "*</b>.</i></li>");
+        $("#messages").append("<li><b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + ".*</b></i></li>");
         scrollDown();
     });
             
-    //NIMENVAIHTO 
-    $('#changeagain').submit(function(e)
-    {
-        e.preventDefault();
 
-         
-            if($('#p').val().length > 0 && $('#p').val().length < 14)
-            {
-                 
-                socket.emit('change user', $('#p').val(), function(data)
-                {
-                    if(data) //tarkistetaan onko nimi jo arrayssa
-                    {
-                         //alert("Nimi vaihdettu.");
-                    }
-                    else
-                    {
-                         alert("That nickname is already taken!");
-                    }
-                });
-            }
-            else //jos nimimerkki on alle 1 kirjainta tai yli 20 kirjainta pitk
-            {
-                alert("Type your nickname (max. 13 letters)");
-            }
-
-            $('#p').val(''); //tyhjentää kentän
-    });
 
     //CHATVIESTINLÄHETTÄMINEN
     $('#send').submit(function(e)

@@ -77,15 +77,15 @@ io.on('connection', function(socket)
     let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
     query.sort('-fulltime').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
     {
-       if(err) 
-       {
+        if(err) 
+        {
            throw err;
-       }
-       else
-       {
+        }
+        else
+        {
            socket.emit('load old msgs', docs);
            console.log('Lähetetään vanhat viestit ikkunaan');
-       }
+        }
     });
 
     socket.username = "newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
@@ -102,32 +102,32 @@ io.on('connection', function(socket)
     //disconnect
     socket.on('disconnect', function()
     {
-    hasLeft();
-    delete users[socket.username];
-    updateUsernames();    
+        hasLeft();
+        delete users[socket.username];
+        updateUsernames();    
 
-    connections.splice(connections.indexOf(socket), 1);
-    updateConnections();
+        connections.splice(connections.indexOf(socket), 1);
+        updateConnections();
 
-    console.log('user disconnected');
-    console.log('Disconnected: %s sockets connected', connections.length);    
+        console.log('user disconnected');
+        console.log('Disconnected: %s sockets connected', connections.length);    
     });
     
-    socket.on('draw_fake', function(data)
+    socket.on('draw fake', function(data)
     {
-        io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        io.emit('draw line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
     });
     //piirtämisten lisääminen ja lähettäminen kaikille.
-    socket.on('draw_line', function (data) 
+    socket.on('draw line', function (data) 
     {
         for (let i = 0; i < data.line.length; i++)
         {
-            io.emit('draw_line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin
+            io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin
             
         }
         line_history.push(data.line);
         //line_history.push(data.line);
-        //io.emit('draw_line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        //io.emit('draw line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
         //console.log("data sisällä: " + Object.keys(data.line[0]));        
         updateLines();
     });
@@ -144,7 +144,7 @@ io.on('connection', function(socket)
                 var line = line_history[i][a].line;
 		  	    if ( LineToLineIntersection ( data.mouse.x, data.mouse.y, data.mouse2.x, data.mouse2.y, line[0].x, line[0].y, line[1].x, line[1].y ) )
                 {
-                    console.log("Onnistui" + line_history.length);
+                    //console.log("Kumitus onnistui " + line_history.length);
                     line_history.splice ( i, 1 );
                     foundLine = true;
                     updateLines();
@@ -154,7 +154,7 @@ io.on('connection', function(socket)
             }   
             if (foundLine) 
             {
-                console.log("foundline break");
+                //console.log("foundline break");
                 break;
             }    
         }    
@@ -175,7 +175,7 @@ io.on('connection', function(socket)
         {
             for (var a in line_history[i]) 
             {
-                socket.emit('draw_line', { line: line_history[i][a].line } );
+                socket.emit('draw line', { line: line_history[i][a].line } );
             }
         }
         updateLines();
@@ -231,33 +231,6 @@ io.on('connection', function(socket)
         }
     });
 
-    //nimimerkin asetus toimii nyt
-    socket.on('new user', function(data, callback)
-    {
-        if(data in users) //jos nimi löytyy jo 
-        {
-             callback(false);
-             console.log ("nimi -" + data + "- on jo käytössä");
-             console.log("Lista nimistä: " + Object.keys(users));
-        }
-        else
-        {
-        callback(true);
-        let currentname = socket.username;     
-        data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä        
-        delete users[socket.username];
-        socket.username = data;
-        users[socket.username] = socket;
-        
-        updateUsernames();
-        updateUsername();
-        nameChangestart(currentname);
-        
-        console.log ("username set to " + data);
-        console.log("Lista nimistä: " + Object.keys(users));
-        }
-
-    });
 
     //nimenvaihto
     socket.on('change user', function(data, callback)
@@ -272,7 +245,7 @@ io.on('connection', function(socket)
             {
                 callback(true);
                 let currentname = socket.username;             
-                data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
+                //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
                 delete users[socket.username]; // tän pitäisi poistaa vanha
                 socket.username = data;
                 users[socket.username] = socket;
@@ -335,7 +308,7 @@ io.on('connection', function(socket)
         {
             for (var a in line_history[i]) 
             {
-                io.emit('draw_line', { line: line_history[i][a].line } );
+                io.emit('draw line', { line: line_history[i][a].line } );
             }
         }
         updateLines();

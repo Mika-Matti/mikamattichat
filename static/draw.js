@@ -1,5 +1,6 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
 var eraser = false; //pyyhin
+var lineTool = false; //viivatyökalu
 var brushSize = 1;
 var brushColor = 'black';
 document.addEventListener("DOMContentLoaded", function()
@@ -68,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function()
     });
 
     //otetaan vastaan server.js lähettämä data piirroksesta
-    socket.on('draw_line', function(data) //testaa täällä detect line ja mouse coords
+    socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
     {
         var line = data.line;
         {
@@ -83,20 +84,23 @@ document.addEventListener("DOMContentLoaded", function()
 
     var tempArray = [];
     //var recordLine = false;
-    //itse funktio joka katsoo piirretäänkö 25ms väelin
     function mainLoop() 
     {
-        if(!eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
+        if(!lineTool && !eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
-            socket.emit('draw_fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
+            socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
             mouse.move = false;
             tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
         }
+        // else if (lineTool && !eraser && mouse.click && mouse.pos_prev) //keskeneräinen
+        // {
+        //     socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
+        // }
         else if (!eraser && !mouse.click)
         {
             if (tempArray.length > 0)
             {
-                socket.emit('draw_line', {line: tempArray});
+                socket.emit('draw line', {line: tempArray});
                 console.log("lähetetään");
             }
             tempArray = [];
@@ -110,7 +114,9 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
         size = brushSize;
         color = brushColor;
-        setTimeout(mainLoop, 25); //katkaistaan viiva 25ms välein arrayhyn      
+
+        setTimeout(mainLoop, 25); //kutsuu funktiota uudelleen sekä katkaisee viivaa 25ms välein arrayhyn         
+               
     }
     mainLoop();
 
@@ -145,11 +151,18 @@ function moreStroke()
 function useBrush()
 {
     eraser = false;   
+    lineTool = false;
 }
 
 function useEraser()
 {  
     eraser = true;
+}
+
+function useLine()
+{
+    lineTool = true;
+    eraser = false;
 }
 //värit
 function colorBlack() {brushColor='black';}
