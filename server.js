@@ -185,8 +185,11 @@ io.on('connection', function(socket)
     socket.on('chat message', function(data, callback)
     {
         msg = data.trim();
-        msg = data.replace('<', '&#60;');
-        msg = msg.replace('>', '&#62;');
+        //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
+        var chars = {'<':'&#60','>':'&#62'};
+        msg = data.replace(/[<>]/g, m => chars[m]);        
+       // msg = data.replace(/</g, '&#60;');
+       // msg = msg.replace(/>/g, '&#62;');
         if(msg.substr(0,3) === '/w ') //tällä komennolla voi lähettää yksityisviestin
         {
             msg = msg.substr(3); //poistetaan viestistä /w
@@ -237,12 +240,13 @@ io.on('connection', function(socket)
     //nimenvaihto
     socket.on('change user', function(data, callback)
         {   
-            data1 = data.replace('<', '&#60;');
-            data1 = data1.replace('>', '&#62;');
+              //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
+            var chars = {'<':'&#60','>':'&#62'};
+            data1 = data.replace(/[<>]/g, m => chars[m]);  
             if(data in users) //jos nimi löytyy jo arraysta
             {
                 callback(false);
-                console.log ("nimi -" + data1 + "- on jo käytössä");
+                console.log ("nimi " + data + " on jo käytössä");
                 console.log("Lista nimistä: " + Object.keys(users));
             }
             else
