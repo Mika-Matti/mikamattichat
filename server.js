@@ -184,7 +184,9 @@ io.on('connection', function(socket)
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
     {
-        var msg = data.trim();
+        msg = data.trim();
+        msg = data.replace('<', '&#60;');
+        msg = msg.replace('>', '&#62;');
         if(msg.substr(0,3) === '/w ') //tällä komennolla voi lähettää yksityisviestin
         {
             msg = msg.substr(3); //poistetaan viestistä /w
@@ -234,11 +236,13 @@ io.on('connection', function(socket)
 
     //nimenvaihto
     socket.on('change user', function(data, callback)
-        {
+        {   
+            data1 = data.replace('<', '&#60;');
+            data1 = data1.replace('>', '&#62;');
             if(data in users) //jos nimi löytyy jo arraysta
             {
                 callback(false);
-                console.log ("nimi -" + data + "- on jo käytössä");
+                console.log ("nimi -" + data1 + "- on jo käytössä");
                 console.log("Lista nimistä: " + Object.keys(users));
             }
             else
@@ -247,12 +251,12 @@ io.on('connection', function(socket)
                 let currentname = socket.username;             
                 //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
                 delete users[socket.username]; // tän pitäisi poistaa vanha
-                socket.username = data;
+                socket.username = data1;
                 users[socket.username] = socket;
                 updateUsernames();
                 updateUsername();                
                 nameChangestart(currentname);
-                console.log("username changed to " + data);
+                console.log("username changed to " + data1);
                 console.log("Lista nimistä: " + Object.keys(users));
             }
         });

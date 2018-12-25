@@ -1,6 +1,5 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
 var eraser = false; //pyyhin
-var lineTool = false; //viivatyökalu
 var brushSize = 1;
 var brushColor = 'black';
 document.addEventListener("DOMContentLoaded", function()
@@ -86,16 +85,13 @@ document.addEventListener("DOMContentLoaded", function()
     //var recordLine = false;
     function mainLoop() 
     {
-        if(!lineTool && !eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
+        if(!eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
             socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
             mouse.move = false;
             tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
         }
-        // else if (lineTool && !eraser && mouse.click && mouse.pos_prev) //keskeneräinen
-        // {
-        //     socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
-        // }
+
         else if (!eraser && !mouse.click)
         {
             if (tempArray.length > 0)
@@ -157,12 +153,6 @@ function useBrush()
 function useEraser()
 {  
     eraser = true;
-}
-
-function useLine()
-{
-    lineTool = true;
-    eraser = false;
 }
 //värit
 function colorBlack() {brushColor='black';}
