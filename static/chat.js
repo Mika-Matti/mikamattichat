@@ -11,9 +11,9 @@ $(function ()
     $('#change').submit(function(e)
     {
         e.preventDefault();
-        var hasSpace = $('#n').val().indexOf(' ')>-1;
-         
-        if($('#n').val().length > 0 && $('#n').val().length < 14 && !hasSpace)
+        var hasSpace = $('#n').val().indexOf(' ')>-1; 
+        var hasSpace2 = $('#n').val().indexOf(' ')>-1;
+        if($('#n').val().length > 0 && $('#n').val().length < 14 && !hasSpace && !hasSpace2)
         {
             socket.emit('change user', $('#n').val(), function(data)
             {
@@ -30,7 +30,7 @@ $(function ()
                 }                 
             });
         }
-        else if(hasSpace)
+        else if(hasSpace || hasSpace2)
         {
             alert("Don't use spaces in your nickname.");
         }

@@ -99,7 +99,7 @@ io.on('connection', function(socket)
     fakeUsers[socket.userfake] = socket;
     //fakeUsers.push(socket.userfake);
     console.log('users: ' + Object.keys(users));
-    console.log('fakeusers: ' + fakeUsers);
+    console.log('fakeusers: ' + Object.keys(fakeUsers));
     updateUsernames();
     updateConnections();
  
