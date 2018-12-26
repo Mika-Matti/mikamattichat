@@ -10,7 +10,7 @@ let mongoose = require('mongoose');
 var line_history = []; //array johon tulee piirretyt jutut
 
 let users = {}; //käyttäjälista
-let fakeUsers = {}; //lowercase username lista
+let fakeUsers = []; //lowercase username lista
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
@@ -90,11 +90,16 @@ io.on('connection', function(socket)
            console.log('Lähetetään vanhat viestit ikkunaan');
         }
     });
-
-    socket.username = "newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
+    var generateName = "newuser" + Math.random().toString(36).substr(2,5);
+    socket.username = generateName //"newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
     users[socket.username] = socket;
-    fakeUsers[socket.username] = socket;
-    console.log('fake users: ' + Object.keys(fakeUsers));
+        //socket.username = socket.username.toLowerCase();
+        //fakeUsers[socket.username] = socket;
+        //console.log('fake users: ' + fakeUsers[];
+    socket.userfake = generateName;
+    fakeUsers.push(socket.userfake);
+    console.log('users: ' + Object.keys(users));
+    console.log('fakeusers: ' + fakeUsers);
     updateUsernames();
     updateConnections();
  
@@ -108,14 +113,18 @@ io.on('connection', function(socket)
     socket.on('disconnect', function()
     {
         hasLeft();
-        delete users[socket.username];
+        delete users[socket.username];        
         updateUsernames();    
+        
+        fakeUsers.splice(fakeUsers.indexOf(socket.userfake), 1);
 
         connections.splice(connections.indexOf(socket), 1);
         updateConnections();
 
         console.log('user disconnected');
-        console.log('Disconnected: %s sockets connected', connections.length);    
+        console.log('Disconnected: %s sockets connected', connections.length);  
+        console.log('fake users: ' + Object.keys(fakeUsers));
+        console.log('users: ' + Object.keys(users));  
     });
     
     socket.on('draw fake', function(data)
@@ -249,7 +258,11 @@ io.on('connection', function(socket)
               //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
             var chars = {'<':'&#60','>':'&#62'};
             data1 = data.replace(/[<>]/g, m => chars[m]);  
-            if(data1.toLowerCase() in fakeUsers) //jos nimi löytyy jo lowercase arraysta
+
+            //var regex = /[\u00A0\u1680​\u180e\u2000-\u2009\u200a​\u200b​\u202f\u205f​\u3000]/g;
+            var regex = /[a-zA-Z0-9&_\.-]/g;
+            //if(data1.toLowerCase() in fakeUsers) //jos nimi löytyy jo lowercase arraysta
+            if (fakeUsers.indexOf(data1.toLowerCase()) != -1 || !data1.match(regex))
             {
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
@@ -260,19 +273,21 @@ io.on('connection', function(socket)
                 callback(true);
                 let currentname = socket.username;             
                 //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
-                delete users[socket.username]; // poistetaan vanha nimi
+                delete users[socket.username]; // poistetaan vanha nimi                    
                 socket.username = data1;                
                 users[socket.username] = socket; 
                 updateUsernames();
                 updateUsername();                
                 nameChangestart(currentname);   //nimenvaihdos on client puolella tullut päätökseen.    
-                data1 = data1.toLowerCase();    //nyt muutetaan data lowercase
-                delete fakeUsers[socket.username];  //ja poistetaan versio jossa on minkäkokosia tahansa kirjaimia
-                socket.username = data1;        //tilalle lowercase nimi
-                fakeUsers[socket.username] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä.
-
+                   
+                fakeUsers.splice(fakeUsers.indexOf(socket.userfake), 1); //ja poistetaan versio jossa on vain pienet kirjaimet
+                data1 = data1.toLowerCase(); //nyt muutetaan data lowercase
+                socket.userfake = data1; //tilalle lowercase nimi
+                fakeUsers.push(socket.userfake);  //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä.
+                
                 console.log("username changed to " + data1);
                 console.log("Lista nimistä: " + Object.keys(users));
+                    //console.log("Lista nimistäFAKE: " + Object.keys(fakeUsers));
             }
         });
 

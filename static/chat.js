@@ -109,7 +109,7 @@ $(function ()
         }
         else
         {
-            alert("Write a message.");
+            //alert("Write a message.");
             // return false;
         }
     });
