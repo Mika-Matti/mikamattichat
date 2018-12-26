@@ -243,7 +243,7 @@ io.on('connection', function(socket)
               //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
             var chars = {'<':'&#60','>':'&#62'};
             data1 = data.replace(/[<>]/g, m => chars[m]);  
-            if(data in users) //jos nimi löytyy jo arraysta
+            if(data1.toLowerCase() in users) //jos nimi löytyy jo arraysta
             {
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
@@ -254,12 +254,17 @@ io.on('connection', function(socket)
                 callback(true);
                 let currentname = socket.username;             
                 //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
-                delete users[socket.username]; // tän pitäisi poistaa vanha
-                socket.username = data1;
-                users[socket.username] = socket;
+                delete users[socket.username]; // poistetaan vanha nimi
+                socket.username = data1;                
+                users[socket.username] = socket; 
                 updateUsernames();
                 updateUsername();                
-                nameChangestart(currentname);
+                nameChangestart(currentname);   //nimenvaihdos on client puolella tullut päätökseen.    
+                data1 = data1.toLowerCase();    //nyt muutetaan data lowercase
+                delete users[socket.username];  //ja poistetaan versio jossa on minkäkokosia tahansa kirjaimia
+                socket.username = data1;        //tilalle lowercase nimi
+                users[socket.username] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä.
+
                 console.log("username changed to " + data1);
                 console.log("Lista nimistä: " + Object.keys(users));
             }
