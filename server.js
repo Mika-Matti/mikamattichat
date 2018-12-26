@@ -10,11 +10,14 @@ let mongoose = require('mongoose');
 var line_history = []; //array johon tulee piirretyt jutut
 
 let users = {}; //käyttäjälista
+let fakeUsers = {}; //lowercase username lista
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
 //timestamp variableja
-let date = new Date();
+time = new Date();
+let date = new Date(Date.now() - time.getTimezoneOffset()*60000)
+//let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();
 let day = date.getDate();
@@ -90,6 +93,8 @@ io.on('connection', function(socket)
 
     socket.username = "newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
     users[socket.username] = socket;
+    fakeUsers[socket.username] = socket;
+    console.log('fake users: ' + Object.keys(fakeUsers));
     updateUsernames();
     updateConnections();
  
@@ -243,7 +248,7 @@ io.on('connection', function(socket)
               //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
             var chars = {'<':'&#60','>':'&#62'};
             data1 = data.replace(/[<>]/g, m => chars[m]);  
-            if(data1.toLowerCase() in users) //jos nimi löytyy jo arraysta
+            if(data1.toLowerCase() in fakeUsers) //jos nimi löytyy jo lowercase arraysta
             {
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
@@ -261,9 +266,9 @@ io.on('connection', function(socket)
                 updateUsername();                
                 nameChangestart(currentname);   //nimenvaihdos on client puolella tullut päätökseen.    
                 data1 = data1.toLowerCase();    //nyt muutetaan data lowercase
-                delete users[socket.username];  //ja poistetaan versio jossa on minkäkokosia tahansa kirjaimia
+                delete fakeUsers[socket.username];  //ja poistetaan versio jossa on minkäkokosia tahansa kirjaimia
                 socket.username = data1;        //tilalle lowercase nimi
-                users[socket.username] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä.
+                fakeUsers[socket.username] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä.
 
                 console.log("username changed to " + data1);
                 console.log("Lista nimistä: " + Object.keys(users));
