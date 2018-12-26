@@ -15,9 +15,9 @@ let connections = [];
 let PORT = process.env.PORT || 3000;
 
 //timestamp variableja
-time = new Date();
-let date = new Date(Date.now() - time.getTimezoneOffset()*60000)
-//let date = new Date();
+//time = new Date();
+//let date = new Date(Date.now() - time.getTimezoneOffset()*60000)
+let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();
 let day = date.getDate();
@@ -234,6 +234,7 @@ io.on('connection', function(socket)
                 }
                 else
                 {
+                    updateDate();
                     io.emit('new message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
                     console.log('message:', {user: socket.username, msg: data});
                 }
@@ -275,7 +276,15 @@ io.on('connection', function(socket)
             }
         });
 
-
+    function updateDate()
+    {
+        date = new Date();
+        year = date.getFullYear();
+        month = date.getMonth();
+        day = date.getDate();
+        hours = date.getHours();
+        minutes = date.getMinutes();
+    }
 
     function updateUsernames()
     {
