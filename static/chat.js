@@ -1,6 +1,7 @@
 //Täällä tehdään kaikki tärkee chat kommunikointi serverin kanssa
  
-let socket = io.connect();
+//let socket = io.connect();
+let socket = io({transports: ['websocket'], upgrade: false});
 
 $(function ()
 {
@@ -85,7 +86,7 @@ $(function ()
     //changed name alkaa
     socket.on('changed namestart', function(data)
     {
-        $("#messages").append("<li><b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + ".*</b></i></li>");
+        $("#messages").append("<li><b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + "*</b></i></li>");
         scrollDown();
     });
             
