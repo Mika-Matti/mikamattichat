@@ -74,20 +74,20 @@ $(function ()
     //has joined announcement
     socket.on('joined server', function(data)
     {
-        $("#messages").append("<li><i><b>" + data.user + "</b>" + " has joined the channel. </i></li>");
+        $("#messages").append("<li>" + data.timestamp + " <i><b>" + data.user + "</b>" + " has joined the channel. </i></li>");
         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
         scrollDown();
     });
     //has left announcement
     socket.on('left server', function(data)
     {
-        $("#messages").append("<li><i><b>" + data.user + "</b>" + " has left the channel. </i></li>");
+        $("#messages").append("<li>" + data.timestamp + " <i><b>" + data.user + "</b>" + " has left the channel. </i></li>");
         scrollDown();
     });
     //changed name alkaa
     socket.on('changed namestart', function(data)
     {
-        $("#messages").append("<li><b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + "*</b></i></li>");
+        $("#messages").append("<li>" + data.timestamp + " <b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + "*</b></i></li>");
         scrollDown();
     });
             
@@ -122,6 +122,7 @@ $(function ()
         for(i = docs.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
         {
             displayOldMessages(docs[i]);
+            //displayOldNamechanges(docs[i]);
         }        
         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
         $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
@@ -142,6 +143,11 @@ $(function ()
         //viestin lähetys
         displayMessages(data);
         scrollDown();
+    });
+
+    socket.on('me message', function(data)
+    {
+        $("#messages").append("<li>" + data.timestamp + " <i><b>*" + data.user + "</b> " + data.msg + "<b>*</b></i></li>");
     });
 
     //yksityisviesti
@@ -195,7 +201,8 @@ function help()
     + "\nAny spaces in your nickname will be removed. This rule mainly exists to help me, the programmer.\n"
     + "\nList of current /commands:"
     + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message."
-    + "\n/purge -- This will remove all messages from the client and database. Use with caution.\n"
+    + "\n/me -- Express yourself in third person, for example - '/me is feeling content today.'\n"
+    + "\n/purge -- This will remove all messages from the client and database. Use with caution."
     + "\nHave fun.");
 }
 //lähetä kuva chattiin

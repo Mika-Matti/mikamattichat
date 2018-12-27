@@ -214,7 +214,7 @@ io.on('connection', function(socket)
                 //if (fakeUsers.indexOf(name.toLowerCase()) != -1)
                 if (name.toLowerCase() in fakeUsers)
                 {
-                    //users[name].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti
+                    
                     fakeUsers[name.toLowerCase()].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti
                     socket.emit('whisper', {msg: msg, user: socket.username});      // lähettää viestin myös itselle ikkunaan eli current socket
                     console.log('whisper', {user: socket.username, msg: msg, name:name});        
@@ -231,7 +231,17 @@ io.on('connection', function(socket)
             }
             
         }
-     
+        else if(msg.substr(0,4).toLowerCase() === '/me ')
+        {
+            msg = msg.substr(4); //poistetaan viestistä '/me '
+            //var ind = msg.indexOf(' ');
+            //if(ind !== -1)
+            //{
+               // var msg = msg.substring(ind + 1);
+                updateDate();
+                io.emit('me message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
+            //}
+        }
         else if(msg.substr(0,6).toLowerCase() === '/purge')
         {
             msg = msg.substr(6); //poistetaan clearhistory viestistä
@@ -347,18 +357,20 @@ io.on('connection', function(socket)
 
     function hasJoined()
     {
-        socket.broadcast.emit('joined server', {user: socket.username});  
+        updateDate();
+        socket.broadcast.emit('joined server', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});  
     }
 
     function hasLeft()
     {
-        io.sockets.emit('left server', {user: socket.username});  
+        updateDate();
+        io.sockets.emit('left server', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});  
     }
 
     function nameChangestart(currentname)
     {
-        
-        io.sockets.emit('changed namestart', {currentname: currentname, user: socket.username});
+        updateDate();
+        io.sockets.emit('changed namestart', {currentname: currentname, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
     }
 
     function updateLines()
