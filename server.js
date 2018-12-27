@@ -203,7 +203,7 @@ io.on('connection', function(socket)
         var chars = {'<':'&#60','>':'&#62'};
         msg = data.replace(/[<>]/g, m => chars[m]);        
 
-        if(msg.substr(0,3) === '/w ') //tällä komennolla voi lähettää yksityisviestin
+        if(msg.substr(0,3).toLowerCase() === '/w ') //tällä komennolla voi lähettää yksityisviestin
         {
             msg = msg.substr(3); //poistetaan viestistä /w
             var ind = msg.indexOf(' ');
@@ -230,6 +230,13 @@ io.on('connection', function(socket)
                 callback('You cannot send an empty whisper.');
             }
             
+        }
+     
+        else if(msg.substr(0,6).toLowerCase() === '/purge')
+        {
+            msg = msg.substr(6); //poistetaan clearhistory viestistä
+            Chat.deleteMany({}, function (err) {});
+            io.emit('clear history', {user: socket.username});      
         }
         // else if(msg.substr(0,6) === '/kick ') //disconnectaa käyttäjä serveriltä
         // {

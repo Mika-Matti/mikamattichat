@@ -151,6 +151,17 @@ $(function ()
         $("#messages").append("<li>" + getCurrentDate() + " <i style=\"color:purple;\">" + "<b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
         scrollDown();
     });
+
+    //clear messages
+    
+    socket.on('clear history', function(data)
+    {   
+        $("#messages").load(window.location.href + " #messages" );      
+        
+        setTimeout(function(){ $("#messages").append("<li><i><b>" + data.user + "</b>" + " purged all messages. </i></li>");   }, 500);
+                
+    });
+
 });
 
 function scrollDown()
@@ -183,13 +194,15 @@ function help()
     + "\nYour nickname has to be 1-13 characters long."
     + "\nAny spaces in your nickname will be removed. This rule mainly exists to help me, the programmer.\n"
     + "\nList of current /commands:"
-    + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message.\n"
+    + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message."
+    + "\n/purge -- This will remove all messages from the client and database. Use with caution.\n"
     + "\nHave fun.");
 }
 //lähetä kuva chattiin
 function tempButton()
 {
-    alert("Feature unavailable.");
+    //alert("Feature unavailable.");   
+
 }
 
 
