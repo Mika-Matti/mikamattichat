@@ -231,6 +231,26 @@ io.on('connection', function(socket)
             }
             
         }
+        // else if(msg.substr(0,6) === '/kick ') //disconnectaa käyttäjä serveriltä
+        // {
+        //     msg = msg.substr(6); //poistetaan viestistä kick
+        //     var ind = msg.indexOf(' ');
+        //     if(ind !== -1)
+        //     {
+        //         var name = msg.substring(0, ind);
+        //         var msg = msg.substring(ind + 1);
+        //         if (name.toLowerCase() in fakeUsers)
+        //         {
+                   
+        //             //io.emit('kick message', {user: socket.username}); 
+        //             fakeUsers[name.toLowerCase()].disconnect(true);
+        //         }
+        //         else
+        //         {
+        //             callback('Kick did not work.');
+        //         }
+        //     }
+        // }        
         else //ilman komentoa lähetetään tavallinen viesti kaikille
         {   
             

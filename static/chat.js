@@ -1,7 +1,8 @@
 //Täällä tehdään kaikki tärkee chat kommunikointi serverin kanssa
  
 //let socket = io.connect();
-let socket = io({transports: ['websocket'], upgrade: false});
+let socket = io({transports: ['websocket'], 
+                upgrade: false, });
 
 $(function ()
 {
@@ -12,7 +13,7 @@ $(function ()
     {
         e.preventDefault();
         var hasSpace = $('#n').val().indexOf(' ')>-1; 
-        var hasSpace2 = $('#n').val().indexOf(' ')>-1;
+        var hasSpace2 = $('#n').val().indexOf(' ')>-1; //erilainen space
         if($('#n').val().length > 0 && $('#n').val().length < 14 && !hasSpace && !hasSpace2)
         {
             socket.emit('change user', $('#n').val(), function(data)
