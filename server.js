@@ -246,7 +246,7 @@ io.on('connection', function(socket)
         {
             msg = msg.substr(6); //poistetaan clearhistory viestistä
             Chat.deleteMany({}, function (err) {});
-            io.emit('clear history', {user: socket.username});      
+            io.emit('clear history', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});     
         }
         // else if(msg.substr(0,6) === '/kick ') //disconnectaa käyttäjä serveriltä
         // {

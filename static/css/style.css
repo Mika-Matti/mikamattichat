@@ -333,6 +333,30 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: white;       
     overflow-y: auto;    
 }
+
+#emojibox
+{
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    width:218px;
+    height:320px;
+    display: inline-block;   
+    position: absolute;
+    z-index:99;
+    bottom:40px;
+    right:9px;
+    overflow-y:scroll;
+    padding-top: 5px;
+    display:none; /*piilotus*/
+}
+#emojibox input[type='button']
+{
+    background: white;
+    border: hidden;
+    font-size: 20px;
+    width: 28px;
+  
+}
 /*erikoisnappulat div*/
 .wrapper > .chatContainer > .chatNames > .chatNamesbottom
 {
@@ -341,7 +365,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding: 5px;
     background: white;      
 }
-/* Lähetä viesti nappula */
+
 .wrapper > .chatContainer > .chatNames > .chatnamesBottom form input[type='button']
 {
     width: 67px;
@@ -358,6 +382,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer; 
 }
+
 /*oikealla floattaavat divit loppuu*/
 
 .wrapper > .chatContainer > .chatHeadertwo 
@@ -449,6 +474,8 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;  
 }
+
+
 
 #messages 
 { 

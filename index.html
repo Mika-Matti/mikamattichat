@@ -3,17 +3,16 @@
     <head>
         <title>mikamattiChat</title>
 
-        <meta charset="UTF-8">
+        <meta charset="UTF-8">        
         <link rel='stylesheet' type='text/css' href='static/css/style.css' />
-     <!--  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'> -->
-
         <link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="static/favicon.ico" type="image/x-icon"> 
 
         <script src="/socket.io/socket.io.js"></script>
-        <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+        <!--<script src="//code.jquery.com/jquery-1.11.1.js"></script>-->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="static/chat.js"></script>
-        <script src="static/draw.js"></script>
+        <script src="static/draw.js"></script>       
 
     </head>
 
@@ -79,13 +78,14 @@
                 <!-- voisiko tämänkin tehdä jotenkin li classilla ja echolla ja poistaa tieto kun käyttäjän yhteys katkeaa? -->
                         
                 <ul id='usernames'></ul> 
-
+                    
                 </div>
-
+                <div id='emojibox'></div>
                 <!-- tänne tulee erikoisominaisuusnappuloita -->
                 <div class='chatNamesbottom'>
+                    
                     <form>
-                    <input type='button' value='Temp' onclick='tempButton()'>
+                    <input type='button' value='Emojis' onclick='emojiButton()'>
                     <input type='button' value='Help' onclick='help()'>
                     </form>
                 </div>
@@ -114,7 +114,7 @@
                 <form action='' id='send'>                  
                 <input id='m' type='text' autocomplete='off' placeholder='Type your message here.' />
                 <input type='submit' value='Send' />
-                </form>
+                </form>     
             </div>
             <!-- viestikirjotusosio loppuu -->
         
