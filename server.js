@@ -3,13 +3,14 @@
 let express = require('express');
 let path = require('path');
 let app = express();
-let http = require('http').createServer(app); //lisäsin tähän .Server tilalle .createServer herokua varten ota pois jos ei toimi 
+let http = require('http').createServer(app); //.Server tilalle .createServer herokua varten 
 let io = require('socket.io')(http);
 let mongoose = require('mongoose');
 
-var line_history = []; //array johon tulee piirretyt jutut
+var lineHistory = []; //array johon tulee piirretyt jutut
 
-let users = {}; //käyttäjälista
+let users = {}; //Näkyväkäyttäjälista
+let admins = {}; //nimet joilla on adminoikeudet
 let fakeUsers = {}; //lowercase username lista
 let connections = [];
 let PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ let day = date.getDate();
 let hours = date.getHours();
 let minutes = date.getMinutes();
 
+let adminCrown = "🎩"; //"👑" "🎩"
 
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
 {
@@ -112,11 +114,15 @@ io.on('connection', function(socket)
     //disconnect
     socket.on('disconnect', function()
     {
+        var name = socket.username;              
+        if (name in admins)
+        {
+            delete admins[socket.useradminname];            
+        }
         hasLeft();
         delete users[socket.username];        
         updateUsernames();    
-        delete fakeUsers[socket.userfake];
-        //fakeUsers.splice(fakeUsers.indexOf(socket.userfake), 1);
+        delete fakeUsers[socket.userfake];      
 
         connections.splice(connections.indexOf(socket), 1);
         updateConnections();
@@ -125,6 +131,7 @@ io.on('connection', function(socket)
         console.log('Disconnected: %s sockets connected', connections.length);  
         console.log('fake users: ' + Object.keys(fakeUsers));
         console.log('users: ' + Object.keys(users));  
+        console.log("admins: " + Object.keys(admins));
     });
     
     socket.on('draw fake', function(data)
@@ -136,30 +143,25 @@ io.on('connection', function(socket)
     {
         for (let i = 0; i < data.line.length; i++)
         {
-            io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin
-            
+            io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
         }
-        line_history.push(data.line);
-        //line_history.push(data.line);
-        //io.emit('draw line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
-        //console.log("data sisällä: " + Object.keys(data.line[0]));        
+        lineHistory.push(data.line); 
         updateLines();
     });
-
 
     //pyyhin
     socket.on('erasertool', function (data)
     {        
-        for (let i = 0; i < line_history.length; i++) //tämä on toimiva. pyyhin tekeee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
+        for (let i = 0; i < lineHistory.length; i++) //tämä on toimiva. pyyhin tekeee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
         {
             var foundLine = false;
-            for (let a = 0; a < line_history[i].length; a++)
+            for (let a = 0; a < lineHistory[i].length; a++)
             {
-                var line = line_history[i][a].line;
+                var line = lineHistory[i][a].line;
 		  	    if ( LineToLineIntersection ( data.mouse.x, data.mouse.y, data.mouse2.x, data.mouse2.y, line[0].x, line[0].y, line[1].x, line[1].y ) )
                 {
-                    //console.log("Kumitus onnistui " + line_history.length);
-                    line_history.splice ( i, 1 );
+                    //console.log("Kumitus onnistui " + lineHistory.length);
+                    lineHistory.splice ( i, 1 );
                     foundLine = true;
                     updateLines();
                     updateCanvas();
@@ -171,82 +173,100 @@ io.on('connection', function(socket)
                 //console.log("foundline break");
                 break;
             }    
-        }    
-        
+        }            
     });
     //tyhjennä canvas
     socket.on('clearit', function()
     {
-        line_history = [];
+        lineHistory = [];
         io.emit('clearit', true);
         updateLines();
     });
-
     //jos ikkunan kokoa muutetaan clientside
     socket.on('resize', function()
     {        
-        for (var i in line_history) 
+        for (var i in lineHistory) 
         {
-            for (var a in line_history[i]) 
+            for (var a in lineHistory[i]) 
             {
-                socket.emit('draw line', { line: line_history[i][a].line } );
+                socket.emit('draw line', { line: lineHistory[i][a].line } );
             }
         }
         updateLines();
-    });
-    
+    });    
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
     {
         msg = data.trim();
         //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
         var chars = {'<':'&#60','>':'&#62'};
-        msg = data.replace(/[<>]/g, m => chars[m]);        
-
-        if(msg.substr(0,3).toLowerCase() === '/w ') //tällä komennolla voi lähettää yksityisviestin
+        msg = data.replace(/[<>]/g, m => chars[m]);      
+           
+        if(msg.substr(0,7).toLowerCase() === '/admin ') //admin login
         {
-            msg = msg.substr(3); //poistetaan viestistä /w
-            var ind = msg.indexOf(' ');
-            if(ind !== -1)
-            {
-                var name = msg.substring(0, ind);
-                var msg = msg.substring(ind + 1);
-                //if (fakeUsers.indexOf(name.toLowerCase()) != -1)
-                if (name.toLowerCase() in fakeUsers)
-                {
-                    
-                    fakeUsers[name.toLowerCase()].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti
-                    socket.emit('whisper', {msg: msg, user: socket.username});      // lähettää viestin myös itselle ikkunaan eli current socket
-                    console.log('whisper', {user: socket.username, msg: msg, name:name});        
-                }
-                else
-                {
-                    callback('Incorrect username.');
-                }
+            msg = msg.substr(7);
+            
+            var password = msg.substring(0, ind);              
+            var pass = "Kettunen1234";
+            if(password === pass)
+            {  
+                                
+                delete users[socket.username]; // poistetaan vanha nimi                 
+                socket.username = adminCrown + socket.username; //uusi admin nimi tilalle
+                users[socket.username] = socket;   //lisätään listaan vaihdettu nimi
+
+                //socket.useradminname = socket.username; 
+                socket.useradminname = socket.username; 
+                admins[socket.useradminname] = socket;
+                users[socket.username] = socket; 
+
+                updateUsernames();
+                console.log({admin: socket.useradminname}, " on nyt admin.");
+                console.log("Admins: " + Object.keys(admins));
+                console.log("Users: " + Object.keys(users));
                 
             }
             else
             {
-                callback('You cannot send an empty whisper.');
-            }
+                //callback('Wrong password');
+                console.log("Incorrect admin login ", {user: socket.username, msg: msg});   
+            }           
             
         }
-        else if(msg.substr(0,4).toLowerCase() === '/me ')
+        else if(msg.substr(0,9).toLowerCase() === '/imitate ') //lähetä viesti jonkun toisen nimellä(restrict admin)
         {
-            msg = msg.substr(4); //poistetaan viestistä '/me '
-            //var ind = msg.indexOf(' ');
-            //if(ind !== -1)
-            //{
-               // var msg = msg.substring(ind + 1);
-                updateDate();
-                io.emit('me message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
-            //}
-        }
-        else if(msg.substr(0,6).toLowerCase() === '/purge')
+            msg = msg.substr(9); //poistetaan '/imitate'
+            var name = socket.username;              
+            if (name in admins)
+            {
+                var ind = msg.indexOf(' ');
+                if(ind !== -1)
+                {
+                    var name = msg.substring(0, ind);
+                    var msg = msg.substring(ind +1);
+                    updateDate();
+                    io.emit('imitate', {msg: msg, user: name, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
+                }
+            }
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }
+
+        }        
+        else if(msg.substr(0,6).toLowerCase() === '/purge') //tyhjennetään viestihistoria kokonaan databasesta ja clientistä (restrict admin)
         {
-            msg = msg.substr(6); //poistetaan clearhistory viestistä
-            Chat.deleteMany({}, function (err) {});
-            io.emit('clear history', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});     
+            msg = msg.substr(6); //poistetaan /purge viestistä
+            var name = socket.username;              
+            if (name in admins)
+            {
+                Chat.deleteMany({}, function (err) {});
+                io.emit('clear history', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes}); 
+            }    
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }
         }
         // else if(msg.substr(0,6) === '/kick ') //disconnectaa käyttäjä serveriltä
         // {
@@ -267,7 +287,49 @@ io.on('connection', function(socket)
         //             callback('Kick did not work.');
         //         }
         //     }
-        // }        
+        // }
+        else if(msg.substr(0,4).toLowerCase() === '/me ')
+        {
+            msg = msg.substr(4); //poistetaan viestistä '/me '
+            //var ind = msg.indexOf(' ');
+            //if(ind !== -1)
+            //{
+               // var msg = msg.substring(ind + 1);
+                updateDate();
+                io.emit('me message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
+            //}
+        }
+        else if(msg.substr(0,3).toLowerCase() === '/w ') //tällä komennolla voi lähettää yksityisviestin
+        {
+            msg = msg.substr(3); //poistetaan viestistä /w
+            var ind = msg.indexOf(' ');
+            if(ind !== -1)
+            {
+                var name = msg.substring(0, ind);
+                var msg = msg.substring(ind + 1);
+                //if (fakeUsers.indexOf(name.toLowerCase()) != -1)
+                if (name.toLowerCase() in fakeUsers)
+                {
+                    
+                    fakeUsers[name.toLowerCase()].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti
+                    socket.emit('whisper', {msg: msg, user: socket.username});      // lähettää viestin myös itselle ikkunaan eli current socket
+                    console.log('whisper', {user: socket.username, msg: msg, name:name});        
+                }
+                else
+                {
+                    callback('Incorrect username.');
+                }                
+            }
+            else
+            {
+                callback('You cannot send an empty whisper.');
+            }
+            
+        }   
+        else if(msg.substr(0,1).toLowerCase() === '/') //Tämä on siksi että jos kirjoittaa jonkun komennon väärin, se ei lähetä sitä chattiin.
+        {
+            //msg = msg.substr(1);
+        }
         else //ilman komentoa lähetetään tavallinen viesti kaikille
         {   
             
@@ -289,7 +351,6 @@ io.on('connection', function(socket)
         }
     });
 
-
     //nimenvaihto
     socket.on('change user', function(data, callback)
         {   
@@ -304,15 +365,30 @@ io.on('connection', function(socket)
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
                 console.log("Lista nimistä: " + Object.keys(users));
-            }
+            }       
             else
             {
                 callback(true);
                 let currentname = socket.username;             
-                //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä   
-                delete users[socket.username]; // poistetaan vanha nimi                    
-                socket.username = data1;                
-                users[socket.username] = socket; 
+                //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä 
+                if (currentname in admins)
+                {
+                    delete users[socket.username]; // poistetaan vanha nimi 
+                    delete admins[socket.useradminname];
+
+                    socket.username = adminCrown + data1;  
+                    users[socket.username] = socket; 
+
+                    socket.useradminname = socket.username; 
+                    admins[socket.useradminname] = socket;     
+                }  
+                else
+                {
+                    delete users[socket.username]; // poistetaan vanha nimi                    
+                    socket.username = data1;                
+                    users[socket.username] = socket; 
+                }
+                
                 updateUsernames();
                 updateUsername();                
                 nameChangestart(currentname);   //nimenvaihdos on client puolella tullut päätökseen.    
@@ -321,11 +397,12 @@ io.on('connection', function(socket)
                 delete fakeUsers[socket.userfake]; //ja poistetaan versio jossa on vain pienet kirjaimet
                 data1 = data1.toLowerCase(); //nyt muutetaan data lowercase
                 socket.userfake = data1; //tilalle lowercase nimi
-                fakeUsers[socket.userfake] = socket;
-                // fakeUsers.push(socket.userfake);  //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä.
-                
+                fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
+                                
                 console.log("username changed to " + data1);
-                console.log("Lista nimistä: " + Object.keys(users));
+                console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
+                console.log("Lista nimistä näkyvä: " + Object.keys(users));
+                console.log("Lista nimistä admins: " + Object.keys(admins));
                     //console.log("Lista nimistäFAKE: " + Object.keys(fakeUsers));
             }
         });
@@ -376,9 +453,9 @@ io.on('connection', function(socket)
     function updateLines()
     {
         var linelength = 0;
-        for (var i in line_history) 
+        for (var i in lineHistory) 
         {
-            linelength += (line_history[i].length * 2 * 4) / 1024;
+            linelength += (lineHistory[i].length * 2 * 4) / 1024;
         }
         io.sockets.emit('get lines', linelength); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi
         
@@ -387,11 +464,11 @@ io.on('connection', function(socket)
     function updateCanvas()
     {
         io.emit('clearit', true);
-        for (var i in line_history) 
+        for (var i in lineHistory) 
         {
-            for (var a in line_history[i]) 
+            for (var a in lineHistory[i]) 
             {
-                io.emit('draw line', { line: line_history[i][a].line } );
+                io.emit('draw line', { line: lineHistory[i][a].line } );
             }
         }
         updateLines();
