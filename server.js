@@ -397,7 +397,8 @@ io.on('connection', function(socket)
 
             var regex = /[a-zA-Z0-9&_\.-]/g;
             var spacereg = /\s/g; // välilyönnit nimimerkissä
-            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(spacereg)) //jos nimi löytyy jo lowercase arraysta
+            
+            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(spacereg) || data1.match(adminCrown)) //jos nimi löytyy jo lowercase arraysta
             //if (fakeUsers.indexOf(data1.toLowerCase()) != -1 || !data1.match(regex))
             {
                 callback(false);
