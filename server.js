@@ -387,21 +387,23 @@ io.on('connection', function(socket)
             });
         }
     });
-
+    
     //nimenvaihto
     socket.on('change user', function(data, callback)
         {   
               //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
             var chars = {'<':'&#60','>':'&#62'};
-            data1 = data.replace(/[<>]/g, m => chars[m]);  
-
-            //var regex = /[a-zA-Z0-9&_\.-]/g;
-            var regex = /[a-zA-Z0-9_\.-]/g;
-            //var spacereg = /\s/g; // välilyönnit nimimerkissä
-            var blockEmoji = (/\D/g);
-            //var blockEmoji = /&🎩/g;
+            data1 = data.replace(/[<>]/g, m => chars[m]);
             
-            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
+            //var regex = /[a-zA-Z0-9_\.-]/g;
+            //var blockEmoji = (/\D/g);
+            //var regex = /[a-zA-Z0-9&_\.-]/g;
+            //var spacereg = /\s/g; // välilyönnit nimimerkissä
+            //var blockEmoji = /&🎩/g;
+            var regex = /[^a-zA-Z0-9_.-]+/g;
+            
+            //if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
+            if(data1.toLowerCase() in fakeUsers || data1.match(regex))
             {
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
