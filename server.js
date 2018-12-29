@@ -24,6 +24,8 @@ let month = date.getMonth();
 let day = date.getDate();
 let hours = date.getHours();
 let minutes = date.getMinutes();
+let timeHoursMins = ((hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes);
+let timeDayMonthYear = ((day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (month+1) + "/" + year);
 
 let adminCrown = "🎩"; //"👑" "🎩"
 
@@ -43,8 +45,8 @@ let chatSchema = mongoose.Schema(
     {
         user: String,
         msg: String,    //alla oleva timestamp ottaa tunnit ja minuutit. Timestampissa myös korjataan, jos mikään luku on < 10 niin lisätään 0 eteen.
-        timestamp: {type: String, default: (hours<10?'0':'') + hours + ":" +(minutes<10?'0':'') + minutes},
-        oldmessagetime: {type: String, default: (day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (month+1) + "/" + year},
+        timestamp: {type: String, default: timeHoursMins},
+        oldmessagetime: {type: String, default: timeDayMonthYear},
         fulltime: {type: Date, default: Date.now} //määritellään tän perusteella uusin viesti kun haetaan viestejä databasesta
     });
 
@@ -244,8 +246,20 @@ io.on('connection', function(socket)
                 {
                     var name = msg.substring(0, ind);
                     var msg = msg.substring(ind +1);
-                    updateDate();
-                    io.emit('imitate', {msg: msg, user: name, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
+
+                    let newMsg = new Chat({msg: msg, user: " <b>" + name + ": </b>", timestamp: timeHoursMins}); // luodaan databaseen viesti
+                    newMsg.save(function(err)
+                    {         
+                        if(err) 
+                        {
+                            throw err;
+                        }
+                        else
+                        {                            
+                            updateDate();
+                            io.emit('new message', {msg: msg, user: " <b>" + name + ": </b>", timestamp: timeHoursMins});
+                        }
+                    });
                 }
             }
             else
@@ -257,47 +271,51 @@ io.on('connection', function(socket)
         else if(msg.substr(0,6).toLowerCase() === '/purge') //tyhjennetään viestihistoria kokonaan databasesta ja clientistä (restrict admin)
         {
             msg = msg.substr(6); //poistetaan /purge viestistä
+            
             var name = socket.username;              
             if (name in admins)
             {
                 Chat.deleteMany({}, function (err) {});
-                io.emit('clear history', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes}); 
+                msg = "</b> purged all messages. </i>";
+
+                let newMsg = new Chat({msg: msg, user: " <b><i>" + socket.username, timestamp: timeHoursMins}); // luodaan databaseen viesti
+                newMsg.save(function(err)
+                {         
+                    if(err) 
+                    {
+                        throw err;
+                    }
+                    else
+                    {
+                        updateDate();
+                        io.emit('purge', {msg: msg, user: " <b><i>" + socket.username, timestamp: timeHoursMins}); 
+                    }
+                });
             }    
             else
             {
                 callback("You don't have the rights to do that.");
             }
         }
-        // else if(msg.substr(0,6) === '/kick ') //disconnectaa käyttäjä serveriltä
-        // {
-        //     msg = msg.substr(6); //poistetaan viestistä kick
-        //     var ind = msg.indexOf(' ');
-        //     if(ind !== -1)
-        //     {
-        //         var name = msg.substring(0, ind);
-        //         var msg = msg.substring(ind + 1);
-        //         if (name.toLowerCase() in fakeUsers)
-        //         {
-                   
-        //             //io.emit('kick message', {user: socket.username}); 
-        //             fakeUsers[name.toLowerCase()].disconnect(true);
-        //         }
-        //         else
-        //         {
-        //             callback('Kick did not work.');
-        //         }
-        //     }
-        // }
         else if(msg.substr(0,4).toLowerCase() === '/me ')
         {
             msg = msg.substr(4); //poistetaan viestistä '/me '
-            //var ind = msg.indexOf(' ');
-            //if(ind !== -1)
-            //{
-               // var msg = msg.substring(ind + 1);
-                updateDate();
-                io.emit('me message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
-            //}
+
+            let newMsg = new Chat({msg: msg + "<b>*</b></i>", user: "<i><b>*" + socket.username + "</b> ", timestamp: timeHoursMins}); // luodaan databaseen viesti
+            newMsg.save(function(err)
+            {         
+                if(err) 
+                {
+                    throw err;
+                }
+                else
+                {
+                    updateDate();
+                    io.emit('new message', {msg: msg + "<b>*</b></i>", user: "<i><b>*" + socket.username + "</b> ", timestamp: timeHoursMins});
+                    console.log('message:', {user: socket.username, msg: data});
+                }
+            });                
+            
         }
         else if(msg.substr(0,3).toLowerCase() === '/w ') //tällä komennolla voi lähettää yksityisviestin
         {
@@ -330,11 +348,30 @@ io.on('connection', function(socket)
         {
             //msg = msg.substr(1);
         }
+                // else if(msg.substr(0,6) === '/kick ') //disconnectaa käyttäjä serveriltä
+        // {
+        //     msg = msg.substr(6); //poistetaan viestistä kick
+        //     var ind = msg.indexOf(' ');
+        //     if(ind !== -1)
+        //     {
+        //         var name = msg.substring(0, ind);
+        //         var msg = msg.substring(ind + 1);
+        //         if (name.toLowerCase() in fakeUsers)
+        //         {
+                   
+        //             //io.emit('kick message', {user: socket.username}); 
+        //             fakeUsers[name.toLowerCase()].disconnect(true);
+        //         }
+        //         else
+        //         {
+        //             callback('Kick did not work.');
+        //         }
+        //     }
+        // }
         else //ilman komentoa lähetetään tavallinen viesti kaikille
         {   
-            
-            
-            let newMsg = new Chat({msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours + ":" + (minutes<10?'0':'') + minutes}); // luodaan databaseen viesti
+               
+            let newMsg = new Chat({msg: msg, user: " <b>" + socket.username + ": </b>", timestamp: timeHoursMins}); // luodaan databaseen viesti
             newMsg.save(function(err)
             {         
                 if(err) 
@@ -344,7 +381,7 @@ io.on('connection', function(socket)
                 else
                 {
                     updateDate();
-                    io.emit('new message', {msg: msg, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
+                    io.emit('new message', {msg: msg, user: " <b>" + socket.username + ": </b>", timestamp: timeHoursMins});
                     console.log('message:', {user: socket.username, msg: data});
                 }
             });
@@ -434,20 +471,57 @@ io.on('connection', function(socket)
 
     function hasJoined()
     {
-        updateDate();
-        socket.broadcast.emit('joined server', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});  
+        msg = "</b> joined the channel.</i>";
+        let newMsg = new Chat({msg: msg, user: " <i><b>" + socket.username, timestamp: timeHoursMins}); // luodaan databaseen viesti
+        newMsg.save(function(err)
+        {         
+            if(err) 
+            {
+                throw err;
+            }
+            else
+            {
+            updateDate();
+            socket.broadcast.emit('new message', {msg: msg, user: " <i><b>" + socket.username, timestamp: timeHoursMins});  
+            }
+        });
     }
 
     function hasLeft()
     {
-        updateDate();
-        io.sockets.emit('left server', {user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});  
+        msg = "</b> left the channel.</i>";
+        let newMsg = new Chat({msg: msg, user: " <i><b>" + socket.username, timestamp: timeHoursMins}); // luodaan databaseen viesti
+        newMsg.save(function(err)
+        {         
+            if(err) 
+            {
+                throw err;
+            }
+            else
+            {
+            updateDate();
+            io.sockets.emit('new message', {msg: msg, user: " <i><b>" + socket.username, timestamp: timeHoursMins});  
+            }
+        });
     }
 
     function nameChangestart(currentname)
     {
-        updateDate();
-        io.sockets.emit('changed namestart', {currentname: currentname, user: socket.username, timestamp: (hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes});
+        currentname = currentname;
+        msg = "*</b></i>";
+        let newMsg = new Chat({msg: msg, user: " <b><i>*" + currentname + "</b>" + " is now known as <b>" + socket.username, timestamp: timeHoursMins}); // luodaan databaseen viesti
+        newMsg.save(function(err)
+        {         
+            if(err) 
+            {
+                throw err;
+            }
+            else
+            {
+                updateDate();
+                io.sockets.emit('new message', {msg: msg, user: " <b><i>*" + currentname + "</b>" + " is now known as <b>" + socket.username, timestamp: timeHoursMins});
+            }
+        });
     }
 
     function updateLines()

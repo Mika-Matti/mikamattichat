@@ -67,28 +67,7 @@ $(function ()
         html += "(" + data + ")";
         $("#connections").html(html);
     });
-    //CONNECTIONS LOPPUU
-
-    //has joined announcement
-    socket.on('joined server', function(data)
-    {
-        $("#messages").append("<li>" + data.timestamp + " <i><b>" + data.user + "</b>" + " has joined the channel. </i></li>");
-        //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
-        scrollDown();
-    });
-    //has left announcement
-    socket.on('left server', function(data)
-    {
-        $("#messages").append("<li>" + data.timestamp + " <i><b>" + data.user + "</b>" + " has left the channel. </i></li>");
-        scrollDown();
-    });
-    //changed name alkaa
-    socket.on('changed namestart', function(data)
-    {
-        $("#messages").append("<li>" + data.timestamp + " <b><i>*" + data.currentname + "</b>" + " is now known as <b>" + data.user + "*</b></i></li>");
-        scrollDown();
-    });
-            
+    //CONNECTIONS LOPPUU       
 
 
     //CHATVIESTINLÄHETTÄMINEN
@@ -104,13 +83,11 @@ $(function ()
             {
                 alert("Error: " + data); // ottaa serveriltä callback viestit jos whisper on tyhjä tai käyttäjää ei ole
             });
-            $('#m').val(''); //tyhjentää kentän
-            // return false;
+            $('#m').val(''); //tyhjentää kentän            
         }
         else
         {
-            //alert("Write a message.");
-            // return false;
+            //alert("Write a message.");            
         }
     });
 
@@ -119,41 +96,26 @@ $(function ()
     {
         for(i = docs.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
         {
-            displayOldMessages(docs[i]);
-            //displayOldNamechanges(docs[i]);
+            sendOldMessages(docs[i]);
         }        
         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
         $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
-    });
-
-    function displayMessages(data)
+    });        
+   
+    function sendOldMessages(data)
     {
-        $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "</li>");
-    }
-    function displayOldMessages(data)
-    {
-       $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + "</b>" + ": " + data.msg + "<b style=\"color:red; font-size: 10px;\"> [" + data.oldmessagetime +"]</b></li>");
+       $("#messages").append("<li>" + data.timestamp + data.user + data.msg + "<b style=\"color:red; font-size: 10px;\"> [" + data.oldmessagetime +"]</b></li>");
     }
 
     //viesti tulee clientside ikkunaan
     socket.on('new message', function(data)
     {
         //viestin lähetys
-        displayMessages(data);
+        $("#messages").append("<li>" + data.timestamp + data.user + data.msg + "</li>");
         scrollDown();
     });
 
-    socket.on('me message', function(data)
-    {
-        $("#messages").append("<li>" + data.timestamp + " <i><b>*" + data.user + "</b> " + data.msg + "<b>*</b></i></li>");
-    });
-
-    socket.on('imitate', function(data)
-    {
-        $("#messages").append("<li>" + data.timestamp + " <b>" + data.user + ": </b> " + data.msg + "</li>");
-    });
-
-    //yksityisviesti
+    //yksityisviesti. Tätä ei tallenneta tietokantaan.
     socket.on('whisper', function(data)
     {
         //viestin lähetys
@@ -162,11 +124,11 @@ $(function ()
     });
 
     //purge messages
-    socket.on('clear history', function(data)
+    socket.on('purge', function(data)
     {   
-        $("#messages").load(window.location.href + " #messages" );      
+        $("#messages").load(window.location.href + " #messages" );   //päivitetään viestidiv, jotta se tyhjenee kaikille.   
         
-        setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + " <i><b>" + data.user + "</b>" + " purged all messages. </i></li>");   }, 500);
+        setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.user + data.msg + "</li>"); }, 200); //lähetetään ilmoitus, että kuka poisti viestit.
                 
     });
 
