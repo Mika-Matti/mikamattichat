@@ -82,8 +82,9 @@ io.on('connection', function(socket)
     console.log('Connected: %s sockets connected', connections.length);    
 
     //tuo vanhat viestit mongodb databasesta
-    let query = Chat.find({});  //pelkät {} löytää aivan kaiken.
-    query.sort('-fulltime').limit(30).exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+    //let query = Chat.find({});  //pelkät {} löytää aivan kaiken collectionista.
+    let query = Chat.find().sort('-fulltime').limit(30); //tässä kokeillaan löytyiskö nopeammin kaikki, ettei etitä kaikkea.
+    query.exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
     {
         if(err) 
         {
@@ -549,7 +550,7 @@ io.on('connection', function(socket)
         }
         updateLines();
     }
-    function updateCanvasAll()
+    function updateCanvasAll() //canvas päivitetään kaikille kumia käyttäessä. Kömpelöä, mutta toimii.
     {
         io.emit('clearit', true);
         for (var i in lineHistory) 
