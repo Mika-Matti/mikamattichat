@@ -395,10 +395,12 @@ io.on('connection', function(socket)
             var chars = {'<':'&#60','>':'&#62'};
             data1 = data.replace(/[<>]/g, m => chars[m]);  
 
-            var regex = /[a-zA-Z0-9&_\.-]/g;
+            //var regex = /[a-zA-Z0-9&_\.-]/g;
+            var regex = /[a-zA-Z0-9_\.-]/g;
             var spacereg = /\s/g; // välilyönnit nimimerkissä
+            //var adminCrowncode = "";
             
-            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(spacereg) || data1.match(adminCrown)) //jos nimi löytyy jo lowercase arraysta
+            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(spacereg)) //jos nimi löytyy jo lowercase arraysta
             //if (fakeUsers.indexOf(data1.toLowerCase()) != -1 || !data1.match(regex))
             {
                 callback(false);
