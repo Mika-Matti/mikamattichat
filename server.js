@@ -397,10 +397,11 @@ io.on('connection', function(socket)
 
             //var regex = /[a-zA-Z0-9&_\.-]/g;
             var regex = /[a-zA-Z0-9_\.-]/g;
-            var spacereg = /\s/g; // välilyönnit nimimerkissä
-            var blockEmoji = /&/g;
+            //var spacereg = /\s/g; // välilyönnit nimimerkissä
+            var blockEmoji = (/\D/g);
+            //var blockEmoji = /&🎩/g;
             
-            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(spacereg) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
+            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
             {
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
