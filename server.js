@@ -217,6 +217,7 @@ io.on('connection', function(socket)
                 users[socket.username] = socket; 
 
                 updateUsernames();
+                isNowAdmin();
                 console.log({admin: socket.useradminname}, " on nyt admin.");
                 console.log("Admins: " + Object.keys(admins));
                 console.log("Users: " + Object.keys(users));
@@ -395,7 +396,8 @@ io.on('connection', function(socket)
             data1 = data.replace(/[<>]/g, m => chars[m]);  
 
             var regex = /[a-zA-Z0-9&_\.-]/g;
-            if(data1.toLowerCase() in fakeUsers || !data1.match(regex)) //jos nimi löytyy jo lowercase arraysta
+            var spacereg = /\s/g; // välilyönnit nimimerkissä
+            if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(spacereg)) //jos nimi löytyy jo lowercase arraysta
             //if (fakeUsers.indexOf(data1.toLowerCase()) != -1 || !data1.match(regex))
             {
                 callback(false);
@@ -483,8 +485,8 @@ io.on('connection', function(socket)
             }
             else
             {
-            updateDate();
-            socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                updateDate();
+                socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
             }
         });
     }
@@ -502,8 +504,27 @@ io.on('connection', function(socket)
             }
             else
             {
-            updateDate();
-            io.sockets.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                updateDate();
+                socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+            }
+        });
+    }
+
+    function isNowAdmin()
+    {
+        style = " <i><b>";
+        msg = "</b> is now admin.</i>";
+        let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+        newMsg.save(function(err)
+        {
+            if(err)
+            {
+                throw err;
+            }
+            else
+            {
+                updateDate();
+                io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
             }
         });
     }
