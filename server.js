@@ -205,8 +205,7 @@ io.on('connection', function(socket)
             var password = msg.substring(0, ind);              
             var pass = "Kettunen1234";
             if(password === pass)
-            {  
-                                
+            {                                  
                 delete users[socket.username]; // poistetaan vanha nimi                 
                 socket.username = adminCrown + socket.username; //uusi admin nimi tilalle
                 users[socket.username] = socket;   //lisätään listaan vaihdettu nimi
@@ -395,15 +394,10 @@ io.on('connection', function(socket)
             var chars = {'<':'&#60','>':'&#62'};
             data1 = data.replace(/[<>]/g, m => chars[m]);
             
-            //var regex = /[a-zA-Z0-9_\.-]/g;
-            //var blockEmoji = (/\D/g);
-            //var regex = /[a-zA-Z0-9&_\.-]/g;
-            //var spacereg = /\s/g; // välilyönnit nimimerkissä
-            //var blockEmoji = /&🎩/g;
             var regex = /[^a-zA-Z0-9_.-]+/g;
             
             //if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
-            if(data1.toLowerCase() in fakeUsers || data1.match(regex))
+            if(data1.toLowerCase() in fakeUsers || data1.match(regex) || data1.length > 13 || data1.length < 1)
             {
                 callback(false);
                 console.log ("nimi " + data + " on jo käytössä");
