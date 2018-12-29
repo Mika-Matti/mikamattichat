@@ -111,7 +111,7 @@ io.on('connection', function(socket)
     //ilmoitetaan että on liittynyt serverille
     hasJoined();
 
-    //piirroksen refreshaus uusillekkin käyttäjille
+    //piirroksen refreshaus uudelle käyttäjälle
     updateCanvas();
 
     //disconnect
@@ -166,8 +166,7 @@ io.on('connection', function(socket)
                     //console.log("Kumitus onnistui " + lineHistory.length);
                     lineHistory.splice ( i, 1 );
                     foundLine = true;
-                    updateLines();
-                    updateCanvas();
+                    updateCanvasAll(); //päivitetään canvas kaikille
                     break;
                 }   
             }   
@@ -188,14 +187,7 @@ io.on('connection', function(socket)
     //jos ikkunan kokoa muutetaan clientside
     socket.on('resize', function()
     {        
-        for (var i in lineHistory) 
-        {
-            for (var a in lineHistory[i]) 
-            {
-                socket.emit('draw line', { line: lineHistory[i][a].line } );
-            }
-        }
-        updateLines();
+        updateCanvas();       
     });    
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
@@ -547,15 +539,28 @@ io.on('connection', function(socket)
 
     function updateCanvas()
     {
+        //io.emit('clearit', true);
+        for (var i in lineHistory) 
+        {
+            for (var a in lineHistory[i]) 
+            {
+                socket.emit('draw line', { line: lineHistory[i][a].line } );
+            }
+        }
+        updateLines();
+    }
+    function updateCanvasAll()
+    {
         io.emit('clearit', true);
         for (var i in lineHistory) 
         {
+            
             for (var a in lineHistory[i]) 
             {
                 io.emit('draw line', { line: lineHistory[i][a].line } );
             }
         }
-        updateLines();
+        updateLines();     
     }
     //Pyyhkimeen funktioita jotta hiiri osaisi huomata viivan
     function Vec2Cross2 ( x1, y1, x2, y2 )

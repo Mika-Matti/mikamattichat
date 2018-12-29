@@ -163,7 +163,7 @@ function help()
     + "\nSetting your nickname:"
     + "\nYour nickname has to be 1-13 characters long."
     + "\nDon't use spaces or special characters in your nickname. Alphabets, numbers and some characters such as & - _ . and such are allowed.\n"
-    + "\nList of current /commands:"
+    + "\nList of user /commands:"
     + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message."
     + "\n/me -- Express yourself in third person, for example - '/me is feeling content today.'\n"
     + "\nList of admin /commands:"
@@ -172,16 +172,24 @@ function help()
     + "\n/setadmin username -- Make another user admin."
     + "\n/removeadmin username -- Make another admin user again.\n"
     + "\nHave fun.");
+    return false;
 }
-//lähetä kuva chattiin
+
+//hymiöikkunan avaus
 function emojiButton()
 {
     //alert("Feature unavailable.");
+    var invDiv = document.getElementById("invisibleDiv");
     var pop = document.getElementById("emojibox");
-    if (pop.style.display === "block") {
-      pop.style.display = "none";
-    } else {
-      pop.style.display = "block";
+    if (pop.style.display === "block") 
+    {
+        invDiv.style.display = "none";
+        pop.style.display = "none";
+    } 
+    else 
+    {
+        invDiv.style.display = "block";
+        pop.style.display = "block";
     }
 }
 
@@ -218,19 +226,25 @@ var emojis = ["😁","😂","😃","😄","😅","😆","😉","😊","😋","�
               "♿"];
 
 document.addEventListener("DOMContentLoaded", function()
-{
-   
-
+{  
+    var emojiBox = $('#emojibox');
     function addEmojisToBox ()
     {
-        var emojiBox = $('#emojibox');
+        
         for ( let i = 0; i < emojis.length; ++i )
         {
             emojiBox.append ( "<input class='emoticon' type='button' value='" + emojis [ i ] + "' onclick='addEmoji("+i+")' />" );
         }
     }
-
     addEmojisToBox ();
+
+    //klikkaamalla hymiölaatikon ulkopuolelle suljetaan hymiölaatikko
+    document.getElementById('invisibleDiv').onclick = function()
+    {
+        document.getElementById('emojibox').style.display = 'none'; 
+        document.getElementById('invisibleDiv').style.display = 'none';
+    }
+
 });
 
 function addEmoji ( index )
@@ -239,6 +253,7 @@ function addEmoji ( index )
     $('#m').val($('#m').val() + emojis [index]);
 
 }
+
 
 
  
