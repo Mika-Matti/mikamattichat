@@ -104,14 +104,14 @@ $(function ()
    
     function sendOldMessages(data)
     {
-       $("#messages").append("<li>" + data.timestamp + data.user + data.msg + "<b style=\"color:red; font-size: 10px;\"> [" + data.oldmessagetime +"]</b></li>");
+       $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "<b style=\"color:red; font-size: 10px;\"> [" + data.oldmessagetime +"]</b></li>");
     }
 
     //viesti tulee clientside ikkunaan
     socket.on('new message', function(data)
     {
         //viestin lähetys
-        $("#messages").append("<li>" + data.timestamp + data.user + data.msg + "</li>");
+        $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>");
         scrollDown();
     });
 
@@ -128,7 +128,7 @@ $(function ()
     {   
         $("#messages").load(window.location.href + " #messages" );   //päivitetään viestidiv, jotta se tyhjenee kaikille.   
         
-        setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.user + data.msg + "</li>"); }, 200); //lähetetään ilmoitus, että kuka poisti viestit.
+        setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>"); }, 200); //lähetetään ilmoitus, että kuka poisti viestit.
                 
     });
 
