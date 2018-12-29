@@ -458,6 +458,8 @@ io.on('connection', function(socket)
         day = date.getDate();
         hours = date.getHours();
         minutes = date.getMinutes();
+        timeHoursMins = ((hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minutes);
+        timeDayMonthYear = ((day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (month+1) + "/" + year);
     }
 
     function updateUsernames()
