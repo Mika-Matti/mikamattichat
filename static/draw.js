@@ -195,7 +195,7 @@ function addImages ()
     var html = '';
     for (i = 0; i < images.length; ++i )
     {
-        html += ' <img id="thumbnail" src="' + images[i] + '" onclick="changeLightbox('+[i]+')" />';
+        html += '<li><img id="thumbnail" src="' + images[i] + '" onclick="changeLightbox('+[i]+')" /></li>';
     }
     thumbnails.html(html);
 }
