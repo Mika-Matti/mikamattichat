@@ -168,6 +168,8 @@ function colorBlue() {brushColor='blue';}
 function colorGray() {brushColor='gray';}
 function colorWhite() {brushColor='white';}
 
+var images = [];
+
 function saveImg() 
 {  
     var canvas = $("#drawing")[0];
@@ -175,12 +177,36 @@ function saveImg()
     $("#messages").append("<li>" + getCurrentDate() 
     + ' <b>Only you can see stored images.</b><img id="chatImg" src="'+img+'" onclick="openLightbox()" />'
     + '<a href="'+img+'" download>Download stored image</a></li>');
-    //lisätään esikatselunappula lightroomiin
-    $("#thumbnails").append(' <img id="thumbnail" src="' + img + '" onclick="changeLightbox()" />');    
-
+    images.push(img); //lisätään kuva arrayhyn
+    addImages(); //päivitetään kuvagalleriassa thumbnailit
     setTimeout(function(){ $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0); }, 100);
     
+}  
+
+function addImages ()
+{
+    var thumbnails = $('#thumbnails');
+    //for loop joka laittaa näkyville kaikki thumbnailit
+    var html = '';
+    for (i = 0; i < images.length; ++i )
+    {
+        html += ' <img id="thumbnail" src="' + images[i] + '" onclick="changeLightbox()" />';
+    }
+    thumbnails.html(html);
 }
+
+document.addEventListener("DOMContentLoaded", function()
+{  
+   
+
+//suljetaan lightbox
+    document.getElementById('invisibleDiv').onclick = function()
+    {
+        document.getElementById('lightbox').style.display = 'none';
+        document.getElementById('invisibleDiv').style.display = 'none';
+        document.getElementById('emojibox').style.display = 'none';
+    }
+});
 
 //onclick funktio lightboxille
 function openLightbox()
@@ -191,8 +217,7 @@ function openLightbox()
     var invDiv = document.getElementById("invisibleDiv");
 
     invDiv.style.display= "block";
-    lightbox.style.display= "block";
-    
+    lightbox.style.display= "block";    
 
     $('#kuva').html('<img src="' + img + '" />');    
 
@@ -201,18 +226,9 @@ function changeLightbox()
 {    
 
     var canvas = $("#drawing")[0];
-    var img = canvas.toDataURL("image/png");    
+    var img = canvas.toDataURL("image/png"); 
 
     $('#kuva').html('<img src="' + img + '" />');       
 
 }
-//suljetaan lightbox
-document.addEventListener("DOMContentLoaded", function()
-{  
-    document.getElementById('invisibleDiv').onclick = function()
-    {
-        document.getElementById('lightbox').style.display = 'none';
-        document.getElementById('invisibleDiv').style.display = 'none';
-        document.getElementById('emojibox').style.display = 'none';
-    }
-});
+
