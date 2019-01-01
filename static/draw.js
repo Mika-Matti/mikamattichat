@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", function()
     canvas.width  = width;
     canvas.height = height;
 
+   // var down = function(el) {    var canvas  = document.getElementById('drawing');   var image = canvas.toDataURL("image/jpg");      el.href = image;    };
+
+
     //jos ikkunan kokoa muutetaan
     window.onresize = function(e) 
     {
@@ -122,6 +125,7 @@ function clearit()
 {
     socket.emit('clearit', true);
 }
+
 //kuvan tuominen uudelleen canvasiin jos selaimen ikkunan kokoa muutetaan
 function resize()
 {
@@ -163,3 +167,38 @@ function colorYellow() {brushColor='yellow';}
 function colorBlue() {brushColor='blue';}
 function colorGray() {brushColor='gray';}
 function colorWhite() {brushColor='white';}
+
+function saveImg() 
+{  
+    var canvas = $("#drawing")[0];
+    var img = canvas.toDataURL("image/png"); 
+    $("#messages").append("<li>" + getCurrentDate() 
+    + ' <b>Only you can see stored images.</b><img id="chatImg" src="'+img+'" onclick="openLightbox()" />'
+    + '<a href="'+img+'" download>Download stored image</a></li>');
+
+    setTimeout(function(){ $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0); }, 100);
+    
+}
+
+//onclick funktio lightboxille
+function openLightbox()
+{
+    var canvas = $("#drawing")[0];
+    var img = canvas.toDataURL("image/png"); 
+    var lightbox = document.getElementById("lightbox");
+
+    lightbox.style.display= "block";
+
+	$('#kuva').html('<img src="' + img + '" />');   
+    
+
+}
+//suljetaan lightbox
+document.addEventListener("DOMContentLoaded", function()
+{  
+    //klikkaamalla hymiölaatikon ulkopuolelle suljetaan hymiölaatikko
+    document.getElementById('lightbox').onclick = function()
+    {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+});

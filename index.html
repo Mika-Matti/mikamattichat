@@ -24,7 +24,7 @@
         <div class='drawCanvas'>        
        
             <div class='canvasHeader'>
-                <h3><img src="static/kettunen.jpg">&nbsp;</img>Welcome to mikamattiChat</h3>                        
+                <h3><img id="kettunenImg" src="static/kettunen.jpg">&nbsp;</img>Welcome to mikamattiChat</h3>                        
                                        
             </div>
           
@@ -37,7 +37,7 @@
             <div class='canvasFooter'>
                 <!-- piirtotyökaluja-->
                 <form>
-                    <input id='clear' type='button' value='CLEAR CANVAS' onclick='clearit()'>    
+                    <input id='clear' type='button' value='CLEAR CANVAS' onclick='clearit()'>   
                     <b id='lines'></b>
                     <input id='minus' type='button' value='-' onclick='lessStroke()'><!--
                  --><input id='buttons' type='button' value='Brush' onclick='useBrush()'><!--
@@ -50,7 +50,8 @@
                  --><input id='blue' type='button' onclick='colorBlue()'><!--
                  --><input id='gray' type='button' onclick='colorGray()'><!--
                  --><input id='white' type='button' onclick='colorWhite()'>                            
-                    <input id='eraserbutton' type='button' value='Eraser' onclick='useEraser()'>           
+                    <input id='eraserbutton' type='button' value='Eraser' onclick='useEraser()'>                                         
+                    <input id='store' type='button' value='STORE IMAGE' onclick='saveImg()'>         
                 </form>     
             </div>
 
@@ -82,6 +83,14 @@
                 <ul id='usernames'></ul> 
                     
                 </div>
+                
+                <div id="lightbox">
+                    <p>Click to close</p>
+                    <div id="kuva">
+                        <img src="#" />
+                    </div>
+                </div>
+
                 <div id=invisibleDiv></div>
                 <div id='emojibox'></div>
                 <!-- tänne tulee erikoisominaisuusnappuloita -->
