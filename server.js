@@ -581,38 +581,42 @@ io.on('connection', function(socket)
     {
         style = " <i><b>";
         msg = "</b> joined the channel.</i>";
-        let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
-        newMsg.save(function(err)
-        {         
-            if(err) 
-            {
-                throw err;
-            }
-            else
-            {
-                updateDate();
-                socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-            }
-        });
+        updateDate();
+        socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+        // let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
+        // newMsg.save(function(err)
+        // {         
+        //     if(err) 
+        //     {
+        //         throw err;
+        //     }
+        //     else
+        //     {
+        //         updateDate();
+        //         socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+        //     }
+        // });
     }
 
     function hasLeft()
     {
         style = " <i><b>";
         msg = "</b> left the channel.</i>";
-        let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
-        newMsg.save(function(err)
-        {         
-            if(err) 
-            {
-                throw err;
-            }
-            else
-            {
-                updateDate();
-                socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-            }
-        });
+        updateDate();
+        socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+        // let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
+        // newMsg.save(function(err)
+        // {         
+        //     if(err) 
+        //     {
+        //         throw err;
+        //     }
+        //     else
+        //     {
+        //         updateDate();
+        //         socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+        //     }
+        // });
     }
 
     function isNowAdmin()
