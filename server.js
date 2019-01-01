@@ -239,17 +239,18 @@ io.on('connection', function(socket)
                 //if (name.toLowerCase() in fakeUsers)
                 if (name in users) //Tässä on pakko olla case sensitive ehkä, jotta annettu nimi ei vaihtuisi lowercaseksi näkyvässä listassa.
                 {                                  
-                    var oldName = name;     
-                    var newName = adminCrown + name;           
+                    var oldName = name;
+                    var newName = adminCrown + name;
                     //vaihdetaan valitun käyttäjän nimi näkyvään listaan
-                    users[name].username = newName; //tämä tekee adminiksi toimii.   
-                    users[users[name].username] = users[name].username; //lisätään uusi nimi object arrayhyn. Toimii.      
-                    delete users[oldName]; //poistetaan vanha nimi. Toimii                            
+                    users[newName] = users[oldName];
+                    users[newName].username = newName; //tämä tekee adminiksi toimii.
+                    //users[users[name].username] = users[name].username; //lisätään uusi nimi object arrayhyn. Toimii.
+                    delete users[oldName]; //poistetaan vanha nimi. Toimii                         
 
                     //lisää henkilö admin arrayhyn
                     //console.log("users[newName] = " + users[newName] + " name = " + name); //printaa ?atte ja atte. Toimii.
-                    socket.useradminname = users[newName]; //Määritetään adminlistaan nimi
-                    admins[socket.useradminname] = users[newName]; //Lisätään listaan
+                    users[newName].useradminname = users[newName]; //Määritetään adminlistaan nimi
+                    admins[newName] = users[newName]; //Lisätään listaan
 
                     updateUsernames();                    
                     console.log(name + " on nyt admin.");
@@ -294,13 +295,13 @@ io.on('connection', function(socket)
                 var name2 = adminCrown + name; //lisätään haettavaan nimeen adminkruunu
                 if (name2 in users) //case sensitive nimihaku
                 {
-                    var oldName = name2;  //kruunu + nimi
+                    //var oldName = name2;  //kruunu + nimi
                     //sitten users                    
-                    users[name2].username = name;  
-                    users[users[name2].username] = users[name2].username;  //lisätään uusi nimi object arrayhyn. Toimii.     
-                    delete users[oldName]; //poistetaan vanha nimi. Toimii.
+                    users[name] = users[name2]; 
+                    users[name].username = name;  
+                    delete users[name2]; //poistetaan vanha nimi. Toimii.
 
-                    delete admins[oldName];
+                    delete admins[name2];
 
                     updateUsernames();     
                     console.log(name + " ei ole enää admin.");
