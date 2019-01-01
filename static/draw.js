@@ -169,16 +169,21 @@ function colorGray() {brushColor='gray';}
 function colorWhite() {brushColor='white';}
 
 var images = [];
+let number = 0;
 
 function saveImg() 
 {  
     var canvas = $("#drawing")[0];
     var img = canvas.toDataURL("image/png"); 
-    $("#messages").append("<li>" + getCurrentDate() 
-    + ' <b>Only you can see stored images.</b><img id="chatImg" src="'+img+'" onclick="openLightbox()" />'
-    + '<a href="'+img+'" download>Download stored image</a></li>');
     images.push(img); //lisätään kuva arrayhyn
+    console.log(number);
     addImages(); //päivitetään kuvagalleriassa thumbnailit
+    $("#messages").append("<li>" + getCurrentDate() 
+    + ' <b>Only you can see stored images.</b><img id="chatImg" src="'+images[number]+'" onclick="openLightbox('+number+')" />'
+    + '<a href="'+images[number]+'" download>Download stored image</a></li>');
+    number++;
+    console.log(number)
+    
     setTimeout(function(){ $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0); }, 100);
     
 }  
@@ -190,7 +195,7 @@ function addImages ()
     var html = '';
     for (i = 0; i < images.length; ++i )
     {
-        html += ' <img id="thumbnail" src="' + images[i] + '" onclick="changeLightbox()" />';
+        html += ' <img id="thumbnail" src="' + images[i] + '" onclick="changeLightbox('+[i]+')" />';
     }
     thumbnails.html(html);
 }
@@ -209,26 +214,21 @@ document.addEventListener("DOMContentLoaded", function()
 });
 
 //onclick funktio lightboxille
-function openLightbox()
+function openLightbox(n)
 {
-    var canvas = $("#drawing")[0];
-    var img = canvas.toDataURL("image/png"); 
+    // var canvas = $("#drawing")[0];
+    // var img = canvas.toDataURL("image/png"); 
     var lightbox = document.getElementById("lightbox");
     var invDiv = document.getElementById("invisibleDiv");
 
     invDiv.style.display= "block";
     lightbox.style.display= "block";    
 
-    $('#kuva').html('<img src="' + img + '" />');    
+    $('#kuva').html('<img src="' + images[n] + '" />');    
 
 }
-function changeLightbox()
+function changeLightbox(a)
 {    
-
-    var canvas = $("#drawing")[0];
-    var img = canvas.toDataURL("image/png"); 
-
-    $('#kuva').html('<img src="' + img + '" />');       
-
+    $('#kuva').html('<img src="' + images[a] + '" />'); 
 }
 
