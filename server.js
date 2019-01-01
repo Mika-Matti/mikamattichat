@@ -244,11 +244,8 @@ io.on('connection', function(socket)
                     //vaihdetaan valitun käyttäjän nimi näkyvään listaan
                     users[newName] = users[oldName];
                     users[newName].username = newName; //tämä tekee adminiksi toimii.
-                    //users[users[name].username] = users[name].username; //lisätään uusi nimi object arrayhyn. Toimii.
                     delete users[oldName]; //poistetaan vanha nimi. Toimii                         
 
-                    //lisää henkilö admin arrayhyn
-                    //console.log("users[newName] = " + users[newName] + " name = " + name); //printaa ?atte ja atte. Toimii.
                     users[newName].useradminname = users[newName]; //Määritetään adminlistaan nimi
                     admins[newName] = users[newName]; //Lisätään listaan
 
@@ -259,7 +256,7 @@ io.on('connection', function(socket)
 
                     //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
                     style = " <i><b>";
-                    msg = "</b> made " + newName + " admin.";
+                    msg = "</b> made <b>" + newName + "</b> admin.";
                     let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     newMsg.save(function(err)
                     {
@@ -295,12 +292,11 @@ io.on('connection', function(socket)
                 var name2 = adminCrown + name; //lisätään haettavaan nimeen adminkruunu
                 if (name2 in users) //case sensitive nimihaku
                 {
-                    //var oldName = name2;  //kruunu + nimi
-                    //sitten users                    
+                    //vaihdetaan nimi users arrayhyn         
                     users[name] = users[name2]; 
                     users[name].username = name;  
                     delete users[name2]; //poistetaan vanha nimi. Toimii.
-
+                    //ja poistetaan admineista
                     delete admins[name2];
 
                     updateUsernames();     
@@ -310,7 +306,7 @@ io.on('connection', function(socket)
 
                     //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.                     
                     style = " <i><b>";
-                    msg = "</b> made " + name + " user.";
+                    msg = "</b> made <b>" + name + "</b> user.";
                     let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     newMsg.save(function(err)
                     {
@@ -335,6 +331,66 @@ io.on('connection', function(socket)
                 callback("You don't have the rights to do that.");
             }
         }        
+        else if(msg.substr(0,8).toLowerCase() === '/rename ') //tee haluamastasi käyttäjästä admin
+        {
+            msg = msg.substr(8); //poistetaan viestistä /setadmin            
+            var name = socket.username;              
+            if (name in admins)
+            {
+                var ind = msg.indexOf(' ');
+                var name = msg.substring(0, ind);
+                var newName = msg.substring(ind + 1);
+                var adminName = adminCrown + name;
+                if (adminName in admins)
+                {
+                    callback("You can't rename an admin");
+                }
+                else if (name in users) //taas pakko olla casesensitive
+                {                               
+                    //vaihdetaan valitun käyttäjän nimi näkyvään listaan
+                    users[newName] = users[name];
+                    users[newName].username = newName; 
+                    delete users[name];          
+                    
+                    lowercaseName = name.toLowerCase();
+                    lowerCasenewName = newName.toLowerCase();
+                    //vaihdetaan nimi myös lowercase listaan
+                    fakeUsers[lowerCasenewName] = users[newName];
+                    fakeUsers[lowerCasenewName].userfake = lowerCasenewName;
+                    delete fakeUsers[lowercaseName];
+
+                    updateUsernames();                    
+                    console.log(name + " on nyt " + newName);
+                    console.log("Users: " + Object.keys(users));
+                    console.log("fakeUsers: " + Object.keys(fakeUsers));    
+
+                    //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
+                    style = " <i><b>";
+                    msg = "</b> renamed <b>" + name + "</b> to <b>" + newName + "</b>";
+                    let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                    newMsg.save(function(err)
+                    {
+                        if(err)
+                        {
+                            throw err;
+                        }
+                        else
+                        {
+                            updateDate();
+                            io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                        }
+                    });
+                }
+                else
+                {
+                    callback('Incorrect username "' + name + '"or new name "' + newName + '"');
+                }                
+            }
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }            
+        }   
         else if(msg.substr(0,9).toLowerCase() === '/imitate ') //lähetä viesti jonkun toisen nimellä(restrict admin)
         {
             msg = msg.substr(9); //poistetaan '/imitate'
