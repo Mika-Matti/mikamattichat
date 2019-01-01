@@ -248,9 +248,35 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 }
 
 /* STORE IMAGE nappula */
-.wrapper > .drawCanvas > .canvasFooter form input[id='store']
+.wrapper > .drawCanvas > .canvasFooter form input[id='storeimg']
 {
     width: 100px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    border-right: 0px;
+    cursor: pointer;   
+    float: right;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.wrapper > .drawCanvas > .canvasFooter form input[id='storeimg']:hover
+{
+    width: 100px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    border-right: 0px;
+    cursor: pointer;   
+    float: right;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.wrapper > .drawCanvas > .canvasFooter form input[id='store']
+{
+    width: 65px;
     padding: 5px;
     background: white;
     border: 1px solid rgb(182, 152, 152);
@@ -260,7 +286,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 
 .wrapper > .drawCanvas > .canvasFooter form input[id='store']:hover
 {
-    width: 100px;
+    width: 65px;
     padding: 5px;
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
@@ -588,6 +614,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: white; 
     max-width:800px;
     border: 1px solid rgb(29, 29, 29);
+    
   
 }
 #kuva
@@ -597,6 +624,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     width: 500px;    
     height: 580px;
     float:left;  
+    color: white;
 }
 #thumbnails
 {

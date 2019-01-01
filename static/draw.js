@@ -179,8 +179,8 @@ function saveImg()
     console.log(number);
     addImages(); //päivitetään kuvagalleriassa thumbnailit
     $("#messages").append("<li>" + getCurrentDate() 
-    + ' <b>Only you can see stored images.</b><img id="chatImg" src="'+images[number]+'" onclick="openLightbox('+number+')" />'
-    + '<a href="'+images[number]+'" download>Download stored image</a></li>');
+    + ' <b>Canvas was stored as an image.</b><img id="chatImg" src="'+images[number]+'" onclick="openLightbox('+number+')" />'
+    + '<a href="'+images[number]+'" download>Download image</a></li>');
     number++;
     console.log(number)
     
