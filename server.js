@@ -210,10 +210,9 @@ io.on('connection', function(socket)
                 socket.username = adminCrown + socket.username; //uusi admin nimi tilalle
                 users[socket.username] = socket;   //lisätään listaan vaihdettu nimi
 
-                //socket.useradminname = socket.username; 
-                socket.useradminname = socket.username; 
-                admins[socket.useradminname] = socket;
-                users[socket.username] = socket; 
+                socket.useradminname = socket.username;  //uusi admin nimi
+                admins[socket.useradminname] = socket;  //uusi admin nimi admin arrayhyn
+                //users[socket.username] = socket; 
 
                 updateUsernames();
                 isNowAdmin();
@@ -229,6 +228,112 @@ io.on('connection', function(socket)
             }           
             
         }
+        else if(msg.substr(0,9).toLowerCase() === '/setadmin') //tee haluamastasi käyttäjästä admin
+        {
+            msg = msg.substr(9); //poistetaan viestistä /setadmin            
+            var name = socket.username;              
+            if (name in admins)
+            {
+                var ind = msg.indexOf(' ');
+                name = msg.substring(ind +1);
+                //if (name.toLowerCase() in fakeUsers)
+                if (name in users) //Tässä on pakko olla case sensitive ehkä, jotta annettu nimi ei vaihtuisi lowercaseksi näkyvässä listassa.
+                {                                  
+                    var oldName = name;     
+                    var newName = adminCrown + name;           
+                    //vaihdetaan valitun käyttäjän nimi näkyvään listaan
+                    users[name].username = newName; //tämä tekee adminiksi toimii.   
+                    users[users[name].username] = users[name].username; //lisätään uusi nimi object arrayhyn. Toimii.      
+                    delete users[oldName]; //poistetaan vanha nimi. Toimii                            
+
+                    //lisää henkilö admin arrayhyn
+                    //console.log("users[newName] = " + users[newName] + " name = " + name); //printaa ?atte ja atte. Toimii.
+                    socket.useradminname = users[newName]; //Määritetään adminlistaan nimi
+                    admins[socket.useradminname] = users[newName]; //Lisätään listaan
+
+                    updateUsernames();                    
+                    console.log(name + " on nyt admin.");
+                    console.log("Admins: " + Object.keys(admins));
+                    console.log("Users: " + Object.keys(users));    
+
+                    //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
+                    style = " <i><b>";
+                    msg = "</b> made " + newName + " admin.";
+                    let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                    newMsg.save(function(err)
+                    {
+                        if(err)
+                        {
+                            throw err;
+                        }
+                        else
+                        {
+                            updateDate();
+                            io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                        }
+                    });
+                }
+                else
+                {
+                    callback('Incorrect username.');
+                }                
+            }
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }            
+        }   
+        else if(msg.substr(0,12).toLowerCase() === '/removeadmin') //tee haluamastasi käyttäjästä admin
+        {
+            msg = msg.substr(12); //poistetaan viestistä /removeadmin            
+            var name = socket.username;              
+            if (name in admins)
+            {
+                var ind = msg.indexOf(' ');
+                name = msg.substring(ind +1);
+                var name2 = adminCrown + name; //lisätään haettavaan nimeen adminkruunu
+                if (name2 in users) //case sensitive nimihaku
+                {
+                    var oldName = name2;  //kruunu + nimi
+                    //sitten users                    
+                    users[name2].username = name;  
+                    users[users[name2].username] = users[name2].username;  //lisätään uusi nimi object arrayhyn. Toimii.     
+                    delete users[oldName]; //poistetaan vanha nimi. Toimii.
+
+                    delete admins[oldName];
+
+                    updateUsernames();     
+                    console.log(name + " ei ole enää admin.");
+                    console.log("Admins: " + Object.keys(admins));
+                    console.log("Users: " + Object.keys(users));  
+
+                    //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.                     
+                    style = " <i><b>";
+                    msg = "</b> made " + name + " user.";
+                    let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                    newMsg.save(function(err)
+                    {
+                        if(err)
+                        {
+                            throw err;
+                        }
+                        else
+                        {
+                            updateDate();
+                            io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                        }
+                    });                        
+                }
+                else
+                {
+                    callback('Incorrect username.' + msg);
+                }
+            }
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }
+        }        
         else if(msg.substr(0,9).toLowerCase() === '/imitate ') //lähetä viesti jonkun toisen nimellä(restrict admin)
         {
             msg = msg.substr(9); //poistetaan '/imitate'
@@ -323,7 +428,7 @@ io.on('connection', function(socket)
             {
                 var name = msg.substring(0, ind);
                 var msg = msg.substring(ind + 1);
-                //if (fakeUsers.indexOf(name.toLowerCase()) != -1)
+
                 if (name.toLowerCase() in fakeUsers)
                 {
                     

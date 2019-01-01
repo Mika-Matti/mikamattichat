@@ -162,15 +162,15 @@ function help()
     alert("mikamattiChat -- The more I add features the more I add helpful tips here.\n"
     + "\nSetting your nickname:"
     + "\nYour nickname has to be 1-13 characters long."
-    + "\nDon't use spaces or special characters in your nickname. Alphabets, numbers and some characters such as & - _ . and such are allowed.\n"
+    + "\nDon't use spaces or special characters in your nickname. Alphabets, numbers and some characters such as - _ and . are allowed.\n"
     + "\nList of user /commands:"
     + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message."
     + "\n/me -- Express yourself in third person, for example - '/me is feeling content today.'\n"
     + "\nList of admin /commands:"
     + "\n/imitate -- Send a message as any user as you want, even imaginary. The only purpose this serves is being silly."
     + "\n/purge -- This will remove all messages from the client and database. Use with caution."
-    + "\n/setadmin username -- Make another user admin."
-    + "\n/removeadmin username -- Make another admin user again.\n"
+    + "\n/setadmin username(case sensitive) -- Make another user admin."
+    + "\n/removeadmin username(case sensitive) -- Make another admin user again.\n"
     + "\nHave fun.");
     return false;
 }
