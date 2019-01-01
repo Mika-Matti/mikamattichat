@@ -175,6 +175,8 @@ function saveImg()
     $("#messages").append("<li>" + getCurrentDate() 
     + ' <b>Only you can see stored images.</b><img id="chatImg" src="'+img+'" onclick="openLightbox()" />'
     + '<a href="'+img+'" download>Download stored image</a></li>');
+    //lisätään esikatselunappula lightroomiin
+    $("#thumbnails").append(' <img id="thumbnail" src="' + img + '" onclick="changeLightbox()" />');    
 
     setTimeout(function(){ $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0); }, 100);
     
@@ -186,19 +188,31 @@ function openLightbox()
     var canvas = $("#drawing")[0];
     var img = canvas.toDataURL("image/png"); 
     var lightbox = document.getElementById("lightbox");
+    var invDiv = document.getElementById("invisibleDiv");
 
+    invDiv.style.display= "block";
     lightbox.style.display= "block";
-
-	$('#kuva').html('<img src="' + img + '" />');   
     
+
+    $('#kuva').html('<img src="' + img + '" />');    
+
+}
+function changeLightbox()
+{    
+
+    var canvas = $("#drawing")[0];
+    var img = canvas.toDataURL("image/png");    
+
+    $('#kuva').html('<img src="' + img + '" />');       
 
 }
 //suljetaan lightbox
 document.addEventListener("DOMContentLoaded", function()
 {  
-    //klikkaamalla hymiölaatikon ulkopuolelle suljetaan hymiölaatikko
-    document.getElementById('lightbox').onclick = function()
+    document.getElementById('invisibleDiv').onclick = function()
     {
         document.getElementById('lightbox').style.display = 'none';
+        document.getElementById('invisibleDiv').style.display = 'none';
+        document.getElementById('emojibox').style.display = 'none';
     }
 });

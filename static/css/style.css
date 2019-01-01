@@ -518,7 +518,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     height:100%;
     display: none;   
     position: absolute;
-    z-index:98; /*alempi div stack order*/    
+    z-index:97; /*alempi div stack order*/    
     top:0px;
     left:0px;
 }
@@ -555,6 +555,10 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     max-height: 25px;
     float:left;
 }
+#kuva
+{
+    padding-top: 0px;
+}
 
 #chatImg
 {   
@@ -568,20 +572,43 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 }
 
 #lightbox {
-    position:fixed; /* keeps the lightbox window in the current viewport */
-    top:0; 
-    left:0; 
-    width:100%; 
-    height:100%; 
-    background: rgba(0, 0, 0, 0.164);
+    position:absolute; /* keeps the lightbox window in the current viewport */
+    top: 50%;
+    left: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+    max-height: 95%;
+    z-index:98; /*alempi div stack order*/   
+    transform: translate(-50%, -50%);
+    background: #333;
     text-align:center;
     display: none;
+    border: 1px solid rgb(136, 115, 115);
+    color: white;
     
 }
 #lightbox img {
+    background: white; 
+    height: auto;
+    width: auto;
+    max-width:840px;
+    top: 0px;
+    border: 1px solid rgb(182, 152, 152);
+}
+
+#thumbnail
+{
     background: white;
-    box-shadow:0 0 25px #111;
-    -webkit-box-shadow:0 0 25px #111;
-    -moz-box-shadow:0 0 25px #111;
-    max-width:940px;
+    border: 1px solid rgb(182, 152, 152);
+    height: auto;
+    width: auto;
+    max-width: 110px;
+    max-height: 110px;
+
+    /*vertical-align: top;*/
+}
+#thumbnails
+{
+    padding-top: 4px;
 }

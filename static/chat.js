@@ -238,12 +238,12 @@ document.addEventListener("DOMContentLoaded", function()
     }
     addEmojisToBox ();
 
-    //klikkaamalla hymiölaatikon ulkopuolelle suljetaan hymiölaatikko
-    document.getElementById('invisibleDiv').onclick = function()
-    {
-        document.getElementById('emojibox').style.display = 'none'; 
-        document.getElementById('invisibleDiv').style.display = 'none';
-    }
+    // //klikkaamalla hymiölaatikon ulkopuolelle suljetaan hymiölaatikko
+    // document.getElementById('invisibleDiv').onclick = function()
+    // {
+    //     document.getElementById('emojibox').style.display = 'none'; 
+    //     document.getElementById('invisibleDiv').style.display = 'none';
+    // }
 
 });
 
