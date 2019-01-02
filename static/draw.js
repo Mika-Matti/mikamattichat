@@ -231,4 +231,12 @@ function changeLightbox(a)
 {    
     $('#kuva').html('<img src="' + images[a] + '" />'); 
 }
+function closeLightbox()
+{
+    var lightbox = document.getElementById("lightbox");
+    var invDiv = document.getElementById("invisibleDiv");
+
+    invDiv.style.display= "none";
+    lightbox.style.display= "none";    
+}
 
