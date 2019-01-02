@@ -80,15 +80,14 @@
 
                 <!--nimimerkki-ikkuna oikealla -->
                 <div class='chatNamesusers'>
-                <!-- voisiko tämänkin tehdä jotenkin li classilla ja echolla ja poistaa tieto kun käyttäjän yhteys katkeaa? -->
                         
                 <ul id='usernames'></ul> 
                     
                 </div>
 
                 <div id="lightbox">   
-                    
-                    <div id=closer><input type='button' value='CLOSE' onclick='closeLightbox()'></div>
+                   
+                    <div id=closer><input type='button' value='CLOSE IMAGES' onclick='closeLightbox()'></div>
 
                     <div id="kuva"><img src="#" /></div>
                     <div id="thumbnails">
@@ -96,7 +95,34 @@
                     </div>
                     <div id=lightfooter></div>
                 </div>
+                
+               
+                <div id=helpbox>       
+                    <div id=closer2><input type='button' value='CLOSE' onclick='closeHelpbox()'></div>             
+                    <p><b>mikamattiChat</b> -- The more I add features the more I add helpful tips here.</p>
 
+                    <p><b>Setting your nickname:</b><br>
+                    Your nickname has to be 1-13 characters long.<br>
+                    Don't use spaces or special characters in your nickname. Alphabets, numbers and some characters such as - _ and . are allowed.</p>
+                    <p><b>Canvas and storing images:</b><br>
+                    At any point during your session, you can store your drawings by clicking the SAVE CANVAS-button below canvas down on the right.
+                    The images will be stored into your personal gallery that can be accessed by clicking the IMAGES-button or by clicking the image
+                    thumbnail of a freshly saved image, that appears on the chat messages-window whenever you save the canvas as an image.</p>
+
+                    <p><b>List of user /commands:</b><br>
+                    /w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message.<br>
+                    /me -- Express yourself in third person, for example - '/me is feeling content today.'</p>
+
+                    <p><b>List of admin /commands:</b><br>
+                    /imitate username message -- Send a message as any user as you want, even imaginary. The only purpose this serves is being silly.<br>
+                    /rename username newusername(case sensitive) -- Rename any user, that is not admin to whatever you like.<br>
+                    /purge -- This will remove all messages from the client and database. Use with caution.<br>
+                    /setadmin username(case sensitive) -- Make another user admin.<br>
+                    /removeadmin username(case sensitive) -- Make another admin user again.</p>
+
+                    Have fun.
+                   
+                </div>
                 <div id=invisibleDiv></div>
                 <div id='emojibox'></div>
                 <!-- tänne tulee erikoisominaisuusnappuloita -->

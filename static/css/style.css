@@ -592,15 +592,16 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     max-height: 360px;
     /*vertical-align: top;*/
 }
-#closer 
+
+#closer2
 {
     position:absolute;
-    top: -5.50%;
-    left: 93.05%;
+    top: 0.75%;
+    left: 92.55%;
     margin: 0;
     padding: 0;
 }
-#closer input[type='button']
+#closer2 input[type='button']
 {
     width: 70px;
     padding: 5px;
@@ -609,7 +610,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
 }
 
-#closer input[type='button']:hover
+#closer2 input[type='button']:hover
 {
     width: 70px;
     padding: 5px;
@@ -618,7 +619,26 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
 }
 
-#lightbox {
+#helpbox
+{
+    position:absolute; /* keeps the lightbox window in the current viewport */
+    top: 50%;
+    left: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 995px;
+    height: 570px;
+    z-index:101; /*alempi div stack order*/
+    transform: translate(-50%, -50%);  
+    border: 2px solid rgb(136, 115, 115); 
+    background: white;
+    padding-left: 10px;
+    overflow-y: scroll;
+    display: none;
+}
+
+#lightbox 
+{
     position:absolute; /* keeps the lightbox window in the current viewport */
     top: 50%;
     left: 50%;
@@ -633,14 +653,11 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     display: none;
     border: 2px solid rgb(136, 115, 115);
     
-    
 }
 #lightbox img {
     background: white; 
     max-width:800px;
-    border: 1px solid rgb(29, 29, 29);   
-    
-    
+    border: 0px solid rgb(29, 29, 29);           
 }
 #kuva
 {
@@ -649,30 +666,54 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     width: 500px;  
     float:left;  
     color: white;
-   
+    text-align: left;   
 }
 #kuva img
 {
     max-height: 550px;  
+}
+#closer 
+{
+    position:absolute;
+    top: 1%;
+    left: 82.30%;
+    margin: 0;
+    padding: 0;
+}
+#closer input[type='button']
+{
+    width: 150px;
+    padding: 5px;
+    background: white;
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
+}
+
+#closer input[type='button']:hover
+{
+    width: 150px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 0px solid rgb(182, 152, 152);
+    cursor: pointer;   
 }
 #thumbnails
 {
     width: 195px;
     height: 565px;
     padding-top: 5px;
-    padding-left: 8px;
+    padding-left: 10px;
     float: right;
     overflow-y: scroll;   
-    list-style-type: none;   
+    list-style-type: none;       
+    padding-top: 40px;
 }
 #kuvalista
 { 
-    
     padding-left: 0px;
     padding-top: 5px; 
     padding-bottom: 5px;
 }
-
 #lightfooter
 {
     height: 0px;
@@ -681,14 +722,16 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: black;
     display: none;
 }
-
 #thumbnail
 {
     background: white;
-    border: 1px solid rgb(29, 29, 29);
     height: auto;
     width: auto;
-    max-width: 110px;
-    max-height: 110px;
+    
     padding-bottom: 5px;
+}
+#thumbnails img
+{
+    max-width: 150px;
+    max-height: 160px;
 }

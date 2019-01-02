@@ -159,21 +159,25 @@ function getCurrentDate()
 //lista tämän hetken komennoista
 function help() 
 {
-    alert("mikamattiChat -- The more I add features the more I add helpful tips here.\n"
-    + "\nSetting your nickname:"
-    + "\nYour nickname has to be 1-13 characters long."
-    + "\nDon't use spaces or special characters in your nickname. Alphabets, numbers and some characters such as - _ and . are allowed.\n"
-    + "\nList of user /commands:"
-    + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message."
-    + "\n/me -- Express yourself in third person, for example - '/me is feeling content today.'\n"
-    + "\nList of admin /commands:"
-    + "\n/imitate username message -- Send a message as any user as you want, even imaginary. The only purpose this serves is being silly."
-    + "\n/rename username newusername(case sensitive) -- Rename any user, that is not admin to whatever you like."
-    + "\n/purge -- This will remove all messages from the client and database. Use with caution."
-    + "\n/setadmin username(case sensitive) -- Make another user admin."
-    + "\n/removeadmin username(case sensitive) -- Make another admin user again.\n"
-    + "\nHave fun.");
-    return false;
+    // alert("mikamattiChat -- The more I add features the more I add helpful tips here.\n"
+    // + "\nSetting your nickname:"
+    // + "\nYour nickname has to be 1-13 characters long."
+    // + "\nDon't use spaces or special characters in your nickname. Alphabets, numbers and some characters such as - _ and . are allowed.\n"
+    // + "\nList of user /commands:"
+    // + "\n/w username message -- You can send a private message to anyone in the room by typing /w then their username and then your message."
+    // + "\n/me -- Express yourself in third person, for example - '/me is feeling content today.'\n"
+    // + "\nList of admin /commands:"
+    // + "\n/imitate username message -- Send a message as any user as you want, even imaginary. The only purpose this serves is being silly."
+    // + "\n/rename username newusername(case sensitive) -- Rename any user, that is not admin to whatever you like."
+    // + "\n/purge -- This will remove all messages from the client and database. Use with caution."
+    // + "\n/setadmin username(case sensitive) -- Make another user admin."
+    // + "\n/removeadmin username(case sensitive) -- Make another admin user again.\n"
+    // + "\nHave fun.");
+    var helpbox = document.getElementById("helpbox");
+    var invDiv = document.getElementById("invisibleDiv");
+
+    invDiv.style.display= "block";
+    helpbox.style.display= "block";    
 }
 
 //hymiöikkunan avaus

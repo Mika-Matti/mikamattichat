@@ -2,6 +2,9 @@
 var eraser = false; //pyyhin
 var brushSize = 1;
 var brushColor = 'black';
+
+  
+
 document.addEventListener("DOMContentLoaded", function()
 {
     var mouse = {
@@ -179,7 +182,7 @@ function saveImg()
     console.log(number);
     addImages(); //päivitetään kuvagalleriassa thumbnailit
     $("#messages").append("<li>" + getCurrentDate() 
-    + ' <b>Canvas was stored as an image.</b><img id="chatImg" src="'+images[number]+'" onclick="openLightbox('+number+')" />'
+    + ' <b>Canvas stored to images.</b><img id="chatImg" src="'+images[number]+'" onclick="openLightbox('+number+')" />'
     + '<a href="'+images[number]+'" download>Download image</a></li>');
     number++;
     console.log(number)
@@ -210,6 +213,7 @@ document.addEventListener("DOMContentLoaded", function()
         document.getElementById('lightbox').style.display = 'none';
         document.getElementById('invisibleDiv').style.display = 'none';
         document.getElementById('emojibox').style.display = 'none';
+        document.getElementById('helpbox').style.display = 'none';
     }
 });
 
@@ -223,8 +227,14 @@ function openLightbox(n)
 
     invDiv.style.display= "block";
     lightbox.style.display= "block";    
-
-    $('#kuva').html('<img src="' + images[n] + '" />');    
+    if(images && images.length)
+    {
+        $('#kuva').html('<img src="' + images[n] + '" />');   
+    }
+    else
+    {
+        $('#kuva').html("You haven't saved any images of the canvas during this session."); 
+    }
 
 }
 function changeLightbox(a)
@@ -238,5 +248,13 @@ function closeLightbox()
 
     invDiv.style.display= "none";
     lightbox.style.display= "none";    
+}
+function closeHelpbox()
+{
+    var helpbox = document.getElementById("helpbox");
+    var invDiv = document.getElementById("invisibleDiv");
+
+    invDiv.style.display= "none";
+    helpbox.style.display= "none";    
 }
 
