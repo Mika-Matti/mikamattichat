@@ -738,7 +738,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 .cursor {
     position: absolute;
     background: black;
-    width: 200px;
-    height: 200px;
+    width: 20px;
+    height: 20px;
     border-radius: 10px;
   }
