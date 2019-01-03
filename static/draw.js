@@ -1,9 +1,7 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
 var eraser = false; //pyyhin
 var brushSize = 1;
-var brushColor = 'black';
-
-  
+var brushColor = 'black';  
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -24,9 +22,6 @@ document.addEventListener("DOMContentLoaded", function()
 
     canvas.width  = width;
     canvas.height = height;
-
-   // var down = function(el) {    var canvas  = document.getElementById('drawing');   var image = canvas.toDataURL("image/jpg");      el.href = image;    };
-
 
     //jos ikkunan kokoa muutetaan
     window.onresize = function(e) 
@@ -51,12 +46,42 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.pos.x = ( e.clientX -2 ) / width;  // -10
         mouse.pos.y = ( e.clientY -42 ) / height; // -50 miinustaa ylläolevan headerin canvasista
         mouse.move = true;
+        //lähetetään hiiren sijainti
+        socket.emit('track mouse', mouse.pos );
     };
     //jos hiiri menee canvasin ulkopuolelle, laitetaan hiiri pois pohjasta ettei tule ylimääräisiä viivoja
     canvas.onmouseout = function(e)
     {
         mouse.click = false;
     };
+    //track mouse
+    //client vastaanottaa hiirien paikat
+    socket.on('broadcast mouse', function(data)
+    {
+
+        var el = getCursorElement(data.user);
+
+        el.style.x = data.coords.x;
+        el.style.y = data.coords.y;         
+        
+    });
+        
+    function getCursorElement (user) 
+    {
+        var elementId = 'cursor-' + user;
+        console.log (elementId);
+        var element = document.getElementById(elementId);
+        if(element == null) {
+          element = document.createElement('div');
+          element.id = elementId;
+          element.className = 'cursor';
+          // Perhaps you want to attach these elements another parent than document
+          canvas.appendChild(element);
+        }
+        return element;        
+    }
+    //track mouse loppuu
+
 
     //piirrettyjen viivojen määrän koko kilobiteissä
     socket.on('get lines', function(data)
@@ -109,9 +134,7 @@ document.addEventListener("DOMContentLoaded", function()
         }
         else if (eraser && mouse.click)
         {
-            socket.emit("erasertool", { mouse: mouse.pos, mouse2: mouse.pos_prev }); //toimiva
-            //socket.emit("erasertool", { mouseX: mouse.pos.x, mouseY: mouse.pos.y, size: size, width: width, height: height });
-			
+            socket.emit("erasertool", { mouse: mouse.pos, mouse2: mouse.pos_prev }); //toimiva			
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
         size = brushSize;

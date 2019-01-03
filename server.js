@@ -137,11 +137,18 @@ io.on('connection', function(socket)
         console.log('users: ' + Object.keys(users));  
         console.log("admins: " + Object.keys(admins));
     });
-    
+    //käyttäjän hiiren sijainti
+    socket.on('track mouse', function(data)
+    {
+        io.emit('broadcast mouse', { coords: data, user: socket.username });
+    });
+
     socket.on('draw fake', function(data)
     {
         io.emit('draw line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
     });
+
+      
     //piirtämisten lisääminen ja lähettäminen kaikille.
     socket.on('draw line', function (data) 
     {

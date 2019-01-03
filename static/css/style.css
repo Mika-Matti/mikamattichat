@@ -735,3 +735,10 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     max-width: 150px;
     max-height: 160px;
 }
+.cursor {
+    position: absolute;
+    background: black;
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+  }
