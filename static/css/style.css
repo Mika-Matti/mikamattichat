@@ -736,7 +736,8 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     max-width: 150px;
     max-height: 160px;
 }
-#whoisdrawing
+
+.whoisdrawing
 {
     position: absolute; 
     left: 582px; 

@@ -71,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function()
     //otetaan vastaan server.js lähettämä data piirroksesta
     socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
     {
-        var whoIsdrawing = document.getElementById("whoisdrawing");
-        var line = data.line;
+   
+        var line = data.line;        
         {
             context.beginPath();
             context.lineWidth = line[2]; //brushin paksuus
@@ -81,23 +81,46 @@ document.addEventListener("DOMContentLoaded", function()
             context.lineTo(line[1].x * width, line[1].y * height);
             context.stroke();
             //näytetään piirtäessä piirtäjän username
-            
             if(data.user)
-            {
-                $('#whoisdrawing').html('<b>'+data.user+'</b>'); 
-                whoIsdrawing.style.display = "block";
+            {                   
+                var whoIsdrawing = getNameElement(data.user);
+                //$('#whoisdrawing').html('<b>'+data.user+'</b>'); toimii divin kans
+                //$('#'+elementId).html('<b>'+data.user+'</b>'); 
+                closeDiv = false;
+                whoIsdrawing.style.display = "block";                
                 whoIsdrawing.style.left = line[1].x*width;
-                whoIsdrawing.style.top = line[1].y*height;
-            
-            }
-            else
-            {
-                whoIsdrawing.style.display = "none";
-            }
+                whoIsdrawing.style.top = line[1].y*height;  
+
+            }            
+            // else
+            // {               
+            //     //var whoIsdrawing = getNameElement(data.user);
+            //     var whoIsdrawing = document.getElementById('whoisdrawing-' + data.user);
+            //     whoIsdrawing.style.display = "none";                    
+            // }
 
         }
 
     });
+
+    function getNameElement (user) 
+    {
+        var elementId = 'whoisdrawing-' + user;
+        var element = document.getElementById(elementId);
+        if(element == null) 
+        {
+          element = document.createElement('div');
+          element.id = elementId;
+          element.className = 'whoisdrawing';
+          var newContent = document.createTextNode(user);
+          element.appendChild(newContent);
+          //$('#'+elementId).html('<b>'+user+'</b>'); 
+          // Perhaps you want to attach these elements another parent than document
+          document.body.appendChild(element);
+          setTimeout(function(){ document.body.removeChild(element); }, 1000);          
+        }
+        return element;
+    }
 
     var tempArray = [];
     //var recordLine = false;
