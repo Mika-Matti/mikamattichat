@@ -107,6 +107,7 @@ io.on('connection', function(socket)
     console.log('users: ' + Object.keys(users));
     console.log('fakeusers: ' + Object.keys(fakeUsers));
     updateUsernames();
+    updateUsername();    
     updateConnections();
  
     //ilmoitetaan että on liittynyt serverille
@@ -137,15 +138,10 @@ io.on('connection', function(socket)
         console.log('users: ' + Object.keys(users));  
         console.log("admins: " + Object.keys(admins));
     });
-    //käyttäjän hiiren sijainti
-    socket.on('track mouse', function(data)
-    {
-        io.emit('broadcast mouse', { coords: data, user: socket.username });
-    });
 
     socket.on('draw fake', function(data)
     {
-        io.emit('draw line', { line: data.line }); //lähetä piirto kaikkiin clientteihin
+        io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin
     });
 
       

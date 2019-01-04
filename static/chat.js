@@ -20,8 +20,8 @@ $(function ()
             {
                 if(data) //jos callback eli data === true, nimen voi vaihtaa.
                 {
-                    $('.chatHeaderpre').hide();     //Tervetuloa otsikko sulkeutuu
-                    $('.chatHeader').show();        //Ja uusi otsikko tulee tilalle                     
+                    //$('.chatHeaderpre').hide();     //Tervetuloa otsikko sulkeutuu
+                   // $('.chatHeader').show();        //Ja uusi otsikko tulee tilalle                     
                 }
                 else
                 {
@@ -56,7 +56,7 @@ $(function ()
     socket.on('get user', function(data)
     {
         var html = '';
-        html += 'Your current nickname is "' + data.user + '"';
+        html += 'You are "' + data.user + '"';
         $("#nickname").html(html); 
     });
     //NIMENVAIHTO LOPPUU 

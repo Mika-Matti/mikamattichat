@@ -46,42 +46,12 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.pos.x = ( e.clientX -2 ) / width;  // -10
         mouse.pos.y = ( e.clientY -42 ) / height; // -50 miinustaa ylläolevan headerin canvasista
         mouse.move = true;
-        //lähetetään hiiren sijainti
-        socket.emit('track mouse', mouse.pos );
     };
     //jos hiiri menee canvasin ulkopuolelle, laitetaan hiiri pois pohjasta ettei tule ylimääräisiä viivoja
     canvas.onmouseout = function(e)
     {
         mouse.click = false;
     };
-    //track mouse
-    //client vastaanottaa hiirien paikat
-    socket.on('broadcast mouse', function(data)
-    {
-
-        var el = getCursorElement(data.user);
-
-        el.style.x = data.coords.x;
-        el.style.y = data.coords.y;         
-        
-    });
-        
-    function getCursorElement (user) 
-    {
-        var elementId = 'cursor-' + user;
-        console.log (elementId);
-        var element = document.getElementById(elementId);
-        if(element == null) {
-          element = document.createElement('div');
-          element.id = elementId;
-          element.className = 'cursor';
-          // Perhaps you want to attach these elements another parent than document
-          canvas.appendChild(element);
-        }
-        return element;        
-    }
-    //track mouse loppuu
-
 
     //piirrettyjen viivojen määrän koko kilobiteissä
     socket.on('get lines', function(data)
@@ -101,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function()
     //otetaan vastaan server.js lähettämä data piirroksesta
     socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
     {
+        var whoIsdrawing = document.getElementById("whoisdrawing");
         var line = data.line;
         {
             context.beginPath();
@@ -109,7 +80,23 @@ document.addEventListener("DOMContentLoaded", function()
             context.moveTo(line[0].x * width, line[0].y * height);
             context.lineTo(line[1].x * width, line[1].y * height);
             context.stroke();
+            //näytetään piirtäessä piirtäjän username
+            
+            if(data.user)
+            {
+                $('#whoisdrawing').html('<b>'+data.user+'</b>'); 
+                whoIsdrawing.style.display = "block";
+                whoIsdrawing.style.left = line[1].x*width;
+                whoIsdrawing.style.top = line[1].y*height;
+            
+            }
+            else
+            {
+                whoIsdrawing.style.display = "none";
+            }
+
         }
+
     });
 
     var tempArray = [];
