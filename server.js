@@ -636,46 +636,21 @@ io.on('connection', function(socket)
         io.sockets.emit('get connections', connections.length)
     }
 
-    function hasJoined()
+    function hasJoined() //Tätä ei haluta tallentaa tietokantaan
     {
         style = " <i><b>";
         msg = "</b> joined the channel.</i>";
         updateDate();
         socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-        // let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
-        // newMsg.save(function(err)
-        // {         
-        //     if(err) 
-        //     {
-        //         throw err;
-        //     }
-        //     else
-        //     {
-        //         updateDate();
-        //         socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-        //     }
-        // });
     }
 
-    function hasLeft()
+    function hasLeft() //Tätä ei haluta tallentaa tietokantaan
     {
         style = " <i><b>";
         msg = "</b> left the channel.</i>";
         updateDate();
         socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-        // let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
-        // newMsg.save(function(err)
-        // {         
-        //     if(err) 
-        //     {
-        //         throw err;
-        //     }
-        //     else
-        //     {
-        //         updateDate();
-        //         socket.broadcast.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-        //     }
-        // });
+
     }
 
     function isNowAdmin()
@@ -722,7 +697,7 @@ io.on('connection', function(socket)
         var linelength = 0;
         for (var i in lineHistory) 
         {
-            linelength += (lineHistory[i].length * 2 * 4) / 1024;
+            linelength += (lineHistory[i].length * 4 * 4) / 1024; //length*4 = 4 on muuttujien määrä arrayssa.
         }
         io.sockets.emit('get lines', linelength); //tässä on ensin muutettu viivan koko byteksi, sitten kilobyteksi        
     }
