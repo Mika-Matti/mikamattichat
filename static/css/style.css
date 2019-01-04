@@ -743,4 +743,5 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     top: 332px;
     display: none;
     font-size: 15px;
+    pointer-events:none;
 }

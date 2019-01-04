@@ -69,7 +69,6 @@ $(function ()
     });
     //CONNECTIONS LOPPUU       
 
-
     //CHATVIESTINLÄHETTÄMINEN
     $('#send').submit(function(e)
     {
