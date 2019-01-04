@@ -670,6 +670,13 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     color: white;
     text-align: left;   
 }
+
+
+#kuva a:link{
+    color:#FFFFFF;
+}
+
+
 #kuva img
 {
     max-height: 550px;  

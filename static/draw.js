@@ -262,7 +262,7 @@ function openLightbox(n)
     lightbox.style.display= "block";    
     if(images && images.length)
     {
-        $('#kuva').html('<img src="' + images[n] + '" />');   
+        $('#kuva').html('<img src="' + images[n] + '" /><br><a href="'+images[n]+'" download>Download image</a>');   
     }
     else
     {
