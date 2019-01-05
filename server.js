@@ -343,11 +343,18 @@ io.on('connection', function(socket)
                 var ind = msg.indexOf(' ');
                 var name = msg.substring(0, ind);
                 var newName = msg.substring(ind + 1);
+                var regex = /[^a-zA-Z0-9_.-]+/g;
                 var adminName = adminCrown + name;
                 if (adminName in admins)
                 {
                     callback("You can't rename an admin");
-                }
+                }       
+                else if(newName.toLowerCase() in fakeUsers || newName.match(regex) || newName.length > 13 || newName.length < 1)
+                {
+                    callback("That nickname is invalid or already taken!");
+                    console.log ("nimi " + newName + " on jo käytössä");
+                    console.log("Lista nimistä: " + Object.keys(users));
+                }    
                 else if (name in users) //taas pakko olla casesensitive
                 {                               
                     //vaihdetaan valitun käyttäjän nimi näkyvään listaan
@@ -362,7 +369,8 @@ io.on('connection', function(socket)
                     fakeUsers[lowerCasenewName].userfake = lowerCasenewName;
                     delete fakeUsers[lowercaseName];
 
-                    updateUsernames();                    
+                    updateUsernames();
+                    users[newName].emit('get user', {user: newName}); //on tärkeää muistaa, että tämä broadcastaa vain itselle EI KAIKILLE           
                     console.log(name + " on nyt " + newName);
                     console.log("Users: " + Object.keys(users));
                     console.log("fakeUsers: " + Object.keys(fakeUsers));    
@@ -472,7 +480,7 @@ io.on('connection', function(socket)
                 if(newName.toLowerCase() in fakeUsers || newName.match(regex) || newName.length > 13 || newName.length < 1)
                 {
                     callback("That nickname is invalid or already taken!");
-                    console.log ("nimi " + data + " on jo käytössä");
+                    console.log ("nimi " + newName + " on jo käytössä");
                     console.log("Lista nimistä: " + Object.keys(users));
                 }       
                 else
