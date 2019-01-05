@@ -116,7 +116,7 @@
                     <b>/me</b> -- Express yourself in third person, for example - '/me is feeling content today.'</p>
 
                     <p><b>List of admin /commands:</b><br>
-                    <b>/alert</b> message -- Send an alert to everyone in the chat.<br>
+                    <b>/alert</b> message -- Send a message as an alert to everyone in the chat.<br>
                     <b>/imitate</b> username message -- Send a message as any user as you want, even imaginary. The only purpose this serves is fun.<br>
                     <b>/rename</b> username newusername(case sensitive) -- Rename any user, that is not admin to whatever you like.<br>
                     <b>/purge</b> -- This will remove all messages from the client and database. Use with caution.<br>
@@ -159,7 +159,7 @@
             <!-- alaosa jossa kirjotetaan viestit tämä ei näy enneku annetaan username koska css tiedostossa chatBottom display none-->
             <div class='chatBottom'>
                 <form action='' id='send'>                  
-                <input id='m' type='text' autocomplete='off' placeholder='Type your message here.' />
+                <textarea class='textinput' id='m' type='text' autocomplete='off' placeholder='Type your message here.'></textarea>
                 <input type='submit' value='Send' />
                 </form>     
             </div>

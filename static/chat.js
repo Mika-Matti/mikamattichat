@@ -6,8 +6,7 @@ let socket = io({transports: ['websocket'],
 
 $(function ()
 {
-       
-  
+
     //NIMIMERKIN ASETTAMINEN
     $('#change').submit(function(e)
     {
@@ -67,7 +66,23 @@ $(function ()
         html += "(" + data + ")";
         $("#connections").html(html);
     });
-    //CONNECTIONS LOPPUU       
+    //CONNECTIONS LOPPUU 
+
+    $('#m').keydown(function (e) {
+        if (e.keyCode == 13 && !e.shiftKey) {
+            e.preventDefault();
+            $('#send').submit();
+            console.log("test");
+            //$('#m').val().replace(/\n/g, '<br />')
+            return false;
+        }
+        else if(e.keyCode == 13 && e.shiftKey)
+        {
+            e.preventDefault();
+            $('#m').val($('#m').val() + '\n');
+            return false;
+        }
+    });
 
     //CHATVIESTINLÄHETTÄMINEN
     $('#send').submit(function(e)

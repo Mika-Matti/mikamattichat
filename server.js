@@ -198,8 +198,8 @@ io.on('connection', function(socket)
     {
         msg = data.trim();
         //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
-        var chars = {'<':'&#60','>':'&#62'};
-        msg = data.replace(/[<>]/g, m => chars[m]);      
+        var chars = {'<':'&#60','>':'&#62','\n':'<br>'};
+        msg = data.replace(/[<>\n]/g, m => chars[m]);      
            
         if(msg.substr(0,7).toLowerCase() === '/admin ') //admin login
         {

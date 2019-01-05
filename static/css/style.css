@@ -2,7 +2,7 @@
 * {
     font-family: 'Open Sans'; 
     box-sizing: border-box;
-    color: #333;
+    color: #333; 
 }
 /*.drawCanvas {display: block;}
 #content-mobile {display: none;}
@@ -18,7 +18,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding:0px;
     overflow: hidden;
 }
-
 .wrapper
 {
    /*height: 99.95%;  pikkutarkkaa on */
@@ -245,6 +244,8 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+    
+    -webkit-padding-before: 0px;
 }
 
 /* STORE IMAGE nappula */
@@ -352,7 +353,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 .wrapper > .chatContainer > .chatNames
 {
     width: 150px;
-    height: 100%;
+    height: calc(100% - 40px);
     float:right;
     word-wrap: break-word;
     background: white;    
@@ -378,7 +379,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 .wrapper > .chatContainer > .chatNames > .chatNamesusers
 {     
     width: 150px;
-    height: calc(100% - 120px);
+    height: calc(100% - 80px);
     background: white;       
     overflow-y: auto;    
 }
@@ -469,12 +470,28 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 .wrapper > .chatContainer > .chatBottom
 {
     height: 40px; /* alatunnisteen korkeus */
-    list-style: none;
-    /*border-bottom: 1px solid #ddd; */
+    width: 310px;
+    list-style: none;    
     padding: 5px;
-    padding-left: 7px;
+    padding-left: 5px;
+    position:absolute;
+    bottom: 5px;
+
 }
 /* Alatunnisteen tai tekstisyöteikkunan teksti */
+.wrapper > .chatContainer > .chatBottom form > .textinput
+{
+    outline: none;
+    resize: none;
+    padding: 3px;
+    padding-left: 5px;
+    border: 1px hidden rgb(182, 152, 152);
+    height: 30px;
+    width: 310px;
+    padding-top: 5px;
+    -webkit-padding-before: 8px;
+}
+/*
 .wrapper > .chatContainer > .chatBottom form input[type='text']
 {    
     padding: 3px;
@@ -482,7 +499,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border: 1px hidden rgb(182, 152, 152);
     height: 30px;
     width: 310px;
-}
+}*/
 /* Lähetä viesti nappula */
 .wrapper > .chatContainer > .chatBottom form input[type='submit']
 {
@@ -491,6 +508,9 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: white;
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
+    right: -82px;
+    bottom: 2px;
+    position: absolute;
 }
 
 .wrapper > .chatContainer > .chatBottom form input[type='submit']:hover
