@@ -435,8 +435,29 @@ io.on('connection', function(socket)
             {
                 callback("You don't have the rights to do that.");
             }
-
-        }        
+        }
+        else if(msg.substr(0,6).toLowerCase() === '/alert') //lähetä viesti alert muodossa
+        {
+            msg = msg.substr(6); //poistetaan '/imitate'
+            var name = socket.username;              
+            if (name in admins)
+            {
+                var ind = msg.indexOf(' ');
+                if(ind !== -1)
+                {
+                    style = " <b>";
+                    name = socket.username;
+                    msg = "</b> sent an alert. <script>alert('" + msg.substring(ind +1)+"');</script>";  
+                   
+                    updateDate();
+                    io.emit('new message', {timestamp: timeHoursMins, style: style, user: name, msg: msg});                
+                }
+            }
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }
+        }            
         else if(msg.substr(0,6).toLowerCase() === '/purge') //tyhjennetään viestihistoria kokonaan databasesta ja clientistä (restrict admin)
         {
             msg = msg.substr(6); //poistetaan /purge viestistä
