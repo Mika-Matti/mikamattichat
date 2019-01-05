@@ -53,6 +53,29 @@ document.addEventListener("DOMContentLoaded", function()
         mouse.click = false;
     };
 
+    //update clientcanvas
+    socket.on('get linearray', function(data)
+    {
+        console.log("canvas tuotu");
+        var lineHistory = data.linehistory;   
+        for (var i in lineHistory) 
+        {   
+            for (var a in lineHistory[i]) 
+            {
+                var line = lineHistory[i][a].line;  
+                //piirretään puretut viivat        
+                {                    
+                    context.beginPath();
+                    context.lineWidth = line[2]; //brushin paksuus
+                    context.strokeStyle = line[3]; // brushin väri
+                    context.moveTo(line[0].x * width, line[0].y * height);
+                    context.lineTo(line[1].x * width, line[1].y * height);
+                    context.stroke();
+                }
+            }
+        }
+    });
+
     //piirrettyjen viivojen määrän koko kilobiteissä
     socket.on('get lines', function(data)
     {
@@ -70,8 +93,7 @@ document.addEventListener("DOMContentLoaded", function()
 
     //otetaan vastaan server.js lähettämä data piirroksesta
     socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
-    {
-   
+    {   
         var line = data.line;        
         {
             context.beginPath();
@@ -84,20 +106,10 @@ document.addEventListener("DOMContentLoaded", function()
             if(data.user)
             {                   
                 var whoIsdrawing = getNameElement(data.user);
-                //$('#whoisdrawing').html('<b>'+data.user+'</b>'); toimii divin kans
-                //$('#'+elementId).html('<b>'+data.user+'</b>'); 
-                closeDiv = false;
                 whoIsdrawing.style.display = "block";                
                 whoIsdrawing.style.left = line[1].x*width;
                 whoIsdrawing.style.top = line[1].y*height;  
-
             }            
-            // else
-            // {               
-            //     //var whoIsdrawing = getNameElement(data.user);
-            //     var whoIsdrawing = document.getElementById('whoisdrawing-' + data.user);
-            //     whoIsdrawing.style.display = "none";                    
-            // }
 
         }
 
@@ -167,6 +179,8 @@ function resize()
 {
     socket.emit('resize');
 }
+
+  
 //piirtotyökaluja
 function lessStroke()
 {

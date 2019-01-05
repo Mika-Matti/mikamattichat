@@ -459,6 +459,65 @@ io.on('connection', function(socket)
                 callback("You don't have the rights to do that.");
             }
         }
+
+
+        else if(msg.substr(0,5).toLowerCase() === '/nick') //vaihda nimesi
+        {
+            msg = msg.substr(5); //poistetaan viestistä /nick            
+
+                var ind = msg.indexOf(' ');
+                var newName = msg.substring(ind + 1);
+                var regex = /[^a-zA-Z0-9_.-]+/g;
+        
+                if(newName.toLowerCase() in fakeUsers || newName.match(regex) || newName.length > 13 || newName.length < 1)
+                {
+                    callback("That nickname is invalid or already taken!");
+                    console.log ("nimi " + data + " on jo käytössä");
+                    console.log("Lista nimistä: " + Object.keys(users));
+                }       
+                else
+                {
+                   
+                    let currentname = socket.username;             
+                    if (currentname in admins)
+                    {
+                        delete users[socket.username]; // poistetaan vanha nimi 
+                        delete admins[socket.useradminname];
+    
+                        socket.username = adminCrown + newName;  
+                        users[socket.username] = socket; 
+    
+                        socket.useradminname = socket.username; 
+                        admins[socket.useradminname] = socket;     
+                    }  
+                    else
+                    {
+                        delete users[socket.username]; // poistetaan vanha nimi                    
+                        socket.username = newName;                
+                        users[socket.username] = socket; 
+                    }
+                    
+                    updateUsernames();
+                    updateUsername();                
+                    nameChangestart(currentname);   //nimenvaihdos on client puolella tullut päätökseen.    
+                    
+                    //fakeUsers.splice(fakeUsers.indexOf(socket.userfake), 1); 
+                    delete fakeUsers[socket.userfake]; //ja poistetaan versio jossa on vain pienet kirjaimet
+                    newName = newName.toLowerCase(); //nyt muutetaan data lowercase
+                    socket.userfake = newName; //tilalle lowercase nimi
+                    fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
+                                    
+                    console.log("username changed to " + newName);
+                    console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
+                    console.log("Lista nimistä näkyvä: " + Object.keys(users));
+                    console.log("Lista nimistä admins: " + Object.keys(admins));
+                }
+                            
+   
+        }   
+
+
+
         else if(msg.substr(0,4).toLowerCase() === '/me ')
         {
             style = "<i><b>*";
@@ -704,29 +763,18 @@ io.on('connection', function(socket)
 
     function updateCanvas()
     {
-        //io.emit('clearit', true);
-        for (var i in lineHistory) 
-        {
-            for (var a in lineHistory[i]) 
-            {
-                socket.emit('draw line', { line: lineHistory[i][a].line } );
-            }
-        }
+        socket.emit('get linearray', { linehistory: lineHistory} );        
         updateLines();
     }
+
     function updateCanvasAll() //canvas päivitetään kaikille kumia käyttäessä. Kömpelöä, mutta toimii.
     {
         io.emit('clearit', true);
-        for (var i in lineHistory) 
-        {
-            
-            for (var a in lineHistory[i]) 
-            {
-                io.emit('draw line', { line: lineHistory[i][a].line } );
-            }
-        }
+        //sama kun update canvas, mutta lähetetään line array kaikille clienteille.
+        io.emit('get linearray', { linehistory: lineHistory} );
         updateLines();     
     }
+
     //Pyyhkimeen funktioita jotta hiiri osaisi huomata viivan
     function Vec2Cross2 ( x1, y1, x2, y2 )
 	{
