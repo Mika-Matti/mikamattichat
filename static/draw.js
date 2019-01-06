@@ -75,6 +75,28 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
+    socket.on('draw bufferarray', function(data)
+    {
+        console.log("bufferarray tuotu");
+        var bufferHistory = data.bufferarray;
+        console.log(bufferHistory);
+        //data.line[i].line 
+        for (var i in bufferHistory)
+        {
+
+                var line = bufferHistory[i];
+                //piirretään puretut viivat
+                 {                    
+                    context.beginPath();
+                    context.lineWidth = line[2]; //brushin paksuus
+                    context.strokeStyle = line[3]; // brushin väri
+                    context.moveTo(line[0].x * width, line[0].y * height);
+                    context.lineTo(line[1].x * width, line[1].y * height);
+                    context.stroke();
+                }
+            
+        }
+    });
 
     //piirrettyjen viivojen määrän koko kilobiteissä
     socket.on('get lines', function(data)

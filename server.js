@@ -8,6 +8,7 @@ let io = require('socket.io')(http);
 let mongoose = require('mongoose');
 
 var lineHistory = []; //array johon tulee piirretyt jutut
+var bufferArray = []; //väliaikanen array joka kerää pienen määrän lähetettyjä piirtokomentoja ja lähettää ne kerralla sitten.
 
 let users = {}; //Näkyväkäyttäjälista
 let admins = {}; //nimet joilla on adminoikeudet
@@ -141,17 +142,20 @@ io.on('connection', function(socket)
 
     socket.on('draw fake', function(data)
     {
-        io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin
+        //io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin
+        bufferArray.push(data.line); // tätä lähetetään 25ms välein ja sitten tyhjennetään.
     });
 
       
     //piirtämisten lisääminen ja lähettäminen kaikille.
     socket.on('draw line', function (data) 
-    {
-        for (let i = 0; i < data.line.length; i++)
-        {
-            io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
-        }
+    {        
+        //vanhya tapa lähettää
+        // for (let i = 0; i < data.line.length; i++)
+        // {
+        //     io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
+        // }
+        
         lineHistory.push(data.line); 
         updateLines();
     });
@@ -696,6 +700,25 @@ io.on('connection', function(socket)
                     //console.log("Lista nimistäFAKE: " + Object.keys(fakeUsers));
             }
         });
+
+    //bufferoitujen tietojen lähettäminen yhdellä paketilla.
+    function mainLoop() 
+    {
+        
+            if (bufferArray.length > 0)
+            {
+                io.emit('draw bufferarray', {bufferarray: bufferArray});
+                console.log("lähetetään bufferarray");
+               // io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin      
+                updateLines();
+            }
+            bufferArray = [];
+       
+
+        setTimeout(mainLoop, 25); //kutsuu funktiota uudelleen 25ms välein      
+               
+    }
+    mainLoop();
 
     function updateDate()
     {
