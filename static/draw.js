@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function()
     //update clientcanvas
     socket.on('get linearray', function(data)
     {
-        console.log("canvas tuotu");
+        //console.log("canvas tuotu");
         var lineHistory = data.linehistory;   
         for (var i in lineHistory) 
         {   
@@ -78,9 +78,9 @@ document.addEventListener("DOMContentLoaded", function()
     //reaaliajassa piirrettävä data
     socket.on('draw bufferarray', function(data)
     {
-        console.log("bufferarray tuotu");
+        //console.log("bufferarray tuotu");
         var bufferHistory = data.bufferarray;
-        console.log(bufferHistory);
+        //console.log(bufferHistory);
         //data.line[i].line 
         for (var i in bufferHistory)
         {
@@ -94,15 +94,20 @@ document.addEventListener("DOMContentLoaded", function()
                     context.lineWidth = line[2]; //brushin paksuus
                     context.strokeStyle = line[3]; // brushin väri
                     context.moveTo(line[0].x * width, line[0].y * height);
+                    //context.lineTo(line[1].x * width, line[1].y * height + 10); tämä aiheuttaa siistin palikka brushin.
                     context.lineTo(line[1].x * width, line[1].y * height);
                     context.stroke();
                     //näytetään piirtäessä piirtäjän userrname
                     if(bufferHistory[i].user)
                     {                   
+                        
                         var whoIsdrawing = getNameElement(bufferHistory[i].user);
-                        whoIsdrawing.style.display = "block";                
                         whoIsdrawing.style.left = line[1].x*width;
-                        whoIsdrawing.style.top = line[1].y*height;  
+                        whoIsdrawing.style.top = line[1].y*height+30;  
+                        whoIsdrawing.style.display = "block";   
+                        console.log("toimii");             
+                            
+                        
                     }     
                 }
             }
@@ -115,38 +120,13 @@ document.addEventListener("DOMContentLoaded", function()
         var html = '';
         html += "(" + data.toFixed(3) + " kilobytes) ";
         $("#lines").html(html);
-    });
-    
+    });    
 
     socket.on('clearit', function()
     {
         context.clearRect(0, 0, width, height);
         console.log("client clearit");
     });
-
-    //otetaan vastaan server.js lähettämä data piirroksesta TÄMÄ ON MAHDOLLISESTI TURHA, KOSKA BUFFERARRAY TUO NYT PIIRTÄMISEN
-    // socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
-    // {   
-    //     var line = data.line;        
-    //     {
-    //         context.beginPath();
-    //         context.lineWidth = line[2]; //brushin paksuus
-    //         context.strokeStyle = line[3]; // brushin väri
-    //         context.moveTo(line[0].x * width, line[0].y * height);
-    //         context.lineTo(line[1].x * width, line[1].y * height);
-    //         context.stroke();
-    //         //näytetään piirtäessä piirtäjän username
-    //         if(data.user)
-    //         {                   
-    //             var whoIsdrawing = getNameElement(data.user);
-    //             whoIsdrawing.style.display = "block";                
-    //             whoIsdrawing.style.left = line[1].x*width;
-    //             whoIsdrawing.style.top = line[1].y*height;  
-    //         }            
-
-    //     }
-
-    // });
 
     function getNameElement (user) 
     {
@@ -157,7 +137,9 @@ document.addEventListener("DOMContentLoaded", function()
           element = document.createElement('div');
           element.id = elementId;
           element.className = 'whoisdrawing';
-          var newContent = document.createTextNode(user);
+          //var newContent = document.createTextNode('<b>'+user+'</b>');
+          var newContent = document.createElement('li');
+          newContent.innerHTML = '<b>'+user+'</b>'; 
           element.appendChild(newContent);
           //$('#'+elementId).html('<b>'+user+'</b>'); 
           // Perhaps you want to attach these elements another parent than document

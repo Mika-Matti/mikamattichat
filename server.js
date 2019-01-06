@@ -30,6 +30,8 @@ let timeDayMonthYear = ((day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (m
 
 let adminCrown = "🎩"; //"👑" "🎩"
 
+var regexi = /[^a-zA-Z0-9_.-äöå]+/g; //sallitut username merkit
+
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
 {
     if(err)
@@ -358,8 +360,8 @@ io.on('connection', function(socket)
                 var ind = msg.indexOf(' ');
                 var name = msg.substring(0, ind);
                 var newName = msg.substring(ind + 1);
-                var regex = /[^a-zA-Z0-9_.-]+/g;
                 var adminName = adminCrown + name;
+                var regex = regexi;
                 if (adminName in admins)
                 {
                     callback("You can't rename an admin");
@@ -511,7 +513,7 @@ io.on('connection', function(socket)
 
                 var ind = msg.indexOf(' ');
                 var newName = msg.substring(ind + 1);
-                var regex = /[^a-zA-Z0-9_.-]+/g;
+                var regex = regexi;
         
                 if(newName.toLowerCase() in fakeUsers || newName.match(regex) || newName.length > 13 || newName.length < 1)
                 {
@@ -662,7 +664,7 @@ io.on('connection', function(socket)
             var chars = {'<':'&#60','>':'&#62'};
             data1 = data.replace(/[<>]/g, m => chars[m]);
             
-            var regex = /[^a-zA-Z0-9_.-]+/g;
+            var regex = regexi;
             
             //if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
             if(data1.toLowerCase() in fakeUsers || data1.match(regex) || data1.length > 13 || data1.length < 1)
