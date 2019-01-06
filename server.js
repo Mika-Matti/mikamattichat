@@ -206,18 +206,25 @@ io.on('connection', function(socket)
         var www = ("www.");
         var chars = {'<':'&#60;','>':'&#62;','\n':'<br>'};
         msg = data.replace(/[<>\n]/g, m => chars[m]);      
-        if(msg.match(https))
+        if(msg.match(https) && !msg.match(www) )
         {
             console.log("matched");
             var link = (https, ("<a target='_blank' href='" + msg.substring(https +1) + "'>" + msg.substring(https +1) + "</a>") );
             //msg = msg.substr(msg);
             msg = link;
         }
-        if(msg.match(www))
+        else if(msg.match(www) && !msg.match(https) )
         {               
             console.log("matched");
-            var link = (www, ("<a target='_blank' href=" + https + msg.substring(www +1) + ">" + msg.substring(www +1) + "</a>") );
+            var link = (www, ("<a target='_blank' href='https://" + msg.substring(www +1) + "'>" + msg.substring(www +1) + "</a>") );
+            console.log(link);
             //msg = msg.substr(msg);
+            msg = link;
+        }
+        else if( msg.match(https) && msg.match(www) )
+        {
+            console.log("molemmat matched");
+            var link = (www, ("<a target='_blank' href='"+ msg.substring(www +1) + "'>" + msg.substring(https +1) + "</a>") );
             msg = link;
         }
            
