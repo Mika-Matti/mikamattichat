@@ -30,7 +30,7 @@ let timeDayMonthYear = ((day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (m
 
 let adminCrown = "🎩"; //"👑" "🎩"
 
-var regexi = /[^a-zA-Z0-9_.-äöå]+/g; //sallitut username merkit
+var regexi = /[^a-zA-Z0-9äöå_.-]+/g; //sallitut username merkit
 
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
 {
