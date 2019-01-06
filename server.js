@@ -142,12 +142,18 @@ io.on('connection', function(socket)
 
     socket.on('draw fake', function(data)
     {
-        //io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin
-        bufferArray.push({ line: data.line, user: socket.username}); // tätä lähetetään 25ms välein ja sitten tyhjennetään.       
+        //bufferArray.push({ line: data.line, user: socket.username}); // tätä lähetetään 25ms välein ja sitten tyhjennetään. Alkuperäinen
+
+        for (let i = 0; i < data.line.length; i++)
+        {
+           // io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin   
+           //bufferArray.push({ line: data.line[i].line, user: socket.username});              
+        bufferArray.push({line: data.line[i].line, user: socket.username});              
+        }
     });
 
       
-    //piirtämisten lisääminen ja lähettäminen kaikille.
+    //piirtämisten lisääminen linearrayhyn, josta uudet tulokkaat ottavat canvasille piirretyt viivat. updateLines päivittää linehistory arrayn koon.
     socket.on('draw line', function (data) 
     {        
         //vanhya tapa lähettää. tietyllä scriptillä, tämä pystyy lähettämään kuvia.

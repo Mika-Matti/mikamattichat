@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
+    //reaaliajassa piirrettävä data
     socket.on('draw bufferarray', function(data)
     {
         console.log("bufferarray tuotu");
@@ -83,8 +84,10 @@ document.addEventListener("DOMContentLoaded", function()
         //data.line[i].line 
         for (var i in bufferHistory)
         {
-
-                var line = bufferHistory[i].line;
+            for(var a in bufferHistory[i])
+            {
+          
+                var line = bufferHistory[i][a];
                 //piirretään puretut viivat
                  {                    
                     context.beginPath();
@@ -102,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function()
                         whoIsdrawing.style.top = line[1].y*height;  
                     }     
                 }
-            
+            }
         }
     });
 
@@ -122,28 +125,28 @@ document.addEventListener("DOMContentLoaded", function()
     });
 
     //otetaan vastaan server.js lähettämä data piirroksesta TÄMÄ ON MAHDOLLISESTI TURHA, KOSKA BUFFERARRAY TUO NYT PIIRTÄMISEN
-    socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
-    {   
-        var line = data.line;        
-        {
-            context.beginPath();
-            context.lineWidth = line[2]; //brushin paksuus
-            context.strokeStyle = line[3]; // brushin väri
-            context.moveTo(line[0].x * width, line[0].y * height);
-            context.lineTo(line[1].x * width, line[1].y * height);
-            context.stroke();
-            //näytetään piirtäessä piirtäjän username
-            if(data.user)
-            {                   
-                var whoIsdrawing = getNameElement(data.user);
-                whoIsdrawing.style.display = "block";                
-                whoIsdrawing.style.left = line[1].x*width;
-                whoIsdrawing.style.top = line[1].y*height;  
-            }            
+    // socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
+    // {   
+    //     var line = data.line;        
+    //     {
+    //         context.beginPath();
+    //         context.lineWidth = line[2]; //brushin paksuus
+    //         context.strokeStyle = line[3]; // brushin väri
+    //         context.moveTo(line[0].x * width, line[0].y * height);
+    //         context.lineTo(line[1].x * width, line[1].y * height);
+    //         context.stroke();
+    //         //näytetään piirtäessä piirtäjän username
+    //         if(data.user)
+    //         {                   
+    //             var whoIsdrawing = getNameElement(data.user);
+    //             whoIsdrawing.style.display = "block";                
+    //             whoIsdrawing.style.left = line[1].x*width;
+    //             whoIsdrawing.style.top = line[1].y*height;  
+    //         }            
 
-        }
+    //     }
 
-    });
+    // });
 
     function getNameElement (user) 
     {
@@ -170,10 +173,12 @@ document.addEventListener("DOMContentLoaded", function()
     {
         if(!eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
-            socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]}); //alkuperänen
+            
+            tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
+            //socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]}); //alkuperänen
+            socket.emit('draw fake', {line: tempArray});
             //socket.emit('draw fake', { line:{line: [ mouse.pos, mouse.pos_prev, size, color]}}); //tämän kanssa server for loop testailuja varten.
             mouse.move = false;
-            tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
         }
 
         else if (!eraser && !mouse.click)
