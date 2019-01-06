@@ -162,7 +162,7 @@ io.on('connection', function(socket)
     //pyyhin
     socket.on('erasertool', function (data)
     {        
-        for (let i = 0; i < lineHistory.length; i++) //tämä on toimiva. pyyhin tekeee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
+        for (let i = 0; i < lineHistory.length; i++) //tämä on toimiva. pyyhin tekee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
         {
             var foundLine = false;
             for (let a = 0; a < lineHistory[i].length; a++)

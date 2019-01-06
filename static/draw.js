@@ -1,7 +1,9 @@
 //täällä tehdään piirtokommunikointi serverin kanssa
 var eraser = false; //pyyhin
+var thefunBrush = false; //työkalusivellin
 var brushSize = 1;
 var brushColor = 'black';  
+var clientHistory = [];
 
 document.addEventListener("DOMContentLoaded", function()
 {
@@ -32,7 +34,24 @@ document.addEventListener("DOMContentLoaded", function()
 
         canvas.width  = width;
         canvas.height = height;    
-        resize();
+      
+         //clientside resize
+        for (var i in clientHistory) 
+        {   
+            for (var a in clientHistory[i]) 
+            {
+                var line = clientHistory[i][a].line;  
+                //piirretään puretut viivat        
+                {                    
+                    context.beginPath();
+                    context.lineWidth = line[2]; //brushin paksuus
+                    context.strokeStyle = line[3]; // brushin väri
+                    context.moveTo(line[0].x * width, line[0].y * height);
+                    context.lineTo(line[1].x * width, line[1].y * height);
+                    context.stroke();
+                }
+            }
+        }
     }
 
     //onko hiiri klikattuna
@@ -53,17 +72,29 @@ document.addEventListener("DOMContentLoaded", function()
     {
         mouse.click = false;
     };
+    //piirrettyjen viivojen määrän koko kilobiteissä
+    socket.on('get lines', function(data)
+    {
+        var html = '';
+        html += "(" + data.toFixed(3) + " kilobytes) ";
+        $("#lines").html(html);
+    });    
 
-    //update clientcanvas
+    socket.on('clearit', function()
+    {
+        context.clearRect(0, 0, width, height);
+        console.log("client clearit");
+    });
+    //update clientcanvas. Tuodaan ekaa kertaa serverin piirrot clientille ja päivitetään client array täsmäämään serverin arrayta.
     socket.on('get linearray', function(data)
     {
         //console.log("canvas tuotu");
-        var lineHistory = data.linehistory;   
-        for (var i in lineHistory) 
+        clientHistory = data.linehistory;   
+        for (var i in clientHistory) 
         {   
-            for (var a in lineHistory[i]) 
+            for (var a in clientHistory[i]) 
             {
-                var line = lineHistory[i][a].line;  
+                var line = clientHistory[i][a].line;  
                 //piirretään puretut viivat        
                 {                    
                     context.beginPath();
@@ -89,6 +120,8 @@ document.addEventListener("DOMContentLoaded", function()
             {
           
                 var line = bufferHistory[i][a];
+                clientHistory.push(bufferHistory);
+                //clientHistory[i].push ( { line: line }); //lisätään line serverclienttiin muiden joukkoon.
                 //piirretään puretut viivat
                  {                    
                     context.beginPath();
@@ -100,34 +133,18 @@ document.addEventListener("DOMContentLoaded", function()
                     context.stroke();
                     //näytetään piirtäessä piirtäjän userrname
                     if(bufferHistory[i].user)
-                    {                   
-                        
+                    {              
                         var whoIsdrawing = getNameElement(bufferHistory[i].user);
                         whoIsdrawing.style.left = line[1].x*width;
                         whoIsdrawing.style.top = line[1].y*height;  
-                        whoIsdrawing.style.display = "block";   
-                        console.log("toimii");             
-                            
-                        
+                        whoIsdrawing.style.display = "block";    
                     }     
                 }
             }
         }
     });
 
-    //piirrettyjen viivojen määrän koko kilobiteissä
-    socket.on('get lines', function(data)
-    {
-        var html = '';
-        html += "(" + data.toFixed(3) + " kilobytes) ";
-        $("#lines").html(html);
-    });    
 
-    socket.on('clearit', function()
-    {
-        context.clearRect(0, 0, width, height);
-        console.log("client clearit");
-    });
 
     function getNameElement (user) 
     {
@@ -191,13 +208,6 @@ function clearit()
     socket.emit('clearit', true);
 }
 
-//kuvan tuominen uudelleen canvasiin jos selaimen ikkunan kokoa muutetaan
-function resize()
-{
-    socket.emit('resize');
-}
-
-  
 //piirtotyökaluja
 function lessStroke()
 {
@@ -215,15 +225,22 @@ function moreStroke()
     }
 }
 
-function useBrush()
+function usePen()
 {
-    eraser = false;   
-    lineTool = false;
+    eraser = false;  
+    thefunBrush = false;
+}
+function funBrush()
+{
+    thefunBrush = true;
+    eraser = false;
+    fun();
 }
 
 function useEraser()
 {  
     eraser = true;
+    thefunBrush = false;
 }
 //värit
 function colorBlack() {brushColor='black';}
@@ -237,6 +254,16 @@ function colorWhite() {brushColor='white';}
 
 var images = [];
 let number = 0;
+//sivellin
+fun = function() 
+{ 
+    var d = new Date(); 
+    if(thefunBrush)
+    {
+        brushSize = (Math.sin(d.getMilliseconds()/100.0)+1)*3; setTimeout(fun, 5);
+        //brushSize = (mouse.pos_prev - mouse.pos) / d; setTimeout(fun, 5);
+    }
+};
 
 function saveImg() 
 {  

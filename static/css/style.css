@@ -131,38 +131,59 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
-    border-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     border-left: 0px;
 }
 /* muut nappulat */
-.wrapper > .drawCanvas > .canvasFooter form input[id='buttons']
+.wrapper > .drawCanvas > .canvasFooter form input[id='pen']
 {
-    width: 50px;
+    width: 40px;
     padding: 5px;
     background: white;
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
 }
  
-.wrapper > .drawCanvas > .canvasFooter form input[id='buttons']:hover
+.wrapper > .drawCanvas > .canvasFooter form input[id='pen']:hover
 {
-    width: 50px;
+    width: 40px;
     padding: 5px;
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;   
 }
-
+.wrapper > .drawCanvas > .canvasFooter form input[id='funbrushbutton']
+{
+    width: 50px;
+    padding: 5px;
+    background: white;
+    border: 1px solid rgb(182, 152, 152);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    cursor: pointer;   
+}
+ 
+.wrapper > .drawCanvas > .canvasFooter form input[id='funbrushbutton']:hover
+{
+    width: 50px;
+    padding: 5px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(182, 152, 152);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    cursor: pointer;     
+}
 .wrapper > .drawCanvas > .canvasFooter form input[id='eraserbutton']
 {
     width: 50px;
     padding: 5px;
     background: white;
     border: 1px solid rgb(182, 152, 152);
+    border-left: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     cursor: pointer;   
-    border-radius: 5px;
 }
  
 .wrapper > .drawCanvas > .canvasFooter form input[id='eraserbutton']:hover
@@ -171,10 +192,13 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     padding: 5px;
     background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
+    border-left: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     cursor: pointer;   
-    border-radius: 5px;
 
 }
+
 
 /* värinappulat */
 .wrapper > .drawCanvas > .canvasFooter form input[id='black']
@@ -436,7 +460,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     right: 7px;
     width: 67px;
     padding: 5px;
-    background: white;
+    background: rgb(245, 245, 245);
     border: 1px solid rgb(182, 152, 152);
     cursor: pointer;  
     font-size: 13px;
