@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function()
                         
                         var whoIsdrawing = getNameElement(bufferHistory[i].user);
                         whoIsdrawing.style.left = line[1].x*width;
-                        whoIsdrawing.style.top = line[1].y*height+30;  
+                        whoIsdrawing.style.top = line[1].y*height;  
                         whoIsdrawing.style.display = "block";   
                         console.log("toimii");             
                             

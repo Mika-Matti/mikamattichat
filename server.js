@@ -154,24 +154,10 @@ io.on('connection', function(socket)
         }
         else
         {
-            console.log(data.isDrawing);
             lineHistory.push(data.line); 
             updateLines();
         }
     });
-
-      
-    // //piirtämisten lisääminen linearrayhyn, josta uudet tulokkaat ottavat canvasille piirretyt viivat. updateLines päivittää linehistory arrayn koon.
-    // socket.on('draw line', function (data) 
-    // {        
-    //     //vanhya tapa lähettää. tietyllä scriptillä, tämä pystyy lähettämään kuvia.
-    //     // for (let i = 0; i < data.line.length; i++)
-    //     // {
-    //     //     io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
-    //     // }        
-    //     lineHistory.push(data.line); 
-    //     updateLines();
-    // });
 
     //pyyhin
     socket.on('erasertool', function (data)

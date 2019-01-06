@@ -770,6 +770,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     font-size: 15px;
     pointer-events:none; 
     color: white;
+    list-style-type: none; 
     text-shadow:
 		-1px -1px 0 #000,
 		1px -1px 0 #000,
