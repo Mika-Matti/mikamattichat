@@ -33,9 +33,9 @@ document.addEventListener("DOMContentLoaded", function()
         height = canvas.offsetHeight;
 
         canvas.width  = width;
-        canvas.height = height;    
-      
-         //clientside resize
+        canvas.height = height;   
+       
+        //clientside resize
         for (var i in clientHistory) 
         {   
             for (var a in clientHistory[i]) 
@@ -114,13 +114,12 @@ document.addEventListener("DOMContentLoaded", function()
         var bufferHistory = data.bufferarray;
         //console.log(bufferHistory);
         //data.line[i].line 
+        clientHistory.push(bufferHistory);
         for (var i in bufferHistory)
         {
             for(var a in bufferHistory[i])
-            {
-          
+            {          
                 var line = bufferHistory[i][a];
-                clientHistory.push(bufferHistory);
                 //clientHistory[i].push ( { line: line }); //lisätään line serverclienttiin muiden joukkoon.
                 //piirretään puretut viivat
                  {                    
@@ -143,7 +142,58 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
+    //jos tulee viesti serveriltä käyttää eraseria clientsideen
+    socket.on('new eraser', function(data)
+    {
+        for (let i = 0; i < clientHistory.length; i++) //tämä on toimiva. pyyhin tekee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
+        {
+            var foundLine = false;
+            for (let a = 0; a < clientHistory[i].length; a++)
+            {
+                var line = clientHistory[i][a].line;
+		  	    if ( LineToLineIntersection ( data.data.mouse.x, data.data.mouse.y, data.data.mouse2.x, data.data.mouse2.y, line[0].x, line[0].y, line[1].x, line[1].y ) )
+                {
+                    console.log("Kumitus onnistui " + clientHistory.length);
+                    clientHistory.splice ( i, 1 );
+                    --i;
+                    //foundLine = true;
+                    
+                    break;
+                }                   
+            }   
+            if (foundLine) 
+            {
+                //console.log("foundline break");
+                break;
+            }                
+        }      
+        updateCanvas(); //tee clientside versio tästä. sama ku resizessä.      
+    });
 
+    function updateCanvas()
+    {
+        //tyhjennetään canvas
+        context.clearRect(0, 0, width, height);
+        console.log("client clearit");
+        //piirretään canvas uusiksi.
+        for (var i in clientHistory) 
+        {   
+            for (var a in clientHistory[i]) 
+            {
+                var line = clientHistory[i][a].line;  
+                //piirretään puretut viivat        
+                {                    
+                    context.beginPath();
+                    context.lineWidth = line[2]; //brushin paksuus
+                    context.strokeStyle = line[3]; // brushin väri
+                    context.moveTo(line[0].x * width, line[0].y * height);
+                    context.lineTo(line[1].x * width, line[1].y * height);
+                    context.stroke();
+                }
+            }
+        }    
+        
+    }
 
 
     function getNameElement (user) 
@@ -200,6 +250,50 @@ document.addEventListener("DOMContentLoaded", function()
                
     }
     mainLoop();
+
+     //Pyyhkimeen funktioita jotta hiiri osaisi huomata viivan
+     function Vec2Cross2 ( x1, y1, x2, y2 )
+     {
+         return ( x1 * y2 ) - ( y1 * x2 );
+     }
+ 
+     function LineToLineIntersection ( x11, y11, x12, y12, x21, y21, x22, y22 )
+     {
+         //line directional vector
+         var d2x = x22 - x21;
+         var d2y = y22 - y21;
+         // mouse directional vector
+         var d1x = x12 - x11;
+         var d1y = y12 - y11;
+         //mouse directional vector
+         var d21x = x21 - x11;
+         var d21y = y21 - y11;
+         //mouse starting point directional vector to line starting point
+         var cV = Vec2Cross2 ( d1x, d1y, d2x, d2y );
+         var cV2 = Vec2Cross2 ( d21x, d21y, d2x, d2y );
+         var s = ( cV2 * cV ) / ( cV * cV );
+         
+         if ( s > 0.0 && s <= 1.0 )
+         {
+             var intersectionX = x11 + d1x * s;
+             var intersectionY = y11 + d1y * s;
+             var sqr = Math.sqrt ( d2x * d2x + d2y * d2y );
+             var intersectionDirectionX = intersectionX - x21;
+             var intersectionDirectionY = intersectionY - y21;
+             var d = ( d2x / sqr ) * intersectionDirectionX + ( d2y / sqr ) * intersectionDirectionY;
+             var length1 = Math.sqrt ( d2x * d2x + d2y * d2y );
+             var length2 = Math.sqrt ( ( intersectionX - x21 ) * ( intersectionX - x21 ) + ( intersectionY - y21 ) * ( intersectionY - y21 ) );
+ 
+             if ( length1 < length2 || d < 0.0 )
+                 return false;
+             else
+                 return true;
+         }
+         
+         return false;
+     }
+
+
 
 });
 //canvasin tyhjennysfunktio
