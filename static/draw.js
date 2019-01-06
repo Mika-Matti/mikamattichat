@@ -195,7 +195,6 @@ document.addEventListener("DOMContentLoaded", function()
         
     }
 
-
     function getNameElement (user) 
     {
         var elementId = 'whoisdrawing-' + user;

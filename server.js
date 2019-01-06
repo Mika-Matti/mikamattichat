@@ -173,8 +173,9 @@ io.on('connection', function(socket)
                     //console.log("Kumitus onnistui " + lineHistory.length);
                     lineHistory.splice ( i, 1 );
                     foundLine = true;
-                   // updateCanvasAll(); //päivitetään canvas kaikille
-                    io.emit('new eraser', { data: data });
+                    
+                    updateCanvasAll(); //päivitetään canvas kaikille
+                    //io.emit('new eraser', { data: data });
                     
                     //io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     break;
