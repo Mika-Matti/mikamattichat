@@ -209,7 +209,7 @@ io.on('connection', function(socket)
         if(msg.match(https))
         {
             console.log("matched");
-            var link = (https, ("<a target='_blank' href=" + msg.substring(https +1) + ">" + msg.substring(https +1) + "</a>") );
+            var link = (https, ("<a target='_blank' href='" + msg.substring(https +1) + "'>" + msg.substring(https +1) + "</a>") );
             //msg = msg.substr(msg);
             msg = link;
         }
