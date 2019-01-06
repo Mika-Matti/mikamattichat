@@ -715,7 +715,7 @@ io.on('connection', function(socket)
             bufferArray = [];
        
 
-        setTimeout(mainLoop, 100); //kutsuu funktiota uudelleen 25ms välein      
+        setTimeout(mainLoop, 50); //kutsuu funktiota uudelleen 25ms välein      
                
     }
     mainLoop();
