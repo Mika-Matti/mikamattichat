@@ -109,6 +109,9 @@
                     <b>SAVE CANVAS</b> -- This button saves everything drawn on canvas as an image and stores it to your own personal gallery. Whenever you save canvas as an image,
                     a message will appear on the chat messages-window. You can access the image through the image thumbnail on the message or via IMAGES-button.<br>
                     <b>IMAGES</b> -- Pressing this button will open your own personal gallery where you can browse through all your stored images.</p>
+                    <p><b>Message sound:</b><br>
+                    If you have minimized the chat window or you're browsing another tab, a message sound will alert you of new messages. You can disable the message sound by clicking 
+                    the 🔊-icon on the left side of Help-button. When the sound is disabled, the button will display 🚫-icon instead. Press the icon again to enable sound. </p>
 
                     <p><b>List of user /commands:</b><br>
                     <b>/nick</b> newusername -- Change your nickname to a new one.<br>
@@ -124,6 +127,8 @@
                     <b>/removeadmin</b> username(case sensitive) -- Make another admin user again.</p>
 
                     I hope you have great time.
+                    <br>
+                    --Mika-Matti<br> 
                    
                 </div>
                 <div id=invisibleDiv></div>
@@ -132,8 +137,9 @@
                 <div class='chatNamesbottom'>
                     
                     <form>
-                    <input type='button' value='Emojis' onclick='emojiButton()'>
-                    <input type='button' value='Help' onclick='help()'>
+                    <input type='button' value='😃' onclick='emojiButton()'>
+                    <input id='soundButton' type='button' value='🔊' onclick='toggleSound()'>
+                    <input id='helpboxButton' type='button' value='Help' onclick='help()'>
                     </form>
                 </div>
                

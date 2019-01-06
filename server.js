@@ -142,7 +142,7 @@ io.on('connection', function(socket)
         console.log("admins: " + Object.keys(admins));
     });
 
-    socket.on('draw fake', function(data)
+    socket.on('draw', function(data)
     {
         //bufferArray.push({ line: data.line, user: socket.username}); // tätä lähetetään 25ms välein ja sitten tyhjennetään. Alkuperäinen
         if(data.isDrawing)

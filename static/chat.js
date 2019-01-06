@@ -4,6 +4,8 @@
 let socket = io({transports: ['websocket'], 
                 upgrade: false, });
 
+                
+
 $(function ()
 {
 
@@ -127,6 +129,7 @@ $(function ()
         //viestin lähetys
         $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>");
         scrollDown();
+        updateTitle(); //viestinotifikaatio tabin otsikossa
     });
 
     //yksityisviesti. Tätä ei tallenneta tietokantaan.
@@ -135,6 +138,7 @@ $(function ()
         //viestin lähetys
         $("#messages").append("<li>" + getCurrentDate() + " <i style=\"color:purple;\">" + "<b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
         scrollDown();
+        updateTitle();
     });
 
     //purge messages
@@ -143,10 +147,54 @@ $(function ()
         $("#messages").load(window.location.href + " #messages" );   //päivitetään viestidiv, jotta se tyhjenee kaikille.   
         
         setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>"); }, 400); //lähetetään ilmoitus, että kuka poisti viestit.
-                
+        updateTitle();       
     });
 
 });
+//onko uusia viestejä tabissa
+var newMessages = 0;
+var soundOn = true;
+
+function updateTitle() 
+{
+    if(!document.hasFocus())
+    {
+        newMessages++;
+        var newTitle = '[' + newMessages + '] mikamattiChat';
+        document.title = newTitle;
+        if(soundOn)
+        {
+            playMessageSound();
+        }
+    }
+}
+//avatessa välilehden
+window.onfocus = function() 
+{ 
+    newMessages = 0; 
+    var newTitle = 'mikamattiChat';
+    document.title = newTitle;
+};
+function playMessageSound()
+{
+    var audio = new Audio('static/mikamattiChatMessageSound.mp3');
+    audio.play();
+}
+function toggleSound()
+{
+    
+    if(soundOn)
+    {
+        document.getElementById("soundButton").value="🚫"; 
+        soundOn = false;
+    }
+    else
+    {
+        document.getElementById("soundButton").value="🔊";
+        soundOn = true;
+    }
+}
+
 
 function scrollDown()
 {
