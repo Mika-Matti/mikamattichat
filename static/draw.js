@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function()
         console.log("client clearit");
     });
 
-    //otetaan vastaan server.js lähettämä data piirroksesta
+    //otetaan vastaan server.js lähettämä data piirroksesta TÄMÄ ON MAHDOLLISESTI TURHA, KOSKA BUFFERARRAY TUO NYT PIIRTÄMISEN
     socket.on('draw line', function(data) //testaa täällä detect line ja mouse coords
     {   
         var line = data.line;        
