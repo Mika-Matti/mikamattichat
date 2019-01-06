@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function()
     canvas.width  = width;
     canvas.height = height;
 
+
     //jos ikkunan kokoa muutetaan
     window.onresize = function(e) 
     {

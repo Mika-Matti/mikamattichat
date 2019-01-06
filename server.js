@@ -201,8 +201,25 @@ io.on('connection', function(socket)
     {
         msg = data.trim();
         //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
+        var space = (" ");
+        var https = ("https://");
+        var www = ("www.");
         var chars = {'<':'&#60;','>':'&#62;','\n':'<br>'};
         msg = data.replace(/[<>\n]/g, m => chars[m]);      
+        if(msg.match(https))
+        {
+            console.log("matched");
+            var link = (https, ("<a target='_blank' href=" + msg.substring(https +1) + ">" + msg.substring(https +1) + "</a>") );
+            //msg = msg.substr(msg);
+            msg = link;
+        }
+        if(msg.match(www))
+        {               
+            console.log("matched");
+            var link = (www, ("<a target='_blank' href=" + https + msg.substring(www +1) + ">" + msg.substring(www +1) + "</a>") );
+            //msg = msg.substr(msg);
+            msg = link;
+        }
            
         if(msg.substr(0,7).toLowerCase() === '/admin ') //admin login
         {
