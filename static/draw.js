@@ -162,7 +162,8 @@ document.addEventListener("DOMContentLoaded", function()
     {
         if(!eraser && mouse.click && mouse.move && mouse.pos_prev) // piirretään viiva 
         {
-            socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]});
+           // socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]}); //alkuperänen
+            socket.emit('draw fake', { line:{line: [ mouse.pos, mouse.pos_prev, size, color]}}); //tämän kanssa server for loop toimii testailuja varten.
             mouse.move = false;
             tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
         }

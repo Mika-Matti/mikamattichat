@@ -143,9 +143,11 @@ io.on('connection', function(socket)
     socket.on('draw fake', function(data)
     {
         //io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin
-  
-        
-        bufferArray.push(data.line); // tätä lähetetään 25ms välein ja sitten tyhjennetään.
+
+        for (let i = 0; i < data.line.length; i++) //for loop ja erilainen client socket.emit siksi, että testataan kuvien printtaamista.
+        {        
+            bufferArray.push(data.line); // tätä lähetetään 25ms välein ja sitten tyhjennetään.
+        }
       
     });
 
@@ -153,7 +155,7 @@ io.on('connection', function(socket)
     //piirtämisten lisääminen ja lähettäminen kaikille.
     socket.on('draw line', function (data) 
     {        
-        //vanhya tapa lähettää
+        //vanhya tapa lähettää. tietyllä scriptillä, tämä pystyy lähettämään kuvia.
         // for (let i = 0; i < data.line.length; i++)
         // {
         //     io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
