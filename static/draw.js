@@ -175,9 +175,7 @@ document.addEventListener("DOMContentLoaded", function()
         {
             
             tempArray.push({ line: [ mouse.pos, mouse.pos_prev, size, color]});
-            //socket.emit('draw fake', { line: [ mouse.pos, mouse.pos_prev, size, color]}); //alkuperänen
-            socket.emit('draw fake', {line: tempArray});
-            //socket.emit('draw fake', { line:{line: [ mouse.pos, mouse.pos_prev, size, color]}}); //tämän kanssa server for loop testailuja varten.
+            socket.emit('draw fake', {line: [{ line: [ mouse.pos, mouse.pos_prev, size, color]}], isDrawing: true});
             mouse.move = false;
         }
 
@@ -185,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function()
         {
             if (tempArray.length > 0)
             {
-                socket.emit('draw line', {line: tempArray});
+                socket.emit('draw fake', {line: tempArray, isDrawing: false});
                 console.log("lähetetään");
             }
             tempArray = [];

@@ -143,27 +143,33 @@ io.on('connection', function(socket)
     socket.on('draw fake', function(data)
     {
         //bufferArray.push({ line: data.line, user: socket.username}); // tätä lähetetään 25ms välein ja sitten tyhjennetään. Alkuperäinen
-
-        for (let i = 0; i < data.line.length; i++)
+        if(data.isDrawing)
+        {                    
+            for (let i = 0; i < data.line.length; i++)
+            {      
+                bufferArray.push({line: data.line[i].line, user: socket.username});              
+            }
+        }
+        else
         {
-           // io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin   
-           //bufferArray.push({ line: data.line[i].line, user: socket.username});              
-        bufferArray.push({line: data.line[i].line, user: socket.username});              
+            console.log(data.isDrawing);
+            lineHistory.push(data.line); 
+            updateLines();
         }
     });
 
       
-    //piirtämisten lisääminen linearrayhyn, josta uudet tulokkaat ottavat canvasille piirretyt viivat. updateLines päivittää linehistory arrayn koon.
-    socket.on('draw line', function (data) 
-    {        
-        //vanhya tapa lähettää. tietyllä scriptillä, tämä pystyy lähettämään kuvia.
-        // for (let i = 0; i < data.line.length; i++)
-        // {
-        //     io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
-        // }        
-        lineHistory.push(data.line); 
-        updateLines();
-    });
+    // //piirtämisten lisääminen linearrayhyn, josta uudet tulokkaat ottavat canvasille piirretyt viivat. updateLines päivittää linehistory arrayn koon.
+    // socket.on('draw line', function (data) 
+    // {        
+    //     //vanhya tapa lähettää. tietyllä scriptillä, tämä pystyy lähettämään kuvia.
+    //     // for (let i = 0; i < data.line.length; i++)
+    //     // {
+    //     //     io.emit('draw line', { line: data.line[i].line }); //lähetä piirto kaikkiin clientteihin            
+    //     // }        
+    //     lineHistory.push(data.line); 
+    //     updateLines();
+    // });
 
     //pyyhin
     socket.on('erasertool', function (data)
