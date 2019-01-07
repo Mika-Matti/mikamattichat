@@ -177,7 +177,7 @@ io.on('connection', function(socket)
                     foundLine = true;
                     
                     //updateCanvasAll(); //päivitetään canvas kaikille serverinkautta
-                    io.emit('new eraser', { data: data }); //tehdään kumitus sen sijaan itse clientissä.
+                    io.emit('new eraser', { data: data, user: socket.username}); //tehdään kumitus sen sijaan itse clientissä. user lisätty jotta voidaan näyttää kuka kumitti
                     
                     //io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     break;
@@ -852,16 +852,9 @@ io.on('connection', function(socket)
 
     function updateCanvas()
     {
+        //lähetetään serverin piirtoarray uudelle clientille
         socket.emit('get linearray', { linehistory: lineHistory} );        
         updateLines();
-    }
-
-    function updateCanvasAll() //canvas päivitetään kaikille kumia käyttäessä. Kömpelöä, mutta toimii.
-    {
-        io.emit('clearit', true);
-        //sama kun update canvas, mutta lähetetään line array kaikille clienteille.
-        io.emit('get linearray', { linehistory: lineHistory} );
-        updateLines();     
     }
 
     //Pyyhkimeen funktioita jotta hiiri osaisi huomata viivan

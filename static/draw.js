@@ -141,10 +141,15 @@ document.addEventListener("DOMContentLoaded", function()
                 var line = clientHistory[i][a].line;
 		  	    if ( LineToLineIntersection ( data.data.mouse.x, data.data.mouse.y, data.data.mouse2.x, data.data.mouse2.y, line[0].x, line[0].y, line[1].x, line[1].y ) )
                 {
-                    console.log("Kumitus onnistui " + clientHistory.length);
+                    //console.log("Kumitus onnistui " + clientHistory.length);
                     clientHistory.splice ( i, 1 );
                     --i;
                     //foundLine = true;
+                    //näytetään kuka poisti viivan                    
+                    var whoIsdrawing = getNameElement(data.user);
+                    whoIsdrawing.style.left = line[1].x*width;
+                    whoIsdrawing.style.top = line[1].y*height;  
+                    whoIsdrawing.style.display = "block";    
                     
                     break;
                 }                   
@@ -336,6 +341,11 @@ function moreStroke()
 
 function usePen()
 {
+    if(thefunBrush)
+    {
+        if(brushSize.toFixed(0) === 6)
+        brushSize=5;
+    }
     document.getElementById("funbrushbutton").style.background = "white"; //brush nappula valkoiseksi
     document.getElementById("eraserbutton").style.background = "white"; //eraser nappula valkoiseksi
 
