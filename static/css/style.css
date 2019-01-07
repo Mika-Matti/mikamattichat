@@ -329,7 +329,8 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     /*padding-left: 600px;*/
     float:left;
     display:block;
-    overflow: hidden;   
+    overflow: hidden;       
+    background: white;
 }
 
 /* Chatin ylätunniste ennen nimimerkin asetusta*/
