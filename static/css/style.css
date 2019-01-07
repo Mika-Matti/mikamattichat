@@ -79,6 +79,23 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
 }
 
+
+#brushSizediv
+{
+    position: absolute; 
+    left: 261.5px;
+    bottom: 37px;
+    height: 30px;
+    width: 60px;
+    padding: 5px;
+    background: white;    
+    border: 1px solid rgb(182, 152, 152);
+    font-size: 13px;
+    text-align: center;
+    border-radius: 5px;
+    display: none;
+
+}
 .wrapper > .drawCanvas > .canvasFooter form input[id='clear']:hover
 {
     width: 110px;
@@ -841,3 +858,4 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 {
     color: rgb(255, 255, 255);
 }
+

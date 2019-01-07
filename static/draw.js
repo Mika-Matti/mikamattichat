@@ -37,22 +37,6 @@ document.addEventListener("DOMContentLoaded", function()
        
         //clientside resize
         updateCanvas();
-        // for (var i in clientHistory) 
-        // {   
-        //     for (var a in clientHistory[i]) 
-        //     {
-        //         var line = clientHistory[i][a].line;  
-        //         //piirretään puretut viivat        
-        //         {                    
-        //             context.beginPath();
-        //             context.lineWidth = line[2]; //brushin paksuus
-        //             context.strokeStyle = line[3]; // brushin väri
-        //             context.moveTo(line[0].x * width, line[0].y * height);
-        //             context.lineTo(line[1].x * width, line[1].y * height);
-        //             context.stroke();
-        //         }
-        //     }
-        // }
     }
 
     //onko hiiri klikattuna
@@ -304,21 +288,51 @@ function clearit()
     socket.emit('clearit', true);
     clientHistory = [];
 }
+//brushsize size: x-div feidaaminen
+function fadeOutEffect() 
+{
+    var fadeTarget = document.getElementById("brushSizediv");
+    var fadeEffect = setInterval(function () {
+        if (!fadeTarget.style.opacity) {
+            fadeTarget.style.opacity = 1;
+        }
+        if (fadeTarget.style.opacity > 0) {
+            fadeTarget.style.opacity -= 0.1;
+        } else {
+            clearInterval(fadeEffect);
+        }
+    }, 200);
+}
 
 //piirtotyökaluja
 function lessStroke()
 {
     if(brushSize > 1)
     {
-        brushSize--;        
-    }
+        brushSize--;   
+        //näytetään käyttäjälle hetkellisesti, että mikä koko hänen työkalussaan on tällä hetkellä.
+        $('#brushSizediv').html("size: "+ brushSize);   
+        var fadeTarget = document.getElementById("brushSizediv");
+        fadeTarget.style.opacity = 1;
+        fadeTarget.style.display = "none";
+        fadeTarget.style.display = "block";
+        fadeOutEffect();   //piilottaa hitaasti ikkunan.  
+    }        
+
+ 
 }
 
 function moreStroke()
 {
     if(brushSize < 5)
     {
-        brushSize++;      
+        brushSize++;  
+        $('#brushSizediv').html("size: "+ brushSize);   
+        var fadeTarget = document.getElementById("brushSizediv");
+        fadeTarget.style.opacity = 1;
+        fadeTarget.style.display = "none";
+        fadeTarget.style.display = "block";
+        fadeOutEffect();   //piilottaa hitaasti ikkunan.     
     }
 }
 
