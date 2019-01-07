@@ -297,7 +297,8 @@ function clearit()
 function fadeOutEffect() 
 {
     var fadeTarget = document.getElementById("brushSizediv");
-    var fadeEffect = setInterval(function () {
+    var fadeEffect = setInterval(function () 
+    {
         if (!fadeTarget.style.opacity) {
             fadeTarget.style.opacity = 1;
         }
@@ -305,6 +306,7 @@ function fadeOutEffect()
             fadeTarget.style.opacity -= 0.1;
         } else {
             clearInterval(fadeEffect);
+            fadeTarget.style.display = "none";
         }
     }, 200);
 }
@@ -312,7 +314,7 @@ function fadeOutEffect()
 //piirtotyökaluja
 function lessStroke()
 {
-    if(brushSize > 1)
+    if(brushSize > 1  && !thefunBrush)
     {
         brushSize--;   
         //näytetään käyttäjälle hetkellisesti, että mikä koko hänen työkalussaan on tällä hetkellä.
@@ -327,7 +329,7 @@ function lessStroke()
 
 function moreStroke()
 {
-    if(brushSize < 5)
+    if(brushSize < 5 && !thefunBrush)
     {
         brushSize++;  
         $('#brushSizediv').html("size: "+ brushSize.toFixed(0));   
@@ -343,8 +345,14 @@ function usePen()
 {
     if(thefunBrush)
     {
-        if(brushSize.toFixed(0) === 6)
-        brushSize=5;
+        if(brushSize.toFixed(0) > 4)
+        {
+            brushSize=5;
+        }
+        else if(brushSize.toFixed(0) < 2)
+        {
+            brushSize=1;
+        }
     }
     document.getElementById("funbrushbutton").style.background = "white"; //brush nappula valkoiseksi
     document.getElementById("eraserbutton").style.background = "white"; //eraser nappula valkoiseksi
