@@ -588,6 +588,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 #messages li 
 { 
     padding: 5px 10px; 
+    background: white;
 }
                 
 #messages li:nth-child(odd) 

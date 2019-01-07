@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
-    //jos tulee viesti serveriltä käyttää eraseria clientsideen
+    //jos tulee viesti serveriltä käyttää eraseria clientsideen tätä ei kutsuta tällä hetkellä ollenkaan. eikä kutsutakaan enneku bufferarray on kunnollinen.
     socket.on('new eraser', function(data)
     {
         for (let i = 0; i < clientHistory.length; i++) //tämä on toimiva. pyyhin tekee viivan ja jos viiva osuu piirrettyyn lineen, se poistetaan
