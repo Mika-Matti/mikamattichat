@@ -583,6 +583,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     margin: 0; 
     padding: 0; 
     border-bottom: 1px solid rgb(247, 243, 243);
+    background: white;
 }
 
 #messages li 
