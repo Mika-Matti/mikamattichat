@@ -311,15 +311,13 @@ function lessStroke()
     {
         brushSize--;   
         //näytetään käyttäjälle hetkellisesti, että mikä koko hänen työkalussaan on tällä hetkellä.
-        $('#brushSizediv').html("size: "+ brushSize);   
+        $('#brushSizediv').html("size: "+ brushSize.toFixed(0) );   
         var fadeTarget = document.getElementById("brushSizediv");
         fadeTarget.style.opacity = 1;
         fadeTarget.style.display = "none";
         fadeTarget.style.display = "block";
         fadeOutEffect();   //piilottaa hitaasti ikkunan.  
-    }        
-
- 
+    }         
 }
 
 function moreStroke()
@@ -327,29 +325,44 @@ function moreStroke()
     if(brushSize < 5)
     {
         brushSize++;  
-        $('#brushSizediv').html("size: "+ brushSize);   
+        $('#brushSizediv').html("size: "+ brushSize.toFixed(0));   
         var fadeTarget = document.getElementById("brushSizediv");
         fadeTarget.style.opacity = 1;
         fadeTarget.style.display = "none";
         fadeTarget.style.display = "block";
-        fadeOutEffect();   //piilottaa hitaasti ikkunan.     
+        fadeOutEffect();    
     }
 }
 
 function usePen()
 {
+    document.getElementById("funbrushbutton").style.background = "white"; //brush nappula valkoiseksi
+    document.getElementById("eraserbutton").style.background = "white"; //eraser nappula valkoiseksi
+
+    document.getElementById("pen").style.background = "rgb(220, 220, 220)"; //default pen nappula tummaksi, koska se on valittu
+
     eraser = false;  
     thefunBrush = false;
 }
 function funBrush()
 {
+    document.getElementById("pen").style.background = "white"; //default pen nappula takaisin valkoseksi
+    document.getElementById("eraserbutton").style.background = "white"; //eraser nappula valkoiseksi
+
+    document.getElementById("funbrushbutton").style.background = "rgb(220, 220, 220)"; //brush nappula tummaksi, koska se on valittu
+
     thefunBrush = true;
     eraser = false;
-    fun();
+    fun(); //muutetaan työkaluksi brush
 }
 
 function useEraser()
 {  
+    document.getElementById("pen").style.background = "white"; //default pen nappula takaisin valkoseksi
+    document.getElementById("funbrushbutton").style.background = "white"; //brush nappula valkoiseksi
+
+    document.getElementById("eraserbutton").style.background = "rgb(220, 220, 220)"; //eraser nappula tummaksi, koska se on valittu
+
     eraser = true;
     thefunBrush = false;
 }
