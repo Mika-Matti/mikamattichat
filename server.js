@@ -9,6 +9,7 @@ let mongoose = require('mongoose');
 
 var lineHistory = []; //array johon tulee piirretyt jutut
 var bufferArray = []; //väliaikanen array joka kerää pienen määrän lähetettyjä piirtokomentoja ja lähettää ne kerralla sitten.
+var wholeLinebufferarray = []; //array joka lähettää kokonaisia viivoja, bufferarray lähettää liian lyhyitä kumittamiseen, mutta se on visuaalisesti nätimpi nähdä reaaliajassa.
 
 let users = {}; //Näkyväkäyttäjälista
 let admins = {}; //nimet joilla on adminoikeudet
@@ -155,6 +156,7 @@ io.on('connection', function(socket)
         else
         {
             lineHistory.push(data.line); 
+            wholeLinebufferarray.push(data.line);
             updateLines();
         }
     });
@@ -174,8 +176,8 @@ io.on('connection', function(socket)
                     lineHistory.splice ( i, 1 );
                     foundLine = true;
                     
-                    updateCanvasAll(); //päivitetään canvas kaikille
-                    //io.emit('new eraser', { data: data });
+                    //updateCanvasAll(); //päivitetään canvas kaikille serverinkautta
+                    io.emit('new eraser', { data: data }); //tehdään kumitus sen sijaan itse clientissä.
                     
                     //io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     break;
@@ -737,8 +739,17 @@ io.on('connection', function(socket)
                 io.emit('draw bufferarray', {bufferarray: bufferArray});
                // io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin      
                 updateLines();
+                bufferArray = [];   //pienet viivat tyhjennetään. nämä vain piirretään canvasille.
             }
-            bufferArray = [];
+            else if(wholeLinebufferarray.length > 0)
+            {
+                io.emit('send wholelinearray', {wholelinebufferarray: wholeLinebufferarray});
+       
+                wholeLinebufferarray = []; //kokoviivat tyhjennetään. nämä lähettiin clientarrayhyn
+    
+            }
+            
+           
        
 
         setTimeout(mainLoop, 50); //kutsuu funktiota uudelleen 25ms välein      

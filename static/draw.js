@@ -36,22 +36,23 @@ document.addEventListener("DOMContentLoaded", function()
         canvas.height = height;   
        
         //clientside resize
-        for (var i in clientHistory) 
-        {   
-            for (var a in clientHistory[i]) 
-            {
-                var line = clientHistory[i][a].line;  
-                //piirretään puretut viivat        
-                {                    
-                    context.beginPath();
-                    context.lineWidth = line[2]; //brushin paksuus
-                    context.strokeStyle = line[3]; // brushin väri
-                    context.moveTo(line[0].x * width, line[0].y * height);
-                    context.lineTo(line[1].x * width, line[1].y * height);
-                    context.stroke();
-                }
-            }
-        }
+        updateCanvas();
+        // for (var i in clientHistory) 
+        // {   
+        //     for (var a in clientHistory[i]) 
+        //     {
+        //         var line = clientHistory[i][a].line;  
+        //         //piirretään puretut viivat        
+        //         {                    
+        //             context.beginPath();
+        //             context.lineWidth = line[2]; //brushin paksuus
+        //             context.strokeStyle = line[3]; // brushin väri
+        //             context.moveTo(line[0].x * width, line[0].y * height);
+        //             context.lineTo(line[1].x * width, line[1].y * height);
+        //             context.stroke();
+        //         }
+        //     }
+        // }
     }
 
     //onko hiiri klikattuna
@@ -107,38 +108,41 @@ document.addEventListener("DOMContentLoaded", function()
             }
         }
     });
-    //reaaliajassa piirrettävä data
+    socket.on('send wholelinearray', function(data)
+    {
+        var wholelinebufferHistory = data.wholelinebufferarray;
+        //työnnetään ensin kokonaiset viivat clientside arrayhyn
+        for (var i in wholelinebufferHistory) 
+        {
+                clientHistory.push(wholelinebufferHistory[i]);
+        }
+    });
+    //reaaliajassa piirrettävä data, jota ei tallenneta client arrayhyn. se vain näkyy canvasilla piirtona.
     socket.on('draw bufferarray', function(data)
     {
-        //console.log("bufferarray tuotu");
         var bufferHistory = data.bufferarray;
-        //console.log(bufferHistory);
-        //data.line[i].line 
-        clientHistory.push(bufferHistory);
+        // tehdään piirtäminen pienillä viivoilla        
         for (var i in bufferHistory)
-        {
-            for(var a in bufferHistory[i])
-            {          
-                var line = bufferHistory[i][a];
-                //clientHistory[i].push ( { line: line }); //lisätään line serverclienttiin muiden joukkoon.
-                //piirretään puretut viivat
-                 {                    
-                    context.beginPath();
-                    context.lineWidth = line[2]; //brushin paksuus
-                    context.strokeStyle = line[3]; // brushin väri
-                    context.moveTo(line[0].x * width, line[0].y * height);
-                    //context.lineTo(line[1].x * width, line[1].y * height + 10); tämä aiheuttaa siistin palikka brushin.
-                    context.lineTo(line[1].x * width, line[1].y * height);
-                    context.stroke();
-                    //näytetään piirtäessä piirtäjän userrname
-                    if(bufferHistory[i].user)
-                    {              
-                        var whoIsdrawing = getNameElement(bufferHistory[i].user);
-                        whoIsdrawing.style.left = line[1].x*width;
-                        whoIsdrawing.style.top = line[1].y*height;  
-                        whoIsdrawing.style.display = "block";    
-                    }     
-                }
+        {                 
+            var line = bufferHistory[i].line;
+
+            //piirretään puretut viivat
+                {                    
+                context.beginPath();
+                context.lineWidth = line[2]; //brushin paksuus
+                context.strokeStyle = line[3]; // brushin väri
+                context.moveTo(line[0].x * width, line[0].y * height);
+                //context.lineTo(line[1].x * width, line[1].y * height + 10); tämä aiheuttaa siistin palikka brushin.
+                context.lineTo(line[1].x * width, line[1].y * height);
+                context.stroke();
+                //näytetään piirtäessä piirtäjän userrname
+                if(bufferHistory[i].user)
+                {              
+                    var whoIsdrawing = getNameElement(bufferHistory[i].user);
+                    whoIsdrawing.style.left = line[1].x*width;
+                    whoIsdrawing.style.top = line[1].y*height;  
+                    whoIsdrawing.style.display = "block";    
+                }     
             }
         }
     });
@@ -191,8 +195,7 @@ document.addEventListener("DOMContentLoaded", function()
                     context.stroke();
                 }
             }
-        }    
-        
+        }            
     }
 
     function getNameElement (user) 
@@ -299,6 +302,7 @@ document.addEventListener("DOMContentLoaded", function()
 function clearit()
 {
     socket.emit('clearit', true);
+    clientHistory = [];
 }
 
 //piirtotyökaluja
