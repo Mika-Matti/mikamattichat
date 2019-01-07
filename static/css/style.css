@@ -79,7 +79,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     cursor: pointer;   
 }
 
-
 #brushSizediv
 {
     position: absolute; 
@@ -94,7 +93,6 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     text-align: center;
     border-radius: 5px;
     display: none;
-
 }
 .wrapper > .drawCanvas > .canvasFooter form input[id='clear']:hover
 {

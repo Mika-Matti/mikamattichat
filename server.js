@@ -239,7 +239,7 @@ io.on('connection', function(socket)
             msg = msg.substr(7);
             
             var password = msg.substring(0, ind);              
-            var pass = "Kettunen1234";
+            var pass = "Jansson4321";
             if(password === pass)
             {                                  
                 delete users[socket.username]; // poistetaan vanha nimi                 
