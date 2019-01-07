@@ -520,6 +520,8 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     border-bottom: 1px solid  rgb(182, 152, 152);
     overflow-y: scroll;
     word-wrap: break-word; /*Tämän pitäisi leikata liian pitkä sana toiselle riville */
+    
+    background: white;
 }
 
 .wrapper > .chatContainer > .chatBottom
