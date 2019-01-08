@@ -12,8 +12,9 @@ var bufferArray = []; //väliaikanen array joka kerää pienen määrän lähete
 var wholeLinebufferarray = []; //array joka lähettää kokonaisia viivoja, bufferarray lähettää liian lyhyitä kumittamiseen, mutta se on visuaalisesti nätimpi nähdä reaaliajassa.
 
 let users = {}; //Näkyväkäyttäjälista
-let admins = {}; //nimet joilla on adminoikeudet
-let fakeUsers = {}; //lowercase username lista
+let admins = {}; //nimet joilla on adminoikeudet. mergee tämä jossain vaiheessa userssiin user.isadmin booleaniksi
+let fakeUsers = {}; //lowercase username lista. mergee tämä jossain vaiheessa userssiin user.lowercasenameksi
+
 let connections = [];
 let PORT = process.env.PORT || 3000;
 
@@ -30,7 +31,6 @@ let timeHoursMins = ((hours<10?'0':'')+ hours +":" +(minutes<10?'0':'') + minute
 let timeDayMonthYear = ((day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (month+1) + "/" + year);
 
 let adminCrown = "🎩"; //"👑" "🎩"
-
 var regexi = /[^a-zA-Z0-9äöå_.-]+/g; //sallitut username merkit
 
 mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
@@ -44,7 +44,7 @@ mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat',
         console.log('connected to mongoDB');
     }
 });
-//määritellään storage
+//määritellään chatstorage
 let chatSchema = mongoose.Schema(
     {
         user: String,
@@ -54,9 +54,17 @@ let chatSchema = mongoose.Schema(
         fulltime: {type: Date, default: Date.now}, //määritellään tän perusteella uusin viesti kun haetaan viestejä databasesta
         style: String//nämä sisältävät viestin muotoilua
     });
-
 let Chat = mongoose.model('Message', chatSchema);
 
+//määritellään backup, jota ei voi poistaa /purgella, mutta ei myöskään tuoda ikinä chattiin. Tämä on vain siksi, jos joku admin käyttää purgea väärin tai vahingossa,
+//ja jotain mahdollisesti tärkeetä ei ehtinyt lukea viesteistä.
+let chatSchema2 = mongoose.Schema(
+    {
+        user: String,
+        msg: String,
+        fulltime: {type: Date, default: Date.now}
+    });
+let backupChat = mongoose.model('backupMessage', chatSchema2);
 
 //tässä lähetetään localhostiin haluttu sivu kuten index.html 
 app.get('/', function(req, res)
@@ -668,6 +676,19 @@ io.on('connection', function(socket)
                     updateDate();
                     io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     console.log('message:', {user: socket.username, msg: data});
+                    //vain näistä coreviesteistä tallennetaan backup, jota ei purgeta
+                    let backupMsg = new backupChat({user: socket.username, msg: msg});
+                    backupMsg.save(function(err)
+                    {
+                        if(err)
+                        {
+                            throw err;
+                        }
+                        else
+                        {
+                            //console.log("Backup viestistä tallennettu");
+                        }
+                    });
                 }
             });
         }
