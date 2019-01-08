@@ -12,8 +12,7 @@ var bufferArray = []; //väliaikanen array joka kerää pienen määrän lähete
 var wholeLinebufferarray = []; //array joka lähettää kokonaisia viivoja, bufferarray lähettää liian lyhyitä kumittamiseen, mutta se on visuaalisesti nätimpi nähdä reaaliajassa.
 
 let users = {}; //Näkyväkäyttäjälista
-let admins = {}; //nimet joilla on adminoikeudet. mergee tämä jossain vaiheessa userssiin user.isadmin booleaniksi
-let fakeUsers = {}; //lowercase username lista. mergee tämä jossain vaiheessa userssiin user.lowercasenameksi
+let fakeUsers = {}; //lowercase username lista. Nämäkin 2 listaa voisi vielä mergeä. 
 
 let connections = [];
 let PORT = process.env.PORT || 3000;
@@ -108,34 +107,27 @@ io.on('connection', function(socket)
            console.log('Lähetetään vanhat viestit ikkunaan');
         }
     });
+
     var generateName = "newuser" + Math.random().toString(36).substr(2,5);
     socket.username = generateName //"newUser" + Math.random().toString(36).substr(2, 5); // tehdään default nimestä uniikki
     users[socket.username] = socket;
-        
-        //console.log('fake users: ' + fakeUsers[];
+
     socket.userfake = generateName;
     fakeUsers[socket.userfake] = socket;
-    //fakeUsers.push(socket.userfake);
+
     console.log('users: ' + Object.keys(users));
     console.log('fakeusers: ' + Object.keys(fakeUsers));
+
     updateUsernames();
     updateUsername();    
-    updateConnections();
- 
+    updateConnections(); 
     //ilmoitetaan että on liittynyt serverille
     hasJoined();
-
     //piirroksen refreshaus uudelle käyttäjälle
     updateCanvas();
-
     //disconnect
     socket.on('disconnect', function()
     {
-        var name = socket.username;              
-        if (name in admins)
-        {
-            delete admins[socket.useradminname];            
-        }
         hasLeft();
         delete users[socket.username];        
         updateUsernames();    
@@ -144,11 +136,10 @@ io.on('connection', function(socket)
         connections.splice(connections.indexOf(socket), 1);
         updateConnections();
 
-        console.log('user disconnected');
+        console.log('User disconnected');
         console.log('Disconnected: %s sockets connected', connections.length);  
-        console.log('fake users: ' + Object.keys(fakeUsers));
+        console.log('fakeUsers: ' + Object.keys(fakeUsers));
         console.log('users: ' + Object.keys(users));  
-        console.log("admins: " + Object.keys(admins));
     });
 
     socket.on('draw', function(data)
@@ -220,7 +211,7 @@ io.on('connection', function(socket)
         var www = ("www.");
         var chars = {'<':'&#60;','>':'&#62;','\n':'<br>'};
         msg = data.replace(/[<>\n]/g, m => chars[m]);      
-        // if(msg.match(https) && !msg.match(www) ) Tässä saattaa piillä backdoor.
+        // if(msg.match(https) && !msg.match(www) ) Tämä on kommentoitu pois, koska linkkien mukana pysty injectaamaan javascriptiä. Yritä korjata backdoor joskus.
         // {
         //     console.log("matched");
         //     var link = (https, ("<a target='_blank' href='" + msg.substring(https +1) + "'>" + msg.substring(https +1) + "</a>") );
@@ -254,48 +245,42 @@ io.on('connection', function(socket)
                 socket.username = adminCrown + socket.username; //uusi admin nimi tilalle
                 users[socket.username] = socket;   //lisätään listaan vaihdettu nimi
 
-                socket.useradminname = socket.username;  //uusi admin nimi
-                admins[socket.useradminname] = socket;  //uusi admin nimi admin arrayhyn
-                //users[socket.username] = socket; 
+                fakeUsers[socket.userfake].isAdmin = true; //Tehdään userista admin.
 
                 updateUsernames();
                 isNowAdmin();
-                console.log({admin: socket.useradminname}, " on nyt admin.");
-                console.log("Admins: " + Object.keys(admins));
-                console.log("Users: " + Object.keys(users));
-                
+                console.log({user: socket.username}, " on nyt admin.");
+                console.log("Users: " + Object.keys(users));                
             }
             else
             {
                 //callback('Wrong password');
                 console.log("Incorrect admin login ", {user: socket.username, msg: msg});   
-            }           
-            
+            }                       
         }
         else if(msg.substr(0,9).toLowerCase() === '/setadmin') //tee haluamastasi käyttäjästä admin
         {
             msg = msg.substr(9); //poistetaan viestistä /setadmin            
-            var name = socket.username;              
-            if (name in admins)
+            var fakeName = socket.userfake;             
+            var name = socket.username; 
+            if (fakeUsers[fakeName].isAdmin) //tarkistetaan onko sinulla oikeuksia
             {
                 var ind = msg.indexOf(' ');
                 name = msg.substring(ind +1);
                 //if (name.toLowerCase() in fakeUsers)
-                if (name in users) //Tässä on pakko olla case sensitive ehkä, jotta annettu nimi ei vaihtuisi lowercaseksi näkyvässä listassa.
+                if (name in users) //Tässä on pakko olla case sensitive ehkä, jotta annettu nimi ei vaihtuisi lowercaseksi näkyvässä listassa. Ehkä myöhemmin vielä
                 {                                  
                     var oldName = name;
                     var newName = adminCrown + name;
-                    //vaihdetaan valitun käyttäjän nimi näkyvään listaan
+                    //vaihdetaan valitun käyttäjän nimi näkyvään listaan.
                     users[newName] = users[oldName];
-                    users[newName].username = newName; //tämä tekee adminiksi toimii.
-                    delete users[oldName]; //poistetaan vanha nimi. Toimii                         
+                    users[newName].username = newName; //lisätään nimeen admintagi.
+                    delete users[oldName]; //poistetaan vanha nimi.                         
 
-                    users[newName].useradminname = users[newName]; //Määritetään adminlistaan nimi
-                    admins[newName] = users[newName]; //Lisätään listaan
+                    fakeUsers[oldName.toLowerCase()].isAdmin = true; //tehdään adminiksi
 
                     updateUsernames();                    
                     console.log(name + " on nyt admin.");
-                    console.log("Admins: " + Object.keys(admins));
                     console.log("Users: " + Object.keys(users));    
 
                     //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
@@ -328,24 +313,24 @@ io.on('connection', function(socket)
         else if(msg.substr(0,12).toLowerCase() === '/removeadmin') //tee haluamastasi käyttäjästä admin
         {
             msg = msg.substr(12); //poistetaan viestistä /removeadmin            
-            var name = socket.username;              
-            if (name in admins)
+            var name = socket.username; 
+            var fakeName = socket.userfake             
+            if (fakeUsers[fakeName].isAdmin) //tarkistetaan onko sinulla oikeuksia
             {
                 var ind = msg.indexOf(' ');
                 name = msg.substring(ind +1);
                 var name2 = adminCrown + name; //lisätään haettavaan nimeen adminkruunu
-                if (name2 in users) //case sensitive nimihaku
+                if (name.toLowerCase() in fakeUsers) //case sensitive nimihaku
                 {
                     //vaihdetaan nimi users arrayhyn         
                     users[name] = users[name2]; 
                     users[name].username = name;  
                     delete users[name2]; //poistetaan vanha nimi. Toimii.
                     //ja poistetaan admineista
-                    delete admins[name2];
+                    fakeUsers[name.toLowerCase()].isAdmin = false; //otetaan admin oikeudet pois päältä
 
                     updateUsernames();     
                     console.log(name + " ei ole enää admin.");
-                    console.log("Admins: " + Object.keys(admins));
                     console.log("Users: " + Object.keys(users));  
 
                     //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.                     
@@ -375,18 +360,18 @@ io.on('connection', function(socket)
                 callback("You don't have the rights to do that.");
             }
         }        
-        else if(msg.substr(0,8).toLowerCase() === '/rename ') //tee haluamastasi käyttäjästä admin
+        else if(msg.substr(0,8).toLowerCase() === '/rename ') //vaihda haluamasi käyttäjän nimi.
         {
-            msg = msg.substr(8); //poistetaan viestistä /setadmin            
+            msg = msg.substr(8); //poistetaan viestistä '/rename '  
             var name = socket.username;              
-            if (name in admins)
+            var fakeName = socket.userfake;
+            if (fakeUsers[fakeName].isAdmin) //katsotaan onko käyttäjällä oikeus käyttää komentoa.
             {
                 var ind = msg.indexOf(' ');
                 var name = msg.substring(0, ind);
                 var newName = msg.substring(ind + 1);
-                var adminName = adminCrown + name;
                 var regex = regexi;
-                if (adminName in admins)
+                if (fakeUsers[name.toLowerCase()].isAdmin) //Katsotaan onko kohde admin vai ei.
                 {
                     callback("You can't rename an admin");
                 }       
@@ -411,7 +396,7 @@ io.on('connection', function(socket)
                     delete fakeUsers[lowercaseName];
 
                     updateUsernames();
-                    users[newName].emit('get user', {user: newName}); //on tärkeää muistaa, että tämä broadcastaa vain itselle EI KAIKILLE           
+                    users[newName].emit('get user', {user: newName}); //on tärkeää muistaa, että tämä tulee vain itselle. Tämä päivittää oman clientin otsikossa nimen          
                     console.log(name + " on nyt " + newName);
                     console.log("Users: " + Object.keys(users));
                     console.log("fakeUsers: " + Object.keys(fakeUsers));    
@@ -444,28 +429,24 @@ io.on('connection', function(socket)
             }            
         }   
         //mute user
-        else if(msg.substr(0,6).toLowerCase() === '/mute ') //tee haluamastasi käyttäjästä admin
+        else if(msg.substr(0,6).toLowerCase() === '/mute ') //vaimenna käyttäjä
         {
-            msg = msg.substr(6); //poistetaan viestistä /setadmin            
-            var name = socket.username;              
-            if (name in admins)
+            msg = msg.substr(6); //poistetaan viestistä '/mute '            
+            var name = socket.username;  
+            var fakeName = socket.userfake;            
+            if (fakeUsers[fakeName].isAdmin) //tarkistetaan vaimentajan oikeudet
             {
-                //var ind = msg.indexOf(' ');
-                var name = msg; //msg.substring(0, + 1);
-                //var name = msg.substring(0, ind);
-                //var number = msg.substring(ind + 1);
-                var adminName = adminCrown + name;
-                if (adminName in admins)
+                var name = msg;
+                if (fakeUsers[name.toLowerCase()].isAdmin) //tarkistetaan onko kohde admin
                 {
                     callback("You can't mute an admin");
                 }       
-                else if (name.toLowerCase() in fakeUsers) //case insensitive tarkistus
+                else if (name in users) //case sensitive tarkistus, jotta nimi variable on mahdollinen käyttää kuulutuksissa oikeassa muodossa case sensitive.
                 {                               
                     //mute user
-                    fakeUsers[name.toLowerCase()].isMuted = true;
-                    //lisää tähän sekunnit ja sitten stop mute
-                    //setTimeout(function(){ fakeUsers[name.toLowerCase()].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);  
-                    timeLeft = new timer(function(){ fakeUsers[name.toLowerCase()].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);
+                    users[name].isMuted = true;
+                    //lisää tähän sekunnit ja sitten stop mute 
+                    timeLeft = new timer(function(){ users[name].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);
                     console.log("user " + name + " muted for 60 seconds.");
                     //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
                     style = " <i><b>";
@@ -493,21 +474,20 @@ io.on('connection', function(socket)
             {
                 callback("You don't have the rights to do that.");
             }            
-        }   
-        //mute user loppuu        
+        }  
         else if(msg.substr(0,9).toLowerCase() === '/imitate ') //lähetä viesti jonkun toisen nimellä(restrict admin)
         {
             msg = msg.substr(9); //poistetaan '/imitate'
-            var name = socket.username;              
-            if (name in admins)
+            var name = socket.username;     
+            var fakeName = socket.userfake;         
+            if (fakeUsers[fakeName].isAdmin) //Tarkistetaan onko oikeudet käyttää komentoa
             {
                 var ind = msg.indexOf(' ');
                 if(ind !== -1)
                 {
                     style = " <b>";
                     name = msg.substring(0, ind);
-                    msg = ": </b>" + msg.substring(ind +1);
-                    
+                    msg = ": </b>" + msg.substring(ind +1);                    
                     
                     let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: name, msg: msg}); // luodaan databaseen viesti
                     newMsg.save(function(err)
@@ -531,15 +511,15 @@ io.on('connection', function(socket)
         }
         else if(msg.substr(0,6).toLowerCase() === '/alert') //lähetä viesti alert muodossa
         {
-            msg = msg.substr(6); //poistetaan '/imitate'
-            var name = socket.username;              
-            if (name in admins)
+            msg = msg.substr(6); //poistetaan '/alert'
+            var name = socket.username;  
+            var fakeName = socket.userfake;            
+            if (fakeUsers[fakeName].isAdmin) //tarkistetaan onko oikeudet käyttää komentoa
             {
                 var ind = msg.indexOf(' ');
                 if(ind !== -1)
                 {
                     style = " <b>";
-                    name = socket.username;
                     msg = "</b> sent an alert. <script>alert('" + msg.substring(ind +1)+"');</script>";  
                    
                     updateDate();
@@ -554,9 +534,9 @@ io.on('connection', function(socket)
         else if(msg.substr(0,6).toLowerCase() === '/purge') //tyhjennetään viestihistoria kokonaan databasesta ja clientistä (restrict admin)
         {
             msg = msg.substr(6); //poistetaan /purge viestistä
-            
-            var name = socket.username;              
-            if (name in admins)
+            var name = socket.username;
+            var fakeName = socket.userfake;              
+            if (fakeUsers[fakeName].isAdmin)
             {
                 Chat.deleteMany({}, function (err) {});
                 style = " <b><i>";
@@ -581,8 +561,6 @@ io.on('connection', function(socket)
                 callback("You don't have the rights to do that.");
             }
         }
-
-
         else if(msg.substr(0,5).toLowerCase() === '/nick') //vaihda nimesi
         {
             msg = msg.substr(5); //poistetaan viestistä /nick            
@@ -600,17 +578,14 @@ io.on('connection', function(socket)
                 else
                 {
                    
-                    let currentname = socket.username;             
-                    if (currentname in admins)
+                    let currentname = socket.username;
+                    let currentlowcase = socket.userfake;             
+                    if (fakeUsers[currentlowcase].isAdmin)
                     {
-                        delete users[socket.username]; // poistetaan vanha nimi 
-                        delete admins[socket.useradminname];
-    
-                        socket.username = adminCrown + newName;  
+                        delete users[socket.username]; // poistetaan vanha nimi     
+                        socket.username = adminCrown + newName; //lisätään nimeen kruunu
                         users[socket.username] = socket; 
-    
-                        socket.useradminname = socket.username; 
-                        admins[socket.useradminname] = socket;     
+      
                     }  
                     else
                     {
@@ -632,14 +607,10 @@ io.on('connection', function(socket)
                     console.log("username changed to " + newName);
                     console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
                     console.log("Lista nimistä näkyvä: " + Object.keys(users));
-                    console.log("Lista nimistä admins: " + Object.keys(admins));
                 }
                             
    
         }   
-
-
-
         else if(msg.substr(0,4).toLowerCase() === '/me ')
         {
             style = "<i><b>*";
@@ -658,8 +629,7 @@ io.on('connection', function(socket)
                     io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); 
                     console.log('message:', {user: socket.username, msg: data});
                 }
-            });                
-            
+            });      
         }
         else if(msg.substr(0,3).toLowerCase() === '/w ') //tällä komennolla voi lähettää yksityisviestin
         {
@@ -674,7 +644,7 @@ io.on('connection', function(socket)
                 {
                     
                     fakeUsers[name.toLowerCase()].emit('whisper', {msg: msg, user: socket.username}); //lähetetään yksityisviesti
-                    socket.emit('whisper', {msg: msg, user: socket.username});      // lähettää viestin myös itselle ikkunaan eli current socket
+                    socket.emit('whisper', {msg: msg, user: socket.username}); // lähettää viestin myös itselle ikkunaan eli current socket
                     console.log('whisper', {user: socket.username, msg: msg, name:name});        
                 }
                 else
@@ -685,8 +655,7 @@ io.on('connection', function(socket)
             else
             {
                 callback('You cannot send an empty whisper.');
-            }
-            
+            }            
         }   
         else if(msg.substr(0,1).toLowerCase() === '/') //Tämä on siksi että jos kirjoittaa jonkun komennon väärin, se ei lähetä sitä chattiin.
         {
@@ -715,10 +684,9 @@ io.on('connection', function(socket)
         else if(socket.isMuted)
         {
             var seconds = timeLeft.getTimeLeft()/1000; //muutetaan millisekunnit sekunneiksi.
-            //callback('You are temporarily muted. Seconds left: ' + timeLeft.getTimeLeft()); //näyttää millisekunteina
             callback('You are temporarily muted for "' + seconds.toFixed(2) + '" seconds.');
         }
-        else//ilman komentoa lähetetään tavallinen viesti kaikille
+        else //ilman komentoa lähetetään tavallinen viesti kaikille
         {   
             style = " <b>";   
             msg = ": </b>" + msg;
@@ -750,64 +718,57 @@ io.on('connection', function(socket)
                 }
             });
         }
-    });
-    
+    });    
     //nimenvaihto
     socket.on('change user', function(data, callback)
-        {   
-              //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
-            var chars = {'<':'&#60','>':'&#62'};
-            data1 = data.replace(/[<>]/g, m => chars[m]);
-            
-            var regex = regexi;
-            
-            //if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
-            if(data1.toLowerCase() in fakeUsers || data1.match(regex) || data1.length > 13 || data1.length < 1)
+    {   
+        //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
+        var chars = {'<':'&#60','>':'&#62'};
+        data1 = data.replace(/[<>]/g, m => chars[m]);
+        
+        var regex = regexi;
+        
+        //if(data1.toLowerCase() in fakeUsers || !data1.match(regex) || data1.match(blockEmoji)) //jos nimi löytyy jo lowercase arraysta
+        if(data1.toLowerCase() in fakeUsers || data1.match(regex) || data1.length > 13 || data1.length < 1)
+        {
+            callback(false);
+            console.log ("nimi " + data + " on jo käytössä");
+            console.log("Lista nimistä: " + Object.keys(users));
+        }       
+        else
+        {
+            callback(true);
+            let currentname = socket.username;   
+            let currentlowcase = socket.userfake;          
+            //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä 
+            if (fakeUsers[currentlowcase].isAdmin)
             {
-                callback(false);
-                console.log ("nimi " + data + " on jo käytössä");
-                console.log("Lista nimistä: " + Object.keys(users));
-            }       
+                delete users[socket.username]; //poistetaan vanha nimi 
+                socket.username = adminCrown + data1; //nimeen lisätään adminkruunu
+                users[socket.username] = socket;  
+            }  
             else
             {
-                callback(true);
-                let currentname = socket.username;             
-                //data = data.replace(/\s/g, ''); //poistetaan välilyönnit nimimerkistä 
-                if (currentname in admins)
-                {
-                    delete users[socket.username]; // poistetaan vanha nimi 
-                    delete admins[socket.useradminname];
-
-                    socket.username = adminCrown + data1;  
-                    users[socket.username] = socket; 
-
-                    socket.useradminname = socket.username; 
-                    admins[socket.useradminname] = socket;     
-                }  
-                else
-                {
-                    delete users[socket.username]; // poistetaan vanha nimi                    
-                    socket.username = data1;                
-                    users[socket.username] = socket; 
-                }
-                
-                updateUsernames();
-                updateUsername();                
-                nameChangestart(currentname);   //nimenvaihdos on client puolella tullut päätökseen.    
-                
-                //fakeUsers.splice(fakeUsers.indexOf(socket.userfake), 1); 
-                delete fakeUsers[socket.userfake]; //ja poistetaan versio jossa on vain pienet kirjaimet
-                data1 = data1.toLowerCase(); //nyt muutetaan data lowercase
-                socket.userfake = data1; //tilalle lowercase nimi
-                fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
-                                
-                console.log("username changed to " + data1);
-                console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
-                console.log("Lista nimistä näkyvä: " + Object.keys(users));
-                console.log("Lista nimistä admins: " + Object.keys(admins));
-                    //console.log("Lista nimistäFAKE: " + Object.keys(fakeUsers));
+                delete users[socket.username]; //poistetaan vanha nimi                    
+                socket.username = data1;                
+                users[socket.username] = socket; 
             }
-        });
+            
+            updateUsernames();
+            updateUsername();                
+            nameChangestart(currentname); //nimenvaihdos on client puolella tullut päätökseen.    
+            
+            //fakeUsers.splice(fakeUsers.indexOf(socket.userfake), 1); 
+            delete fakeUsers[socket.userfake]; //ja poistetaan versio jossa on vain pienet kirjaimet
+            data1 = data1.toLowerCase(); //nyt muutetaan data lowercase
+            socket.userfake = data1; //tilalle lowercase nimi
+            fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
+                            
+            console.log("username changed to " + data1);
+            console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
+            console.log("Lista nimistä näkyvä: " + Object.keys(users));
+        }
+    });
 
     //bufferoitujen tietojen lähettäminen yhdellä paketilla.
     function mainLoop() 
@@ -826,16 +787,12 @@ io.on('connection', function(socket)
        
                 wholeLinebufferarray = []; //kokoviivat tyhjennetään. nämä lähettiin clientarrayhyn
     
-            }
-            
-           
-       
-
-        setTimeout(mainLoop, 50); //kutsuu funktiota uudelleen 25ms välein      
-               
+            }     
+        setTimeout(mainLoop, 50); //kutsuu funktiota uudelleen 25ms välein   
     }
     mainLoop();
 
+    //funktioita
     function updateDate()
     {
         date = new Date();
