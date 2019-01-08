@@ -464,7 +464,8 @@ io.on('connection', function(socket)
                     //mute user
                     fakeUsers[name.toLowerCase()].isMuted = true;
                     //lisää tähän sekunnit ja sitten stop mute
-                    setTimeout(function(){ fakeUsers[name.toLowerCase()].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);  
+                    //setTimeout(function(){ fakeUsers[name.toLowerCase()].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);  
+                    timeLeft = new timer(function(){ fakeUsers[name.toLowerCase()].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);
                     console.log("user " + name + " muted for 60 seconds.");
                     //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
                     style = " <i><b>";
@@ -713,7 +714,9 @@ io.on('connection', function(socket)
         // }
         else if(socket.isMuted)
         {
-            callback('You are temporarily muted.');
+            var seconds = timeLeft.getTimeLeft()/1000; //muutetaan millisekunnit sekunneiksi.
+            //callback('You are temporarily muted. Seconds left: ' + timeLeft.getTimeLeft()); //näyttää millisekunteina
+            callback('You are temporarily muted for "' + seconds.toFixed(2) + '" seconds.');
         }
         else//ilman komentoa lähetetään tavallinen viesti kaikille
         {   
@@ -973,8 +976,43 @@ io.on('connection', function(socket)
         }
 		
 		return false;
-	}
+    }
+    //timeleft koodi
+    function timer(callback, delay) 
+    {
+        var id, started, remaining = delay, running
+    
+        this.start = function() 
+        {
+            running = true
+            started = new Date()
+            id = setTimeout(callback, remaining)
+        }
+    
+        this.pause = function() 
+        {
+            running = false
+            clearTimeout(id)
+            remaining -= new Date() - started
+        }
+        
+        this.getTimeLeft = function() {
+            if (running) {
+                this.pause()
+                this.start()
+            }
 
+            return remaining
+        }
+
+        this.getStateRunning = function() 
+        {
+            return running
+        }
+
+        this.start()
+    }
+    //timeleft koodi loppuu
 
 
 });
