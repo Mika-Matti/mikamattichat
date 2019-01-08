@@ -443,6 +443,57 @@ io.on('connection', function(socket)
                 callback("You don't have the rights to do that.");
             }            
         }   
+        //mute user
+        else if(msg.substr(0,6).toLowerCase() === '/mute ') //tee haluamastasi käyttäjästä admin
+        {
+            msg = msg.substr(6); //poistetaan viestistä /setadmin            
+            var name = socket.username;              
+            if (name in admins)
+            {
+                //var ind = msg.indexOf(' ');
+                var name = msg; //msg.substring(0, + 1);
+                //var name = msg.substring(0, ind);
+                //var number = msg.substring(ind + 1);
+                var adminName = adminCrown + name;
+                if (adminName in admins)
+                {
+                    callback("You can't mute an admin");
+                }       
+                else if (name.toLowerCase() in fakeUsers) //case insensitive tarkistus
+                {                               
+                    //mute user
+                    fakeUsers[name.toLowerCase()].isMuted = true;
+                    //lisää tähän sekunnit ja sitten stop mute
+                    setTimeout(function(){ fakeUsers[name.toLowerCase()].isMuted = false; console.log("user " + name + " is no longer muted."); }, 60000);  
+                    console.log("user " + name + " muted for 60 seconds.");
+                    //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
+                    style = " <i><b>";
+                    msg = "</b> muted <b>" + name + "</b> for <b>60</b> seconds.";
+                    let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                    newMsg.save(function(err)
+                    {
+                        if(err)
+                        {
+                            throw err;
+                        }
+                        else
+                        {
+                            updateDate();
+                            io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                        }
+                    });
+                }
+                else
+                {
+                    callback('Incorrect username to mute: "' + name + '"');
+                }                
+            }
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }            
+        }   
+        //mute user loppuu        
         else if(msg.substr(0,9).toLowerCase() === '/imitate ') //lähetä viesti jonkun toisen nimellä(restrict admin)
         {
             msg = msg.substr(9); //poistetaan '/imitate'
@@ -660,7 +711,11 @@ io.on('connection', function(socket)
         //         }
         //     }
         // }
-        else //ilman komentoa lähetetään tavallinen viesti kaikille
+        else if(socket.isMuted)
+        {
+            callback('You are temporarily muted.');
+        }
+        else//ilman komentoa lähetetään tavallinen viesti kaikille
         {   
             style = " <b>";   
             msg = ": </b>" + msg;
