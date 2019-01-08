@@ -402,8 +402,9 @@ fun = function()
     var d = new Date(); 
     if(thefunBrush)
     {
-        brushSize = (Math.sin(d.getMilliseconds()/100.0)+1)*3; setTimeout(fun, 5);
+        //brushSize = (Math.sin(d.getMilliseconds()/100.0)+1)*3; setTimeout(fun, 5);
         //brushSize = (mouse.pos_prev - mouse.pos) / d; setTimeout(fun, 5);
+        brushSize = 1 +(Math.sin(d.getMilliseconds()/100.0)+1)*2.5; setTimeout(fun, 5);
     }
 };
 
