@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function()
     socket.on('clearit', function()
     {
         context.clearRect(0, 0, width, height);
+        clientHistory = [];
         console.log("client clearit");
     });
     //update clientcanvas. Tuodaan ekaa kertaa serverin piirrot clientille ja päivitetään client array täsmäämään serverin arrayta.
@@ -291,7 +292,6 @@ document.addEventListener("DOMContentLoaded", function()
 function clearit()
 {
     socket.emit('clearit', true);
-    clientHistory = [];
 }
 //brushsize size: x-div feidaaminen
 function fadeOutEffect() 

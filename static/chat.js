@@ -1,5 +1,5 @@
 //Täällä tehdään kaikki tärkee chat kommunikointi serverin kanssa
- 
+var messageNumber = 0; //viestien määrä. Tätä käytetään scrollbarin toimivuuteen, koska funktio alkaa toimimaan vasta tietyn määränviestejä(27) jälkeen
 //let socket = io.connect();
 let socket = io({transports: ['websocket'], 
                 upgrade: false, });
@@ -74,8 +74,6 @@ $(function ()
         if (e.keyCode == 13 && !e.shiftKey) {
             e.preventDefault();
             $('#send').submit();
-            console.log("test");
-            //$('#m').val().replace(/\n/g, '<br />')
             return false;
         }
         else if(e.keyCode == 13 && e.shiftKey)
@@ -117,18 +115,28 @@ $(function ()
         //Käskee ohjelman scrollata näyttö alas uuden viestin tullessa
         $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
     });        
-   
+    
     function sendOldMessages(data)
     {
        $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "<b style=\"color:red; font-size: 10px;\"> [" + data.oldmessagetime +"]</b></li>");
+       messageNumber++;
     }
 
     //viesti tulee clientside ikkunaan
     socket.on('new message', function(data)
-    {
+    {        
         //viestin lähetys
         $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>");
-        scrollDown();
+        messageNumber++;
+        if(messageNumber < 27)
+        {
+            $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
+        }
+        else
+        {
+            scrollDown();
+        }
+
         updateTitle(); //viestinotifikaatio tabin otsikossa
     });
 
@@ -137,7 +145,8 @@ $(function ()
     {
         //viestin lähetys
         $("#messages").append("<li>" + getCurrentDate() + " <i style=\"color:purple;\">" + "<b style=\"color:purple;\">" + data.user + " whispers</b>" + ": " + data.msg + "</i></li>");
-        scrollDown();
+        //scrollDown();
+        $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0); //scrollataan alas suoraan, jos tulee whisper. ei katsota jos käyttäjä selasi ylempiä viestejä.
         updateTitle();
     });
 
@@ -145,7 +154,7 @@ $(function ()
     socket.on('purge', function(data)
     {   
         $("#messages").load(window.location.href + " #messages" );   //päivitetään viestidiv, jotta se tyhjenee kaikille.   
-        
+        messageNumber = 0;
         setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>"); }, 400); //lähetetään ilmoitus, että kuka poisti viestit.
         updateTitle();       
     });
@@ -203,7 +212,7 @@ function scrollDown()
         d = $(document.documentElement).height(),
         c = $(".chatMessages").height();
         var scrollPercent = (s / (d - c)) * 100;
-        if ( scrollPercent >= 90 )
+        if ( scrollPercent >= 99 )
         {    
             $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
         }         
