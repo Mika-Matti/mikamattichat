@@ -590,7 +590,7 @@ io.on('connection', function(socket)
                 });
 
                 style = " <b><i>";
-                msg = "</b> restored 30 latest messages. </i>";
+                msg = "</b> restored latest messages. </i>";
 
                 let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
                 newMsg.save(function(err)
