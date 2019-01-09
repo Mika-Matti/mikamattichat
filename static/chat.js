@@ -154,6 +154,16 @@ $(function ()
         setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>"); }, 400); //lähetetään ilmoitus, että kuka poisti viestit.
         updateTitle();       
     });
+    //restore messages
+    socket.on('restore', function(data)
+    {    
+        messageNumber++;
+        setTimeout(function(){ $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>"); 
+        $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0); //scrollataan alas
+        }, 400); //lähetetään ilmoitus, että kuka poisti viestit.
+        
+        updateTitle();       
+    });
 
 });
 //onko uusia viestejä tabissa

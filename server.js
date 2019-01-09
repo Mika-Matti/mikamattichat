@@ -51,17 +51,21 @@ let chatSchema = mongoose.Schema(
         timestamp: {type: String, default: timeHoursMins},
         oldmessagetime: {type: String, default: timeDayMonthYear},
         fulltime: {type: Date, default: Date.now}, //määritellään tän perusteella uusin viesti kun haetaan viestejä databasesta
-        style: String//nämä sisältävät viestin muotoilua
+        style: String //nämä sisältävät viestin muotoilua
     });
 let Chat = mongoose.model('Message', chatSchema);
 
-//määritellään backup, jota ei voi poistaa /purgella, mutta ei myöskään tuoda ikinä chattiin. Tämä on vain siksi, jos joku admin käyttää purgea väärin tai vahingossa,
-//ja jotain mahdollisesti tärkeetä ei ehtinyt lukea viesteistä.
+//määritellään backup, jota ei voi poistaa /purgella, ja voidaan tulevaisuudessa restoree komennolla ikkunaan.
+//Tämä on vain siksi, jos joku admin käyttää purgea väärin tai vahingossa,
+//ja jotain mahdollisesti tärkeetä ei ehtinyt lukea viesteistä. 
 let chatSchema2 = mongoose.Schema(
     {
         user: String,
         msg: String,
-        fulltime: {type: Date, default: Date.now}
+        timestamp: {type: String, default: timeHoursMins},
+        oldmessagetime: {type: String, default: timeDayMonthYear},
+        fulltime: {type: Date, default: Date.now},
+        style: String //nämä sisältävät viestin muotoilua
     });
 let backupChat = mongoose.model('backupMessage', chatSchema2);
 
@@ -196,18 +200,18 @@ io.on('connection', function(socket)
         updateLines();
     });
     //jos ikkunan kokoa muutetaan clientside
-    socket.on('resize', function()
-    {        
-        updateCanvas();       
-    });    
+    // socket.on('resize', function()
+    // {        
+    //     updateCanvas();       
+    // });    
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
     {
         msg = data.trim();
         //Tässä muutetaan < ja > merkit niiden text counterparteiksi. Tarvittaessa voi lisätä enemmän merkkejä, jos vaikuttaa siltä, että tarvii.
-        var space = (" ");
-        var https = ("https://");
-        var www = ("www.");
+        // var space = (" ");
+        // var https = ("https://");
+        // var www = ("www.");
         var chars = {'<':'&#60;','>':'&#62;','\n':'<br>'};
         msg = data.replace(/[<>\n]/g, m => chars[m]);      
         // if(msg.match(https) && !msg.match(www) ) Tämä on kommentoitu pois, koska linkkien mukana pysty injectaamaan javascriptiä. Yritä korjata backdoor joskus.
@@ -560,6 +564,54 @@ io.on('connection', function(socket)
                 callback("You don't have the rights to do that.");
             }
         }
+        //restore last 30 messages loppuu
+        else if(msg.substr(0,8).toLowerCase() === '/restore') //palautetaan viimeiset 30 viestiä backupista(restrict admin)
+        {
+            msg = msg.substr(8); //poistetaan /restore viestistä
+            var name = socket.username;
+            var fakeName = socket.userfake;              
+            if (fakeUsers[fakeName].isAdmin)
+            {
+                //backupChat.deleteMany({}, function (err) {});
+                //tuodaan chattiviestit ikkunaan
+                //let query = Chat.find({});  //pelkät {} löytää aivan kaiken collectionista.
+                let query = backupChat.find().sort('-fulltime').limit(30); //tässä kokeillaan löytyiskö nopeammin kaikki, ettei etitä kaikkea.
+                query.exec(function(err, docs) //tuodaan 20 viimeistä viestiä -timestamp on descending, muuten se olisi ascending
+                {
+                    if(err) 
+                    {
+                    throw err;
+                    }
+                    else
+                    {
+                    socket.emit('load old msgs', docs);
+                    console.log('Lähetetään vanhat viestit ikkunaan restore komennolla.');
+                    }
+                });
+
+                style = " <b><i>";
+                msg = "</b> restored 30 latest messages. </i>";
+
+                let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); // luodaan databaseen viesti
+                newMsg.save(function(err)
+                {         
+                    if(err) 
+                    {
+                        throw err;
+                    }
+                    else
+                    {
+                        updateDate();
+                        io.emit('restore', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); 
+                    }
+                });
+            }    
+            else
+            {
+                callback("You don't have the rights to do that.");
+            }
+        }
+        //restore last 30 messages loppuu
         else if(msg.substr(0,5).toLowerCase() === '/nick') //vaihda nimesi
         {
             msg = msg.substr(5); //poistetaan viestistä /nick            
@@ -698,11 +750,8 @@ io.on('connection', function(socket)
                 }
                 else
                 {
-                    updateDate();
-                    io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-                    console.log('message:', {user: socket.username, msg: data});
                     //vain näistä coreviesteistä tallennetaan backup, jota ei purgeta
-                    let backupMsg = new backupChat({user: socket.username, msg: msg});
+                    let backupMsg = new backupChat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     backupMsg.save(function(err)
                     {
                         if(err)
@@ -712,6 +761,9 @@ io.on('connection', function(socket)
                         else
                         {
                             //console.log("Backup viestistä tallennettu");
+                            updateDate();
+                            io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+                            console.log('message:', {user: socket.username, msg: data});
                         }
                     });
                 }
