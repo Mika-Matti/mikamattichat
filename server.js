@@ -179,7 +179,7 @@ io.on('connection', function(socket)
                     lineHistory.splice ( i, 1 );
                     --i;
 
-                    foundLine = true;   
+                    //foundLine = true;   
                     io.emit('new eraser', { data: data, user: socket.username}); //tehdään kumitus sen sijaan itse clientissä. user lisätty jotta voidaan näyttää kuka kumitti
                     
                     break;
