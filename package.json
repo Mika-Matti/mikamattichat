@@ -3,14 +3,12 @@
     "version": "0.0.1",
     "description": "Ensimmäinen socket.io ohjelmani",
     "dependencies": {
-        "ejs": "~1.0.0",
-        "emojionearea": "^3.0.0",
+        "ejs": ">=2.5.5",
         "express": "^4.16.4",
         "git": "^0.1.5",
         "mongoose": "^5.3.15",
         "socket.io": "^2.2.0",
-        "util": "^0.11.1",
-        "validator": "^10.9.0"
+        "util": "^0.11.1"
     },
     "main": "server.js",
     "scripts": {

@@ -149,13 +149,13 @@ io.on('connection', function(socket)
         {                    
             for (let i = 0; i < data.line.length; i++)
             {      
-                bufferArray.push({line: data.line[i].line, user: socket.username});              
+                bufferArray.push({line: data.line[i].line, user: socket.username}); //lähetetään piirtona näkyvä viiva bufferinarrayhyn joka menee clientteihin mutta ei arrayhyn.           
             }
         }
         else
         {
-            lineHistory.push(data.line); 
-            wholeLinebufferarray.push(data.line);
+            lineHistory.push(data.line); //lisätään kokoviiva serverin linearrayhyn
+            wholeLinebufferarray.push(data.line); //lähetetään kokoviiva clientsideen menevään bufferarrayhyn
             updateLines();
         }
     });
@@ -173,12 +173,11 @@ io.on('connection', function(socket)
                 {
                     //console.log("Kumitus onnistui " + lineHistory.length);
                     lineHistory.splice ( i, 1 );
-                    foundLine = true;
-                    
-                    //updateCanvasAll(); //päivitetään canvas kaikille serverinkautta
+                    --i;
+
+                    foundLine = true;   
                     io.emit('new eraser', { data: data, user: socket.username}); //tehdään kumitus sen sijaan itse clientissä. user lisätty jotta voidaan näyttää kuka kumitti
                     
-                    //io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
                     break;
                 }   
             }   
