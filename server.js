@@ -662,7 +662,7 @@ io.on('connection', function(socket)
                             
    
         }   
-        else if(msg.substr(0,4).toLowerCase() === '/me ')
+        else if(msg.substr(0,4).toLowerCase() === '/me ' && !socket.isMuted)
         {
             style = "<i><b>*";
             msg = "</b> " + msg.substr(4) + "<b>*</b></i>"; //poistetaan viestistä '/me '    
@@ -682,6 +682,12 @@ io.on('connection', function(socket)
                 }
             });      
         }
+        else if(msg.substr(0,4).toLowerCase() === '/me ' && socket.isMuted)
+        {
+            var seconds = timeLeft.getTimeLeft()/1000; //muutetaan millisekunnit sekunneiksi.
+            callback('You are temporarily muted for "' + seconds.toFixed(2) + '" seconds.');
+        }
+        
         else if(msg.substr(0,3).toLowerCase() === '/w ') //tällä komennolla voi lähettää yksityisviestin
         {
             msg = msg.substr(3); //poistetaan viestistä /w
