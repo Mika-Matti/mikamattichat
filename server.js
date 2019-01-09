@@ -936,34 +936,35 @@ io.on('connection', function(socket)
     //timeleft koodi
     function timer(callback, delay) 
     {
-        var id, started, remaining = delay, running
+        var id, started, remaining = delay, running;
     
         this.start = function() 
         {
-            running = true
-            started = new Date()
-            id = setTimeout(callback, remaining)
+            running = true;
+            started = new Date();
+            id = setTimeout(callback, remaining);
         }
     
         this.pause = function() 
         {
-            running = false
-            clearTimeout(id)
-            remaining -= new Date() - started
+            running = false;
+            clearTimeout(id);
+            remaining -= new Date() - started;
         }
         
         this.getTimeLeft = function() {
-            if (running) {
-                this.pause()
-                this.start()
+            if (running) 
+            {
+                this.pause();
+                this.start();
             }
 
-            return remaining
+            return remaining;
         }
 
         this.getStateRunning = function() 
         {
-            return running
+            return running;
         }
 
         this.start()

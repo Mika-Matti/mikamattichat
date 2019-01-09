@@ -30,10 +30,6 @@ $(function ()
                 }                 
             });
         }
-        // else if(hasSpace || hasSpace2)
-        // {
-        //     alert("Don't use spaces in your nickname.");
-        // }
         else //jos nimimerkki on alle 1 kirjainta tai yli 13 kirjainta pitkä
         {
             alert("Type your nickname (max. 13 letters)");
@@ -128,7 +124,7 @@ $(function ()
         //viestin lähetys
         $("#messages").append("<li>" + data.timestamp + data.style + data.user + data.msg + "</li>");
         messageNumber++;
-        if(messageNumber < 27)
+        if(messageNumber < 31)
         {
             $(".chatMessages").stop().animate({ scrollTop: $(".chatMessages")[0].scrollHeight}, 0);
         }
