@@ -199,11 +199,6 @@ io.on('connection', function(socket)
         io.emit('clearit', true);
         updateLines();
     });
-    //jos ikkunan kokoa muutetaan clientside
-    // socket.on('resize', function()
-    // {        
-    //     updateCanvas();       
-    // });    
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
     {
@@ -214,7 +209,7 @@ io.on('connection', function(socket)
         // var www = ("www.");
         var chars = {'<':'&#60;','>':'&#62;','\n':'<br>'};
         msg = data.replace(/[<>\n]/g, m => chars[m]);      
-        // if(msg.match(https) && !msg.match(www) ) Tämä on kommentoitu pois, koska linkkien mukana pysty injectaamaan javascriptiä. Yritä korjata backdoor joskus.
+        // if(msg.match(https) && !msg.match(www) ) Tämä on kommentoitu pois, koska linkkien mukana pysty injectaamaan javascriptiä. Yritä korjata <a> backdoor joskus.
         // {
         //     console.log("matched");
         //     var link = (https, ("<a target='_blank' href='" + msg.substring(https +1) + "'>" + msg.substring(https +1) + "</a>") );
@@ -257,8 +252,8 @@ io.on('connection', function(socket)
             }
             else
             {
-                //callback('Wrong password');
-                console.log("Incorrect admin login ", {user: socket.username, msg: msg});   
+                //Näytetään, jos joku on yrittänyt kirjautua adminiksi
+                console.log("Incorrect admin login attempt: ", {user: socket.username, msg: msg});   
             }                       
         }
         else if(msg.substr(0,9).toLowerCase() === '/setadmin') //tee haluamastasi käyttäjästä admin
@@ -323,7 +318,7 @@ io.on('connection', function(socket)
                 var ind = msg.indexOf(' ');
                 name = msg.substring(ind +1);
                 var name2 = adminCrown + name; //lisätään haettavaan nimeen adminkruunu
-                if (name.toLowerCase() in fakeUsers) //case sensitive nimihaku
+                if (name2 in users) //case sensitive nimihaku, jotta näkyvä nimi ei muuttuisi listassa erimuotoiseksi
                 {
                     //vaihdetaan nimi users arrayhyn         
                     users[name] = users[name2]; 
