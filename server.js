@@ -554,6 +554,7 @@ io.on('connection', function(socket)
                     {
                         updateDate();
                         io.emit('purge', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); 
+                        console.log(socket.username + ' poisti kaikki viestit viestihistoriasta.');
                     }
                 });
             }    
@@ -583,7 +584,7 @@ io.on('connection', function(socket)
                     else
                     {
                     socket.emit('load old msgs', docs);
-                    console.log('Lähetetään vanhat viestit ikkunaan restore komennolla.');
+                    console.log(socket.username + ' palautti vanhat viestit ikkunaan restore komennolla.');
                     }
                 });
 
