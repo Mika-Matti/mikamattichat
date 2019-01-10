@@ -246,6 +246,7 @@ io.on('connection', function(socket)
                 fakeUsers[socket.userfake].isAdmin = true; //Tehdään userista admin.
 
                 updateUsernames();
+                updateUsername();
                 isNowAdmin();
                 console.log({user: socket.username}, " on nyt admin.");
                 console.log("Users: " + Object.keys(users));                
