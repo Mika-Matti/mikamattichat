@@ -182,7 +182,7 @@ io.on('connection', function(socket)
 
                     //foundLine = true;   
                     io.emit('new eraser', { data: data, user: socket.username}); //tehdään kumitus sen sijaan itse clientissä. user lisätty jotta voidaan näyttää kuka kumitti
-                    
+                    console.log("Viiva poistettu server arraysta sekä lähetetty komento poistaa viiva clienttien arraysta.");
                     break;
                 }   
             }   
@@ -199,6 +199,7 @@ io.on('connection', function(socket)
         lineHistory = [];
         io.emit('clearit', true);
         updateLines();
+        console.log("Canvas tyhjennetty.");
     });
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
