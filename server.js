@@ -653,7 +653,7 @@ io.on('connection', function(socket)
                     socket.userfake = newName; //tilalle lowercase nimi
                     fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
                                     
-                    console.log("username changed to " + newName);
+                    console.log(currentname + " changed username to " + newName);
                     console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
                     console.log("Lista nimistä näkyvä: " + Object.keys(users));
                 }
@@ -819,7 +819,7 @@ io.on('connection', function(socket)
             socket.userfake = data1; //tilalle lowercase nimi
             fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
                             
-            console.log("username changed to " + data1);
+            console.log(currentname + " changed username to " + data1);
             console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
             console.log("Lista nimistä näkyvä: " + Object.keys(users));
         }
