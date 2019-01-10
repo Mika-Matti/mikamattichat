@@ -160,6 +160,7 @@ io.on('connection', function(socket)
         {
             lineHistory.push(data.line); //lisätään kokoviiva serverin linearrayhyn
             wholeLinebufferarray.push(data.line); //lähetetään kokoviiva clientsideen menevään bufferarrayhyn
+            console.log("Vastaanotettu piirto lisätty bufferiin");
             updateLines();
         }
     });
@@ -839,7 +840,7 @@ io.on('connection', function(socket)
                 io.emit('send wholelinearray', {wholelinebufferarray: wholeLinebufferarray});
        
                 wholeLinebufferarray = []; //kokoviivat tyhjennetään. nämä lähettiin clientarrayhyn
-    
+                console.log("Lähetetään bufferiin kerätyt piirrot clientteihin.");
             }     
         setTimeout(mainLoop, 50); //kutsuu funktiota uudelleen 25ms välein   
     }
