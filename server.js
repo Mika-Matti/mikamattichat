@@ -122,14 +122,17 @@ io.on('connection', function(socket)
     console.log('users: ' + Object.keys(users));
     console.log('fakeusers: ' + Object.keys(fakeUsers));
 
+    //päivitetään lista nimistä huoneessa.
     updateUsernames();
+    //päivitetään liittyneelle clientille hänen nimensä chat otsikkoon.
     updateUsername();    
+    //päivitetään huoneessa olijoiden lukumäärä.
     updateConnections(); 
-    //ilmoitetaan että on liittynyt serverille
+    //ilmoitetaan että on liittynyt serverille.
     hasJoined();
-    //piirroksen refreshaus uudelle käyttäjälle
+    //piirroksen refreshaus uudelle käyttäjälle.
     updateCanvas();
-    //disconnect
+    //socket disconnect
     socket.on('disconnect', function()
     {
         hasLeft();
@@ -160,7 +163,6 @@ io.on('connection', function(socket)
         {
             lineHistory.push(data.line); //lisätään kokoviiva serverin linearrayhyn
             wholeLinebufferarray.push(data.line); //lähetetään kokoviiva clientsideen menevään bufferarrayhyn
-            console.log("Vastaanotettu piirto lisätty bufferiin");
             updateLines();
         }
     });
@@ -182,8 +184,7 @@ io.on('connection', function(socket)
 
                     //foundLine = true;   
                     io.emit('new eraser', { data: data, user: socket.username}); //tehdään kumitus sen sijaan itse clientissä. user lisätty jotta voidaan näyttää kuka kumitti
-                    console.log("Viiva poistettu server arraysta sekä lähetetty komento poistaa viiva clienttien arraysta.");
-                    updateLines();
+                    
                     break;
                 }   
             }   
@@ -200,7 +201,6 @@ io.on('connection', function(socket)
         lineHistory = [];
         io.emit('clearit', true);
         updateLines();
-        console.log("Canvas tyhjennetty.");
     });
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
@@ -249,7 +249,6 @@ io.on('connection', function(socket)
                 fakeUsers[socket.userfake].isAdmin = true; //Tehdään userista admin.
 
                 updateUsernames();
-                updateUsername();
                 isNowAdmin();
                 console.log({user: socket.username}, " on nyt admin.");
                 console.log("Users: " + Object.keys(users));                
@@ -555,7 +554,6 @@ io.on('connection', function(socket)
                     {
                         updateDate();
                         io.emit('purge', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg}); 
-                        console.log(socket.username + ' poisti kaikki viestit viestihistoriasta.');
                     }
                 });
             }    
@@ -585,7 +583,7 @@ io.on('connection', function(socket)
                     else
                     {
                     socket.emit('load old msgs', docs);
-                    console.log(socket.username + ' palautti vanhat viestit ikkunaan restore komennolla.');
+                    console.log('Lähetetään vanhat viestit ikkunaan restore komennolla.');
                     }
                 });
 
@@ -655,7 +653,7 @@ io.on('connection', function(socket)
                     socket.userfake = newName; //tilalle lowercase nimi
                     fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
                                     
-                    console.log(currentname + " changed username to " + newName);
+                    console.log("username changed to " + newName);
                     console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
                     console.log("Lista nimistä näkyvä: " + Object.keys(users));
                 }
@@ -821,7 +819,7 @@ io.on('connection', function(socket)
             socket.userfake = data1; //tilalle lowercase nimi
             fakeUsers[socket.userfake] = socket; //lisätään arrayhyn virallinen lowercase nimimerkki, johon voi sitten verrata uusia syötettyjä nimiä
                             
-            console.log(currentname + " changed username to " + data1);
+            console.log("username changed to " + data1);
             console.log("Lista nimistä lowercase: " + Object.keys(fakeUsers));
             console.log("Lista nimistä näkyvä: " + Object.keys(users));
         }
@@ -843,7 +841,7 @@ io.on('connection', function(socket)
                 io.emit('send wholelinearray', {wholelinebufferarray: wholeLinebufferarray});
        
                 wholeLinebufferarray = []; //kokoviivat tyhjennetään. nämä lähettiin clientarrayhyn
-                console.log("Lähetetään bufferiin kerätyt piirrot clientteihin.");
+    
             }     
         setTimeout(mainLoop, 50); //kutsuu funktiota uudelleen 25ms välein   
     }
