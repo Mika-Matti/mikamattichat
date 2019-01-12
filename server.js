@@ -32,7 +32,7 @@ let timeDayMonthYear = ((day<10?'0':'') + day + "/" + ((month+1)<10?'0':'') + (m
 let adminCrown = "🎩"; //"👑" "🎩"
 var regexi = /[^a-zA-Z0-9äöå_.-]+/g; //sallitut username merkit
 
-mongoose.connect('mongodb://mikamattichat:heroku1@ds113003.mlab.com:13003/chat', { useNewUrlParser: true }, function(err)
+mongoose.connect('mongodb://mikamatti:heroku23@ds131601.mlab.com:31601/chat2', { useNewUrlParser: true }, function(err)
 {
     if(err)
     {
@@ -148,7 +148,31 @@ io.on('connection', function(socket)
         console.log('fakeUsers: ' + Object.keys(fakeUsers));
         console.log('users: ' + Object.keys(users));  
     });
-
+    //clientin lähettämän kuvan vastaanottaminen
+    socket.on('send canvas', function(data)
+    {
+        console.log("kuva vastaanotettu. Lähetetään clientteihin.")
+        lineHistory = data.imagearray;
+        io.emit('get linearray', { linehistory: data.imagearray} );        
+        updateLines();
+        //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
+        style = " <i><b>";
+        msg = "</b> loaded a stored image on canvas.";
+        let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+        newMsg.save(function(err)
+        {
+            if(err)
+            {
+                throw err;
+            }
+            else
+            {
+                updateDate();
+                io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+            }
+        });
+    });
+    //piirtäminen
     socket.on('draw', function(data)
     {
         //bufferArray.push({ line: data.line, user: socket.username}); // tätä lähetetään 25ms välein ja sitten tyhjennetään. Alkuperäinen

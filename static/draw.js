@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function()
     //update clientcanvas. Tuodaan ekaa kertaa serverin piirrot clientille ja päivitetään client array täsmäämään serverin arrayta.
     socket.on('get linearray', function(data)
     {
-        //console.log("canvas tuotu");
+        console.log("canvas tuotu");
         clientHistory = data.linehistory;   
         for (var i in clientHistory) 
         {   
@@ -395,6 +395,7 @@ function colorGray() {brushColor='gray';}
 function colorWhite() {brushColor='white';}
 
 var images = [];
+var imageLines = [];
 let number = 0;
 //sivellin
 fun = function() 
@@ -412,7 +413,9 @@ function saveImg()
 {  
     var canvas = $("#drawing")[0];
     var img = canvas.toDataURL("image/png"); 
+    var imgLines = clientHistory;
     images.push(img); //lisätään kuva arrayhyn
+    imageLines.push(imgLines); //lisätään linearray arrayhyn
     console.log(number);
     addImages(); //päivitetään kuvagalleriassa thumbnailit
     $("#messages").append("<li>" + getCurrentDate() 
@@ -463,7 +466,7 @@ function openLightbox(n)
     lightbox.style.display= "block";    
     if(images && images.length)
     {
-        $('#kuva').html('<img src="' + images[n] + '" /><br><a href="'+images[n]+'" download>Download image</a>');   
+        $('#kuva').html('<img src="' + images[n] + '" /><br><a href="'+images[n]+'" download>Download image</a> <a href="" onclick="loadCanvas('+n+');return false;" >Load to canvas</a>');   
     }
     else
     {
@@ -473,7 +476,7 @@ function openLightbox(n)
 }
 function changeLightbox(a)
 {    
-    $('#kuva').html('<img src="' + images[a] + '" />'); 
+    $('#kuva').html('<img src="' + images[a] + '" /><br><a href="'+images[n]+'" download>Download image</a> <a href="" onclick="loadCanvas('+a+');return false;" >Load to canvas</a>'); 
 }
 function closeLightbox()
 {
@@ -492,3 +495,10 @@ function closeHelpbox()
     helpbox.style.display= "none";    
 }
 
+function loadCanvas(u)
+{
+    //Lähetetään valittu kuva serverille
+    socket.emit('send canvas', {imagearray: imageLines[u]});
+    //suljetaan vielä kuvagalleria
+    closeLightbox();
+}

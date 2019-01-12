@@ -751,7 +751,7 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
 #lightbox img {
     background: white; 
     max-width:800px;
-    border: 0px solid rgb(29, 29, 29);           
+    border: 0px solid rgb(29, 29, 29); 
 }
 #kuva
 {
@@ -762,16 +762,17 @@ html, body /* poistaa default html muotoilut, jotta ohjelma olisi täysin fullsc
     color: white;
     text-align: left;   
 }
-
-
-#kuva a:link{
+#kuva a:link
+{
     color:#FFFFFF;
 }
-
-
+#kuva a:visited
+{
+    color:#FFFFFF;
+}
 #kuva img
 {
-    max-height: 550px;  
+    max-height: 535px;  
 }
 #closer 
 {
