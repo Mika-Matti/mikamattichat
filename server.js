@@ -152,25 +152,22 @@ io.on('connection', function(socket)
     socket.on('send canvas', function(data)
     {
         console.log("kuva vastaanotettu. Lähetetään clientteihin.")
-        lineHistory = data.imagearray;
-        io.emit('get linearray', { linehistory: data.imagearray} );        
+        // lineHistory = [];
+        // lineHistory = data.imagearray;
+        //lisätään serverin linehistoryyn viivat
+        for (var i in data.imagearray) 
+        {   
+            lineHistory.push(data.imagearray[i]);
+        }
+        
+        io.emit('load canvas', { linehistory: data.imagearray } );        
         updateLines();
         //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
         style = " <i><b>";
-        msg = "</b> loaded a stored image on canvas.";
-        let newMsg = new Chat({timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-        newMsg.save(function(err)
-        {
-            if(err)
-            {
-                throw err;
-            }
-            else
-            {
-                updateDate();
-                io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
-            }
-        });
+        msg = "</b> loaded a stored image on canvas.";            
+        updateDate();
+        io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
+  
     });
     //piirtäminen
     socket.on('draw', function(data)

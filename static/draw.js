@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function()
     //update clientcanvas. Tuodaan ekaa kertaa serverin piirrot clientille ja päivitetään client array täsmäämään serverin arrayta.
     socket.on('get linearray', function(data)
     {
-        console.log("canvas tuotu");
+        //console.log("canvas tuotu");
         clientHistory = data.linehistory;   
         for (var i in clientHistory) 
         {   
@@ -92,6 +92,30 @@ document.addEventListener("DOMContentLoaded", function()
                 }
             }
         }
+    });
+    socket.on('load canvas', function(data)
+    {
+        console.log("canvas tuotu");
+        var loadcanvasArray = data.linehistory;   
+        for (var i in loadcanvasArray) 
+        {   
+            clientHistory.push(loadcanvasArray[i]);
+            for (var a in loadcanvasArray[i]) 
+            {
+                var line = loadcanvasArray[i][a].line;  
+                //piirretään puretut viivat        
+                {                    
+                    context.beginPath();
+                    context.lineWidth = line[2]; //brushin paksuus
+                    context.strokeStyle = line[3]; // brushin väri
+                    context.moveTo(line[0].x * width, line[0].y * height);
+                    context.lineTo(line[1].x * width, line[1].y * height);
+                    context.stroke();
+
+                }
+            }
+        }
+
     });
     socket.on('send wholelinearray', function(data)
     {
@@ -420,7 +444,7 @@ function saveImg()
     addImages(); //päivitetään kuvagalleriassa thumbnailit
     $("#messages").append("<li>" + getCurrentDate() 
     + ' <b>Canvas stored to images.</b><img id="chatImg" src="'+images[number]+'" onclick="openLightbox('+number+')" />'
-    + '<a href="'+images[number]+'" download>Download image</a></li>');
+    + '<a href="'+images[number]+'" download>Download image</a> or <a href="" onclick="loadCanvas('+number+');return false;" >Load to canvas</a></li>');
     number++;
     console.log(number)
     
