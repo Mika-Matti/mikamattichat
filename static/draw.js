@@ -437,7 +437,8 @@ function saveImg()
 {  
     var canvas = $("#drawing")[0];
     var img = canvas.toDataURL("image/png"); 
-    var imgLines = clientHistory;
+    //var imgLines = clientHistory; shallow copy, tehdään sen sijaan JSON.stringyfy ja JSON.parse metodi.
+    var imgLines = JSON.parse(JSON.stringify(clientHistory));
     images.push(img); //lisätään kuva arrayhyn
     imageLines.push(imgLines); //lisätään linearray arrayhyn
     console.log(number);
