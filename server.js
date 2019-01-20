@@ -8,8 +8,10 @@ let io = require('socket.io')(http);
 let mongoose = require('mongoose');
 
 var lineHistory = []; //array johon tulee piirretyt jutut
+lineHistory = []; //varmistetaan että array on tyhjä.
 var bufferArray = []; //väliaikanen array joka kerää pienen määrän lähetettyjä piirtokomentoja ja lähettää ne kerralla sitten.
 var wholeLinebufferarray = []; //array joka lähettää kokonaisia viivoja, bufferarray lähettää liian lyhyitä kumittamiseen, mutta se on visuaalisesti nätimpi nähdä reaaliajassa.
+var canvasRestored = false;
 
 let users = {}; //Näkyväkäyttäjälista
 let fakeUsers = {}; //lowercase username lista. Nämäkin 2 listaa voisi vielä mergeä. 
@@ -68,6 +70,13 @@ let chatSchema2 = mongoose.Schema(
         style: String //nämä sisältävät viestin muotoilua
     });
 let backupChat = mongoose.model('backupMessage', chatSchema2);
+//määritellään vielä canvasille varmuuskopiointipaikka, josta kuvan voi palauttaa silloinkin kun serveri on käynnistynyt uudelleen.
+let canvasSchema = mongoose.Schema(
+    {
+        drawing: String,
+        fulltime: {type: Date, default: Date.now}
+    });
+let backupCanvas = mongoose.model('backupDrawing', canvasSchema);
 
 //tässä lähetetään localhostiin haluttu sivu kuten index.html 
 app.get('/', function(req, res)
@@ -93,7 +102,7 @@ io.on('connection', function(socket)
 {
     //on connection
     connections.push(socket);
-    console.log('user connected');
+    console.log('NEW USER HAS CONNECTED');
     console.log('Connected: %s sockets connected', connections.length);    
 
     //tuo vanhat viestit mongodb databasesta
@@ -130,6 +139,8 @@ io.on('connection', function(socket)
     updateConnections(); 
     //ilmoitetaan että on liittynyt serverille.
     hasJoined();
+    //jos serveri on restartannut ja on varmuuskopio joka tuoda takaisin
+    bringBackCanvas();
     //piirroksen refreshaus uudelle käyttäjälle.
     updateCanvas();
     //socket disconnect
@@ -143,7 +154,7 @@ io.on('connection', function(socket)
         connections.splice(connections.indexOf(socket), 1);
         updateConnections();
 
-        console.log('User disconnected');
+        console.log('USER DISCONNECTED');
         console.log('Disconnected: %s sockets connected', connections.length);  
         console.log('fakeUsers: ' + Object.keys(fakeUsers));
         console.log('users: ' + Object.keys(users));  
@@ -222,6 +233,10 @@ io.on('connection', function(socket)
         lineHistory = [];
         io.emit('clearit', true);
         updateLines();
+
+        //tyhjennetään myös database
+        backupCanvas.deleteMany({}, function (err) {});
+        console.log("Canvas varmuuskopio poistettu");
     });
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
@@ -845,12 +860,17 @@ io.on('connection', function(socket)
             console.log("Lista nimistä näkyvä: " + Object.keys(users));
         }
     });
-
+ 
     //bufferoitujen tietojen lähettäminen yhdellä paketilla.
     function mainLoop() 
-    {
-        
-            if (bufferArray.length > 0)
+    {       
+            if(canvasRestored)
+            {                
+                updateCanvas();
+                canvasRestored = false;
+                console.log("Canvas updated successfully.");
+            }        
+            else if (bufferArray.length > 0)
             {
                 io.emit('draw bufferarray', {bufferarray: bufferArray});
                // io.emit('draw line', { line: data.line, user: socket.username }); //lähetä piirto kaikkiin clientteihin      
@@ -1050,6 +1070,96 @@ io.on('connection', function(socket)
 
 
 });
+
+//canvasin varmuuskopiointi tietyn ajan välein sekä sen kutsuminen takaisin linehistoryksi, jos serveri on restartannut.
+setInterval(function()
+{
+    if(lineHistory.length) //jos lineHistoryssä on tallennettavaa
+    {    
+        backupCanvas.deleteMany({}, function (err) {});
+
+        let newCanvas = new backupCanvas({drawing: JSON.stringify(lineHistory)}); // luodaan databaseen backup
+        newCanvas.save(function(err)
+        {         
+            if(err) 
+            {
+                throw err;
+            }
+            else
+            {
+                console.log("Canvas varmuuskopioitu.");
+            }
+        });
+    }    
+    else //jos canvas on tyhjä, esimerkiksi serverin restarttaamisen takia
+    {
+        //let query = backupCanvas.find().sort('-fulltime').limit(); //tässä kokeillaan löytyiskö nopeammin kaikki, ettei etitä kaikkea.
+        let query = backupCanvas.find({}, 'drawing -_id');
+        query.exec(function(err, doc) 
+        {
+            if(err) 
+            {
+               throw err;
+            }
+            else
+            {
+                if(!doc.length)
+                {
+                    console.log("Ei palautettavia piirroksia databasessa.");
+                }
+                else
+                {                    
+                    // lineHistory = JSON.parse(doc);
+                    for(i = doc.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
+                    {
+                        lineHistory = JSON.parse(doc[i].drawing);
+                    }      
+                    canvasRestored = true;
+                    //console.log('Canvas tyhjä. Tarkistettu, onko databasessa palautettavaa piirrosta.');
+                }
+            }
+        });
+    }
+}, 120000); //Tarkistetaan canvas 2 minuutin välein sekä palautetaan jos palautettavaa on. (300000ms olisi 5 minuuttia)
+
+//palautetaan canvas välittömästi jos joku liittyy serverille, ja canvasta ei ole palautettu, jos sellaista on siis palautettavana databasesta.
+function bringBackCanvas()
+{
+    if(!lineHistory.length) //jos lineHistoryssä ei ole
+    {
+        let query = backupCanvas.find({}, 'drawing -_id');
+        query.exec(function(err, doc) 
+        {
+            if(err) 
+            {
+               throw err;
+            }
+            else
+            {
+                if(!doc.length)
+                {
+                    console.log("Uusi käyttäjä on liittynyt, mutta ei palautettavia piirroksia databasessa.");
+                }
+                else
+                {                    
+                    // lineHistory = JSON.parse(doc);
+                    for(i = doc.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
+                    {
+                        lineHistory = JSON.parse(doc[i].drawing);
+                    }      
+                    canvasRestored = true;
+                    //console.log('Canvas tyhjä. Tarkistettu, onko databasessa palautettavaa piirrosta.');
+                    console.log("Uusi käyttäjä on liittynyt ja varmuuskopio canvasista on palautettu."); 
+                }
+            }
+        });
+       
+    }
+    else
+    {
+        console.log("UUsi käyttäjä on liittynyt, mutta canvas ei ole tyhjä. Ei palauteta varmuuskopiota.");
+    }
+}
 
 
 
