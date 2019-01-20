@@ -237,6 +237,12 @@ io.on('connection', function(socket)
         //tyhjennetään myös database
         backupCanvas.deleteMany({}, function (err) {});
         console.log("Canvas varmuuskopio poistettu");
+
+        //lähetetään viesti asiasta chattiin sekä tallennetaan viesti databaseen.
+        style = " <i><b>";
+        msg = "</b> cleared the canvas.";            
+        updateDate();
+        io.emit('new message', {timestamp: timeHoursMins, style: style, user: socket.username, msg: msg});
     });
     //viestin lähettäminen ikkunaan
     socket.on('chat message', function(data, callback)
