@@ -1125,39 +1125,42 @@ setInterval(function()
 //palautetaan canvas välittömästi jos joku liittyy serverille, ja canvasta ei ole palautettu, jos sellaista on siis palautettavana databasesta.
 function bringBackCanvas()
 {
-    if(!lineHistory.length) //jos lineHistoryssä ei ole
+    if(connections.length === 1) //tehdään tämä vain ensimmäisen tullessa tyhjään huoneeseen.
     {
-        let query = backupCanvas.find({}, 'drawing -_id');
-        query.exec(function(err, doc) 
+        if(!lineHistory.length) //jos lineHistoryssä ei ole
         {
-            if(err) 
+            let query = backupCanvas.find({}, 'drawing -_id');
+            query.exec(function(err, doc) 
             {
-               throw err;
-            }
-            else
-            {
-                if(!doc.length)
+                if(err) 
                 {
-                    console.log("Uusi käyttäjä on liittynyt, mutta ei palautettavia piirroksia databasessa.");
+                   throw err;
                 }
                 else
-                {                    
-                    // lineHistory = JSON.parse(doc);
-                    for(i = doc.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
+                {
+                    if(!doc.length)
                     {
-                        lineHistory = JSON.parse(doc[i].drawing);
-                    }      
-                    canvasRestored = true;
-                    //console.log('Canvas tyhjä. Tarkistettu, onko databasessa palautettavaa piirrosta.');
-                    console.log("Uusi käyttäjä on liittynyt ja varmuuskopio canvasista on palautettu."); 
+                        console.log("Uusi käyttäjä on liittynyt, mutta ei palautettavia piirroksia databasessa.");
+                    }
+                    else
+                    {                    
+                        // lineHistory = JSON.parse(doc);
+                        for(i = doc.length-1; i >= 0; i--)  //tuodaan reversenä jotta viimeisin
+                        {
+                            lineHistory = JSON.parse(doc[i].drawing);
+                        }      
+                        canvasRestored = true;
+                        //console.log('Canvas tyhjä. Tarkistettu, onko databasessa palautettavaa piirrosta.');
+                        console.log("Uusi käyttäjä on liittynyt ja varmuuskopio canvasista on palautettu."); 
+                    }
                 }
-            }
-        });
-       
-    }
-    else
-    {
-        console.log("UUsi käyttäjä on liittynyt, mutta canvas ei ole tyhjä. Ei palauteta varmuuskopiota.");
+            });
+           
+        }
+        else
+        {
+            console.log("Uusi käyttäjä on liittynyt, mutta canvas ei ole tyhjä. Ei palauteta varmuuskopiota.");
+        }
     }
 }
 
